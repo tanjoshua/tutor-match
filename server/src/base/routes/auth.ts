@@ -11,8 +11,8 @@ import {
   changeEmail,
   changePassword,
 } from "../controllers/auth";
-import handleValidatorErrors from "../middleware/handleValidatorErrors";
-import auth from "../middleware/auth";
+import handleValidatorErrors from "../../middleware/handleValidatorErrors";
+import auth from "../../middleware/auth";
 
 const router = Router();
 

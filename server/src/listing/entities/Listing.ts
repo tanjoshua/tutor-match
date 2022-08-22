@@ -8,9 +8,6 @@ export class Listing extends BaseEntity {
   title: string;
 
   @Property()
-  name: string;
-
-  @Property()
   image: { url: string; id: string };
 
   @ManyToOne(() => User)
