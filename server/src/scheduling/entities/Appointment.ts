@@ -1,4 +1,4 @@
-import { Entity, Property } from "@mikro-orm/core";
+import { Entity, Enum, Property } from "@mikro-orm/core";
 import { User } from "../../base/entities";
 import { BaseEntity } from "../../base/entities/BaseEntity";
 import { Schedule } from "./Schedule";
@@ -34,6 +34,13 @@ export class PendingAppointment extends BaseEntity {
 
   @Property()
   appointment: Appointment;
+
+  /**
+   * Intitial creation of pending appointment always done by client
+   * But we allow for subsequent proposal of new appointment slots by the owner
+   */
+  @Enum(() => Proposer)
+  proposer: Proposer;
 }
 
 @Entity()
@@ -49,4 +56,9 @@ export class AppointmentClient extends BaseEntity {
 
   @Property()
   note: string;
+}
+
+export enum Proposer {
+  CLIENT = "client",
+  OWNER = "owner",
 }
