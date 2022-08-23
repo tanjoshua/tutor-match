@@ -11,7 +11,7 @@ import { BaseEntity } from "../../base/entities/BaseEntity";
 import { Listing } from "../../listing/entities";
 
 @Entity()
-export class BookingEngine extends BaseEntity {
+export class Schedule extends BaseEntity {
   @Property()
   user: User;
 
@@ -28,7 +28,7 @@ export class BookingEngine extends BaseEntity {
 @Embeddable()
 export class Timeslot {
   @ManyToOne()
-  bookingEngine: BookingEngine;
+  schedule: Schedule;
 
   @Property()
   startTime: Date;
@@ -43,7 +43,7 @@ export class Timeslot {
 @Embeddable()
 export class RecurringTimeslot {
   @ManyToOne()
-  bookingEngine: BookingEngine;
+  schedule: Schedule;
 
   @Property()
   day: number; // 0-6 representing each day of the week

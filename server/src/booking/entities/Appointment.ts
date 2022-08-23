@@ -1,7 +1,7 @@
 import { Entity, ManyToOne, OneToOne, Property } from "@mikro-orm/core";
 import { User } from "../../base/entities";
 import { BaseEntity } from "../../base/entities/BaseEntity";
-import { BookingEngine } from "./BookingEngine";
+import { Schedule } from "./Schedule";
 
 @Entity()
 export class Appointment extends BaseEntity {
@@ -9,7 +9,7 @@ export class Appointment extends BaseEntity {
   owner: User;
 
   @Property()
-  bookingEngine: BookingEngine;
+  schedule: Schedule;
 
   @Property()
   startTime: Date;
