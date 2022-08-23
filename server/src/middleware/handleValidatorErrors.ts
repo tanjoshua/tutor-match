@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from "express";
 import { validationResult } from "express-validator";
 
-import FieldError from "../../errors/FieldError";
+import FieldError from "../errors/FieldError";
 
 export default async (req: Request, _res: Response, next: NextFunction) => {
   const errors = validationResult(req);

@@ -21,6 +21,7 @@ import {
 import { User, PasswordReset } from "./base/entities";
 import { Listing } from "./listing/entities";
 import baseRoutes from "./base/routes";
+import listingRoutes from "./listing/routes";
 import HttpError from "./errors/HttpError";
 import FieldError from "./errors/FieldError";
 
@@ -84,6 +85,7 @@ const main = async () => {
 
   // ROUTES
   app.use("/api/base", baseRoutes);
+  app.use("/api/listing", listingRoutes);
 
   // 404 route not found
   app.use((_req, res, _next) => {

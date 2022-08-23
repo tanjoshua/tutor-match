@@ -17,5 +17,5 @@ export class User extends BaseEntity {
   password: string;
 
   @OneToMany(() => Listing, (listing) => listing.owner)
-  listings: Collection<Listing> = new Collection<Listing>(this);
+  listings = new Collection<Listing>(this);
 }
