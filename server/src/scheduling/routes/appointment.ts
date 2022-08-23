@@ -7,4 +7,4 @@
 
 // create appointment
 
-// remove appointment (completed?)
+// remove appointment (appointment is completed?)
