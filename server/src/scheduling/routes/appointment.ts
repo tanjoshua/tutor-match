@@ -1,3 +1,6 @@
+import { Router } from "express";
+
+const router = Router();
 // make appointment request
 
 // respond to appointment request
@@ -8,3 +11,5 @@
 // create appointment
 
 // remove appointment (appointment is completed?)
+
+export default router;

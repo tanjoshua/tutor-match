@@ -22,8 +22,10 @@ import { User, PasswordReset } from "./base/entities";
 import { Listing } from "./listing/entities";
 import baseRoutes from "./base/routes";
 import listingRoutes from "./listing/routes";
+import schedulingRoutes from "./scheduling/routes";
 import HttpError from "./errors/HttpError";
 import FieldError from "./errors/FieldError";
+import { Schedule } from "./scheduling/entities";
 
 const app = express();
 const MongoDBStore = connectMongo(session);
@@ -37,6 +39,7 @@ export const DI = {} as {
   userRepository: EntityRepository<User>;
   listingRepository: EntityRepository<Listing>;
   passwordResetRepository: EntityRepository<PasswordReset>;
+  scheduleRespository: EntityRepository<Schedule>;
 };
 
 const main = async () => {
@@ -52,6 +55,7 @@ const main = async () => {
   DI.userRepository = DI.orm.em.getRepository(User);
   DI.listingRepository = DI.orm.em.getRepository(Listing);
   DI.passwordResetRepository = DI.orm.em.getRepository(PasswordReset);
+  DI.scheduleRespository = DI.orm.em.getRepository(Schedule);
 
   // serve frontend
   app.use(express.static("build/client"));
@@ -86,6 +90,7 @@ const main = async () => {
   // ROUTES
   app.use("/api/base", baseRoutes);
   app.use("/api/listing", listingRoutes);
+  app.use("/api/scheduling", schedulingRoutes);
 
   // 404 route not found
   app.use((_req, res, _next) => {
@@ -95,6 +100,7 @@ const main = async () => {
   // error handler
   app.use(
     (err: HttpError, _req: Request, res: Response, _next: NextFunction) => {
+      console.log(err);
       const status = err.status || 500;
       const body: any = { message: err.message };
 

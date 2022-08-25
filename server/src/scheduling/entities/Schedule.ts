@@ -1,35 +1,21 @@
-import {
-  Collection,
-  Embeddable,
-  Entity,
-  ManyToOne,
-  OneToOne,
-  Property,
-} from "@mikro-orm/core";
+import { Embeddable, Embedded, Entity, Property } from "@mikro-orm/core";
 import { User } from "../../base/entities";
 import { BaseEntity } from "../../base/entities/BaseEntity";
-import { Listing } from "../../listing/entities";
 
 @Entity()
 export class Schedule extends BaseEntity {
   @Property()
   user: User;
 
-  @OneToOne(() => Listing)
-  listing: Listing;
+  @Embedded(() => Timeslot, { array: true })
+  timeslots: Timeslot[] = [];
 
-  @Property()
-  timeslots = new Collection<Timeslot>(this);
-
-  @Property()
-  recurringTimeslots = new Collection<RecurringTimeslot>(this);
+  @Embedded(() => RecurringTimeslot, { array: true })
+  recurringTimeslots: RecurringTimeslot[] = [];
 }
 
 @Embeddable()
 export class Timeslot {
-  @ManyToOne()
-  schedule: Schedule;
-
   @Property()
   startTime: Date;
 
@@ -42,12 +28,12 @@ export class Timeslot {
 
 @Embeddable()
 export class RecurringTimeslot {
-  @ManyToOne()
-  schedule: Schedule;
+  @Property()
+  timezone: string; // currently not used. to be used when revamping scheduling to better support internationalization
 
   @Property()
   day: number; // 0-6 representing each day of the week
 
   @Property()
-  time: number; // 0-47 representing 30 min timeslots in the day
+  timeblock: number; // 0-47 representing 30 min timeslots in the day
 }
