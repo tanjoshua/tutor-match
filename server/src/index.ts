@@ -25,7 +25,7 @@ import listingRoutes from "./listing/routes";
 import schedulingRoutes from "./scheduling/routes";
 import HttpError from "./errors/HttpError";
 import FieldError from "./errors/FieldError";
-import { Schedule } from "./scheduling/entities";
+import { RecurringTimeslot, Schedule, Timeslot } from "./scheduling/entities";
 
 const app = express();
 const MongoDBStore = connectMongo(session);
@@ -45,7 +45,14 @@ export const DI = {} as {
 const main = async () => {
   // setup ORM
   DI.orm = await MikroORM.init({
-    entities: [User, Listing, PasswordReset],
+    entities: [
+      User,
+      Listing,
+      PasswordReset,
+      Schedule,
+      Timeslot,
+      RecurringTimeslot,
+    ],
     clientUrl: MDB_KEY,
     type: "mongo",
     debug: !__prod__,
