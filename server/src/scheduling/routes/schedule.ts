@@ -15,7 +15,7 @@ router.get("/owner", auth, getOwnerSchedule);
 // create or update schedule
 router.post("/", auth, createSchedule);
 
-router.put("/:id", auth, replaceSchedule);
+router.put("/", auth, replaceSchedule);
 
 // get available slots
 router.get("/available", getAvailableSlots);

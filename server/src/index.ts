@@ -25,7 +25,13 @@ import listingRoutes from "./listing/routes";
 import schedulingRoutes from "./scheduling/routes";
 import HttpError from "./errors/HttpError";
 import FieldError from "./errors/FieldError";
-import { RecurringTimeslot, Schedule, Timeslot } from "./scheduling/entities";
+import {
+  Schedule,
+  ScheduleOverride,
+  TimeslotOverride,
+  WeeklySchedule,
+  WeeklyTimeslot,
+} from "./scheduling/entities";
 
 const app = express();
 const MongoDBStore = connectMongo(session);
@@ -50,8 +56,10 @@ const main = async () => {
       Listing,
       PasswordReset,
       Schedule,
-      Timeslot,
-      RecurringTimeslot,
+      WeeklySchedule,
+      WeeklyTimeslot,
+      ScheduleOverride,
+      TimeslotOverride,
     ],
     clientUrl: MDB_KEY,
     type: "mongo",
@@ -107,7 +115,6 @@ const main = async () => {
   // error handler
   app.use(
     (err: HttpError, _req: Request, res: Response, _next: NextFunction) => {
-      console.log(err);
       const status = err.status || 500;
       const body: any = { message: err.message };
 

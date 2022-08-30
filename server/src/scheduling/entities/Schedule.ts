@@ -1,39 +1,84 @@
-import { Embeddable, Embedded, Entity, Property } from "@mikro-orm/core";
+import {
+  Cascade,
+  Collection,
+  Embeddable,
+  Embedded,
+  Entity,
+  ManyToOne,
+  OneToMany,
+  Property,
+} from "@mikro-orm/core";
 import { User } from "../../base/entities";
 import { BaseEntity } from "../../base/entities/BaseEntity";
 
 @Entity()
 export class Schedule extends BaseEntity {
+  @ManyToOne(() => User)
+  owner: User;
+
   @Property()
-  user: User;
+  timezone: string;
 
-  @Embedded(() => Timeslot, { array: true })
-  timeslots: Timeslot[] = [];
+  @OneToMany(
+    () => ScheduleOverride,
+    (scheduleOverride) => scheduleOverride.schedule,
+    { cascade: [Cascade.REMOVE] }
+  )
+  scheduleOverrides = new Collection<ScheduleOverride>(this);
 
-  @Embedded(() => RecurringTimeslot, { array: true })
-  recurringTimeslots: RecurringTimeslot[] = [];
+  @Embedded(() => WeeklySchedule, { array: true })
+  // index represents day of the week
+  // js does not support list comprehension yet
+  weeklySchedule: WeeklySchedule[] = [
+    new WeeklySchedule(),
+    new WeeklySchedule(),
+    new WeeklySchedule(),
+    new WeeklySchedule(),
+    new WeeklySchedule(),
+    new WeeklySchedule(),
+    new WeeklySchedule(),
+  ];
 }
 
-@Embeddable()
-export class Timeslot {
+@Entity()
+export class ScheduleOverride extends BaseEntity {
+  @ManyToOne(() => Schedule)
+  schedule: Schedule;
+
+  @Property()
+  day: string;
+
+  @OneToMany(
+    () => TimeslotOverride,
+    (timeslotOverride) => timeslotOverride.scheduleOverride,
+    { cascade: [Cascade.REMOVE] }
+  )
+  timeslots = new Collection<TimeslotOverride>(this);
+}
+
+@Entity()
+export class TimeslotOverride extends BaseEntity {
+  @ManyToOne(() => ScheduleOverride)
+  scheduleOverride: ScheduleOverride;
+
   @Property()
   startTime: Date;
 
   @Property()
   endTime: Date;
-
-  @Property()
-  available: boolean; // if false, something took this timeslot
 }
 
 @Embeddable()
-export class RecurringTimeslot {
+export class WeeklySchedule {
+  @Embedded(() => WeeklyTimeslot, { array: true })
+  timeslots: WeeklyTimeslot[] = [];
+}
+
+@Embeddable()
+export class WeeklyTimeslot {
   @Property()
-  timezone: string; // currently not used. to be used when revamping scheduling to better support internationalization
+  startTime: string;
 
   @Property()
-  day: number; // 0-6 representing each day of the week
-
-  @Property()
-  timeblock: number; // 0-47 representing 30 min timeslots in the day
+  endTime: string;
 }
