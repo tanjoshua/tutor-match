@@ -22,8 +22,16 @@ import { User, PasswordReset } from "./base/entities";
 import { Listing } from "./listing/entities";
 import baseRoutes from "./base/routes";
 import listingRoutes from "./listing/routes";
+import schedulingRoutes from "./scheduling/routes";
 import HttpError from "./errors/HttpError";
 import FieldError from "./errors/FieldError";
+import {
+  Schedule,
+  ScheduleOverride,
+  TimeslotOverride,
+  WeeklySchedule,
+  WeeklyTimeslot,
+} from "./scheduling/entities";
 
 const app = express();
 const MongoDBStore = connectMongo(session);
@@ -37,12 +45,22 @@ export const DI = {} as {
   userRepository: EntityRepository<User>;
   listingRepository: EntityRepository<Listing>;
   passwordResetRepository: EntityRepository<PasswordReset>;
+  scheduleRespository: EntityRepository<Schedule>;
 };
 
 const main = async () => {
   // setup ORM
   DI.orm = await MikroORM.init({
-    entities: [User, Listing, PasswordReset],
+    entities: [
+      User,
+      Listing,
+      PasswordReset,
+      Schedule,
+      WeeklySchedule,
+      WeeklyTimeslot,
+      ScheduleOverride,
+      TimeslotOverride,
+    ],
     clientUrl: MDB_KEY,
     type: "mongo",
     debug: !__prod__,
@@ -52,6 +70,7 @@ const main = async () => {
   DI.userRepository = DI.orm.em.getRepository(User);
   DI.listingRepository = DI.orm.em.getRepository(Listing);
   DI.passwordResetRepository = DI.orm.em.getRepository(PasswordReset);
+  DI.scheduleRespository = DI.orm.em.getRepository(Schedule);
 
   // serve frontend
   app.use(express.static("build/client"));
@@ -86,6 +105,7 @@ const main = async () => {
   // ROUTES
   app.use("/api/base", baseRoutes);
   app.use("/api/listing", listingRoutes);
+  app.use("/api/scheduling", schedulingRoutes);
 
   // 404 route not found
   app.use((_req, res, _next) => {
