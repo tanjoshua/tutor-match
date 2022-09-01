@@ -18,12 +18,12 @@ import {
 import LayoutWithNav from "../../components/base/LayoutWithNav";
 import { NextPageWithLayout } from "../_app";
 import { useRouter } from "next/router";
-import { loginUser } from "../../api/auth";
+import { loginUser, registerUser } from "../../api/auth";
 import redirectIfAuth from "../../utils/redirectIfAuth";
 
 interface Props {}
 
-const Login: NextPageWithLayout<Props> = ({}) => {
+const Register: NextPageWithLayout<Props> = ({}) => {
   redirectIfAuth();
   const router = useRouter();
   const {
@@ -35,9 +35,13 @@ const Login: NextPageWithLayout<Props> = ({}) => {
 
   const onSubmit = async (values) => {
     try {
-      await loginUser({ email: values.email, password: values.password });
-      if (typeof router.query.next === "string") {
-        router.push(router.query.next || "/");
+      await registerUser({
+        name: values.name,
+        email: values.email,
+        password: values.password,
+      });
+      if (router.query.next && typeof router.query.next === "string") {
+        router.push("/");
       } else {
         router.push("/");
       }
@@ -51,7 +55,7 @@ const Login: NextPageWithLayout<Props> = ({}) => {
       <Stack align="center">
         <Stack spacing={8} mx={"auto"} maxW={"lg"} py={12} px={6}>
           <Stack align={"center"}>
-            <Heading fontSize={"4xl"}>Sign in to your account</Heading>
+            <Heading fontSize={"4xl"}>Create an account with us</Heading>
             <Text fontSize={"lg"} color={"gray.600"}>
               to manage your schedule and listings
             </Text>
@@ -64,6 +68,17 @@ const Login: NextPageWithLayout<Props> = ({}) => {
           >
             <form onSubmit={handleSubmit(onSubmit)}>
               <Stack spacing={4}>
+                <FormControl isInvalid={!!errors.name}>
+                  <FormLabel htmlFor="name">Name</FormLabel>
+                  <Input
+                    id="name"
+                    type="name"
+                    {...register("name", { required: "Required field" })}
+                  />
+                  <FormErrorMessage>
+                    {errors.name && String(errors.name.message)}
+                  </FormErrorMessage>
+                </FormControl>
                 <FormControl isInvalid={!!errors.email}>
                   <FormLabel htmlFor="email">Email address</FormLabel>
                   <Input
@@ -92,11 +107,12 @@ const Login: NextPageWithLayout<Props> = ({}) => {
                     align={"start"}
                     justify={"space-between"}
                   >
-                    <Link href={`/auth/register?next=${router.query.next}`}>
-                      <Button variant={"link"}>Create account</Button>
-                    </Link>
-                    <Link color={"blue.400"} href="/forgot-password">
-                      Forgot password?
+                    <Link
+                      href={`/auth/login${
+                        router.query.next ? `?next=${router.query.next}` : ""
+                      }`}
+                    >
+                      <Button variant={"link"}>Already have an account?</Button>
                     </Link>
                   </Stack>
                   <Button
@@ -108,7 +124,7 @@ const Login: NextPageWithLayout<Props> = ({}) => {
                     type="submit"
                     isLoading={isSubmitting}
                   >
-                    Sign in
+                    Create account
                   </Button>
                 </Stack>
               </Stack>
@@ -120,8 +136,8 @@ const Login: NextPageWithLayout<Props> = ({}) => {
   );
 };
 
-Login.getLayout = (page: ReactElement) => {
+Register.getLayout = (page: ReactElement) => {
   return <LayoutWithNav>{page}</LayoutWithNav>;
 };
 
-export default Login;
+export default Register;

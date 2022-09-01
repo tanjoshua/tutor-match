@@ -17,6 +17,8 @@ import {
   Stack,
 } from "@chakra-ui/react";
 import { HamburgerIcon, CloseIcon, AddIcon } from "@chakra-ui/icons";
+import useSWR from "swr";
+import { fetcher } from "../../api/fetcher";
 
 const Links = ["Dashboard", "Projects", "Team"];
 
@@ -37,6 +39,8 @@ const NavLink = ({ children }: { children: ReactNode }) => (
 
 export default function withAction() {
   const { isOpen, onOpen, onClose } = useDisclosure();
+  const { data, error } = useSWR("/base/user/me", fetcher);
+  console.log(data);
 
   return (
     <>
