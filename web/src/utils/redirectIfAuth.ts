@@ -7,7 +7,11 @@ const redirectIfAuth = () => {
   const { data, error } = useSWR("/base/user/me", fetcher);
 
   if (data && data.user) {
-    router.replace("/");
+    if (typeof router.query.next == "string" && router.query.next) {
+      router.push(router.query.next);
+    } else {
+      router.replace("/");
+    }
   }
 };
 

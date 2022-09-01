@@ -8,7 +8,7 @@ const redirectIfNotAuth = () => {
   const { data, error } = useSWR("/base/user/me", fetcher);
 
   if (data && !data.user) {
-    router.replace(`/base/auth/login${urlNextify(router.asPath)}`);
+    router.replace(`/auth/login${urlNextify(router.asPath)}`);
   }
 };
 
