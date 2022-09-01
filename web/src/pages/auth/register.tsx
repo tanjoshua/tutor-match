@@ -20,6 +20,7 @@ import { NextPageWithLayout } from "../_app";
 import { useRouter } from "next/router";
 import { loginUser, registerUser } from "../../api/auth";
 import redirectIfAuth from "../../utils/redirectIfAuth";
+import urlNextify from "../../utils/urlNextify";
 
 interface Props {}
 
@@ -107,11 +108,7 @@ const Register: NextPageWithLayout<Props> = ({}) => {
                     align={"start"}
                     justify={"space-between"}
                   >
-                    <Link
-                      href={`/auth/login${
-                        router.query.next ? `?next=${router.query.next}` : ""
-                      }`}
-                    >
+                    <Link href={`/auth/login${urlNextify(router.query.next)}`}>
                       <Button variant={"link"}>Already have an account?</Button>
                     </Link>
                   </Stack>

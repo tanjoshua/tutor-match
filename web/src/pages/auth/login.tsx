@@ -14,18 +14,21 @@ import {
   Button,
   Flex,
   FormErrorMessage,
+  useToast,
 } from "@chakra-ui/react";
 import LayoutWithNav from "../../components/base/LayoutWithNav";
 import { NextPageWithLayout } from "../_app";
 import { useRouter } from "next/router";
 import { loginUser } from "../../api/auth";
 import redirectIfAuth from "../../utils/redirectIfAuth";
+import urlNextify from "../../utils/urlNextify";
 
 interface Props {}
 
 const Login: NextPageWithLayout<Props> = ({}) => {
   redirectIfAuth();
   const router = useRouter();
+  const toast = useToast();
   const {
     register,
     handleSubmit,
@@ -41,6 +44,7 @@ const Login: NextPageWithLayout<Props> = ({}) => {
       } else {
         router.push("/");
       }
+      toast({ title: "Logged in", status: "success" });
     } catch (error) {
       console.log(error);
     }
@@ -92,7 +96,9 @@ const Login: NextPageWithLayout<Props> = ({}) => {
                     align={"start"}
                     justify={"space-between"}
                   >
-                    <Link href={`/auth/register?next=${router.query.next}`}>
+                    <Link
+                      href={`/auth/register${urlNextify(router.query.next)}`}
+                    >
                       <Button variant={"link"}>Create account</Button>
                     </Link>
                     <Link color={"blue.400"} href="/forgot-password">
