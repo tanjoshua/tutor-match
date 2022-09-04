@@ -2,6 +2,7 @@ import { Router } from "express";
 import auth from "../../middleware/auth";
 import {
   createSchedule,
+  deleteSchedule,
   getAvailableSlots,
   getOwnerSchedule,
   replaceSchedule,
@@ -19,5 +20,7 @@ router.put("/", auth, replaceSchedule);
 
 // get available slots
 router.get("/available", getAvailableSlots);
+
+router.delete("/", auth, deleteSchedule);
 
 export default router;

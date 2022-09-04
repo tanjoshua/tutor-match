@@ -24,9 +24,9 @@ import { logoutUser } from "../../api/auth";
 import { useRouter } from "next/router";
 import urlNextify from "../../utils/urlNextify";
 
-const Links = [];
+const Links = [{ label: "Scheduling", link: "/scheduling" }];
 
-const NavLink = ({ children }: { children: ReactNode }) => (
+const NavLink = ({ children, link }: { children: ReactNode; link: string }) => (
   <Link
     px={2}
     py={1}
@@ -35,7 +35,7 @@ const NavLink = ({ children }: { children: ReactNode }) => (
       textDecoration: "none",
       bg: useColorModeValue("gray.200", "gray.700"),
     }}
-    href={"#"}
+    href={link}
   >
     {children}
   </Link>
@@ -107,7 +107,7 @@ export default function withAction() {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const router = useRouter();
   const { data, error } = useSWR("/base/user/me", fetcher);
-  const isLoading = !data;
+  const isLoading = !data && !error;
   const isAuthenticated = !!data?.user;
 
   return (
@@ -130,8 +130,10 @@ export default function withAction() {
               spacing={4}
               display={{ base: "none", md: "flex" }}
             >
-              {Links.map((link) => (
-                <NavLink key={link}>{link}</NavLink>
+              {Links.map(({ link, label }) => (
+                <NavLink key={link} link={link}>
+                  {label}
+                </NavLink>
               ))}
             </HStack>
           </HStack>
@@ -144,8 +146,10 @@ export default function withAction() {
         {isOpen ? (
           <Box pb={4} display={{ md: "none" }}>
             <Stack as={"nav"} spacing={4}>
-              {Links.map((link) => (
-                <NavLink key={link}>{link}</NavLink>
+              {Links.map(({ link, label }) => (
+                <NavLink key={link} link={link}>
+                  {label}
+                </NavLink>
               ))}
             </Stack>
           </Box>

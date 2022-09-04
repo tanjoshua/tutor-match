@@ -32,13 +32,13 @@ export const getOwnerSchedule = async (req: Request, res: Response) => {
         zone: schedule.timezone,
       });
       timeslots.push({
-        startTime: startDateTime.toFormat("hh:mma"),
-        endTime: endDateTime.toFormat("hh:mma"),
+        startTime: startDateTime.toFormat("HH:mm"),
+        endTime: endDateTime.toFormat("HH:mm"),
       });
     }
     scheduleOverrides.push({ day: scheduleOverride.day, timeslots });
   }
-  res.json({ weeklySchedule, scheduleOverrides });
+  res.json({ weeklySchedule, scheduleOverrides, timezone: schedule.timezone });
 };
 
 export const createSchedule = async (req: Request, res: Response) => {
@@ -77,13 +77,13 @@ export const createSchedule = async (req: Request, res: Response) => {
         const startDateTimeString = `${override.day} ${timeslot.startTime}`;
         const startDateTime = DateTime.fromFormat(
           startDateTimeString,
-          "MM/dd/yy hh:mma",
+          "MM/dd/yy HH:mm",
           { zone: timezone }
         );
         const endDateTimeString = `${override.day} ${timeslot.endTime}`;
         const endDateTime = DateTime.fromFormat(
           endDateTimeString,
-          "MM/dd/yy hh:mma",
+          "MM/dd/yy HH:mm",
           { zone: timezone }
         );
 
@@ -100,7 +100,7 @@ export const createSchedule = async (req: Request, res: Response) => {
   DI.em.persist(schedule);
   await DI.em.flush();
 
-  res.status(201).json(schedule);
+  res.status(201).json();
 };
 
 export const replaceSchedule = async (req: Request, res: Response) => {
@@ -145,13 +145,13 @@ export const replaceSchedule = async (req: Request, res: Response) => {
       const startDateTimeString = `${override.day} ${timeslot.startTime}`;
       const startDateTime = DateTime.fromFormat(
         startDateTimeString,
-        "MM/dd/yy hh:mma",
+        "MM/dd/yy HH:mm",
         { zone: timezone }
       );
       const endDateTimeString = `${override.day} ${timeslot.endTime}`;
       const endDateTime = DateTime.fromFormat(
         endDateTimeString,
-        "MM/dd/yy hh:mma",
+        "MM/dd/yy HH:mm",
         { zone: timezone }
       );
 
