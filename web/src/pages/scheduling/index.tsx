@@ -79,7 +79,6 @@ const Schedule: NextPageWithLayout<Props> = ({}) => {
   const saveChanges = async () => {
     const newData = { timezone, weeklySchedule, scheduleOverrides };
     try {
-      console.log(weeklySchedule);
       await replaceSchedule(newData);
       mutate();
       toast({ title: "Updated schedule", status: "success" });

@@ -101,7 +101,9 @@ const WeeklyListItem = ({
             </Button>
           </Fragment>
         ) : (
-          <Box>Unavailable</Box>
+          <Button leftIcon={<AddIcon />} onClick={createNewTimeslot}>
+            Add Timeslot
+          </Button>
         )}
       </Grid>
     </Box>
