@@ -123,7 +123,7 @@ const Schedule: NextPageWithLayout<Props> = ({}) => {
                 isDisabled={!hasChanged}
                 onClick={saveChanges}
               >
-                Save Changes
+                Save changes
               </Button>
             </Flex>
             <Heading size="md">Weekly schedule</Heading>
@@ -142,6 +142,7 @@ const Schedule: NextPageWithLayout<Props> = ({}) => {
               ))}
             </Stack>
             <Heading size="md">Overrides</Heading>
+            <Button leftIcon={<AddIcon />}>Add date override</Button>
             {data.scheduleOverrides.map((override) => (
               <OverrideListItem
                 scheduleOverride={override}

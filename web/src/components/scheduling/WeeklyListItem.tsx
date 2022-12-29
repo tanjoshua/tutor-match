@@ -97,12 +97,12 @@ const WeeklyListItem = ({
           <Fragment>
             <Box />
             <Button leftIcon={<AddIcon />} onClick={createNewTimeslot}>
-              Add Timeslot
+              Add timeslot
             </Button>
           </Fragment>
         ) : (
           <Button leftIcon={<AddIcon />} onClick={createNewTimeslot}>
-            Add Timeslot
+            Add timeslot
           </Button>
         )}
       </Grid>
