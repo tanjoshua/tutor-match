@@ -18,13 +18,14 @@ import {
   SESSION_SECRET,
   COOKIE_NAME,
 } from "./utils/config";
-import { User, PasswordReset } from "./base/entities";
-import { Listing } from "./listing/entities";
-import baseRoutes from "./base/routes";
-import listingRoutes from "./listing/routes";
-import schedulingRoutes from "./scheduling/routes";
+
+// ERRORS
 import HttpError from "./errors/HttpError";
 import FieldError from "./errors/FieldError";
+
+// ENTITIES
+import { User, PasswordReset } from "./base/entities";
+import { Listing } from "./listing/entities";
 import {
   Schedule,
   ScheduleOverride,
@@ -32,6 +33,13 @@ import {
   WeeklySchedule,
   WeeklyTimeslot,
 } from "./scheduling/entities";
+import { Invoice, InvoiceEntry } from "./invoicing/entities";
+
+// ROUTES
+import baseRoutes from "./base/routes";
+import listingRoutes from "./listing/routes";
+import schedulingRoutes from "./scheduling/routes";
+import invoicingRoutes from "./invoicing/routes";
 
 const app = express();
 const MongoDBStore = connectMongo(session);
@@ -45,7 +53,8 @@ export const DI = {} as {
   userRepository: EntityRepository<User>;
   listingRepository: EntityRepository<Listing>;
   passwordResetRepository: EntityRepository<PasswordReset>;
-  scheduleRespository: EntityRepository<Schedule>;
+  scheduleRepository: EntityRepository<Schedule>;
+  invoiceRepository: EntityRepository<Invoice>;
 };
 
 const main = async () => {
@@ -60,6 +69,8 @@ const main = async () => {
       WeeklyTimeslot,
       ScheduleOverride,
       TimeslotOverride,
+      Invoice,
+      InvoiceEntry,
     ],
     clientUrl: MDB_KEY,
     type: "mongo",
@@ -70,15 +81,18 @@ const main = async () => {
   DI.userRepository = DI.orm.em.getRepository(User);
   DI.listingRepository = DI.orm.em.getRepository(Listing);
   DI.passwordResetRepository = DI.orm.em.getRepository(PasswordReset);
-  DI.scheduleRespository = DI.orm.em.getRepository(Schedule);
+  DI.scheduleRepository = DI.orm.em.getRepository(Schedule);
+  DI.invoiceRepository = DI.orm.em.getRepository(Invoice);
 
   // serve frontend
   app.use(express.static("build/client"));
+
   // body parser for json
   app.use(express.json());
   // cors
   app.use(cors({ origin: "http://localhost:3000", credentials: true }));
 
+  // session
   app.use(
     session({
       name: COOKIE_NAME,
@@ -106,6 +120,7 @@ const main = async () => {
   app.use("/api/base", baseRoutes);
   app.use("/api/listing", listingRoutes);
   app.use("/api/scheduling", schedulingRoutes);
+  app.use("/api/invoicing", invoicingRoutes);
 
   // 404 route not found
   app.use((_req, res, _next) => {
