@@ -26,14 +26,8 @@ import FieldError from "./errors/FieldError";
 // ENTITIES
 import { User, PasswordReset } from "./base/entities";
 import { Listing } from "./listing/entities";
-import {
-  Schedule,
-  ScheduleOverride,
-  TimeslotOverride,
-  WeeklySchedule,
-  WeeklyTimeslot,
-} from "./scheduling/entities";
-import { Invoice, InvoiceEntry } from "./invoicing/entities";
+import { Schedule } from "./scheduling/entities";
+import { Invoice } from "./invoicing/entities";
 
 // ROUTES
 import baseRoutes from "./base/routes";
@@ -60,18 +54,8 @@ export const DI = {} as {
 const main = async () => {
   // setup ORM
   DI.orm = await MikroORM.init({
-    entities: [
-      User,
-      Listing,
-      PasswordReset,
-      Schedule,
-      WeeklySchedule,
-      WeeklyTimeslot,
-      ScheduleOverride,
-      TimeslotOverride,
-      Invoice,
-      InvoiceEntry,
-    ],
+    entities: ["./**/entities/**/*.js"],
+    entitiesTs: ["./**/entities/**/*.ts"],
     clientUrl: MDB_KEY,
     type: "mongo",
     debug: !__prod__,

@@ -4,6 +4,8 @@ import { wrap } from "@mikro-orm/core";
 import { DI } from "../..";
 import HttpError from "../../errors/HttpError";
 import { Invoice, InvoiceEntry } from "../entities";
+import { InvoicePayment, PaymentMethod } from "../entities/Payment";
+import { generatePaynowQR } from "../../utils/paynowQrService";
 
 require("express-async-errors");
 export const getInvoices = async (req: Request, res: Response) => {
@@ -34,10 +36,22 @@ export const getInvoices = async (req: Request, res: Response) => {
 };
 
 export const getInvoice = async (req: Request, res: Response) => {
-  const { invoiceId } = req.params;
-  const invoice = await DI.em.findOne(Invoice, { id: invoiceId });
+  const { id } = req.params;
+  const invoice = await DI.em.findOne(Invoice, { id });
   if (!invoice) {
     throw new HttpError(404, "Invoice not found");
+  }
+
+  // compute qr code if necessary
+  if (invoice.payment && invoice.payment.method == PaymentMethod.PAYNOW) {
+    const qrCode = generatePaynowQR({
+      uen: invoice.payment.customPaynowRecipient?.uen!,
+      phoneNumber: invoice.payment.customPaynowRecipient?.singaporePhoneNumber!,
+      total: invoice.total,
+      editable: false,
+      reference: invoice.invoiceNumber.toString(),
+    });
+    invoice.payment.qrCode = qrCode;
   }
 
   res.json({ invoice });
@@ -49,7 +63,9 @@ export const createInvoice = async (req: Request, res: Response) => {
 
   const invoice = new Invoice();
   invoice.owner = owner;
-  //TODO: ADD CLIENT
+  invoice.invoiceNumber = owner.nextInvoiceNumber;
+  owner.nextInvoiceNumber += 1; // should I handle race condition?
+
   invoice.title = req.body.title;
   invoice.state = req.body.state;
   invoice.hasGST = !!req.body.hasGST;
@@ -64,6 +80,21 @@ export const createInvoice = async (req: Request, res: Response) => {
       invoiceEntry.unitPrice = entry.unitPrice;
       invoice.entries.push(invoiceEntry);
     }
+  }
+
+  // payment fields
+  if (req.body.payment) {
+    const invoicePayment = new InvoicePayment();
+    invoicePayment.total = invoice.total;
+    invoicePayment.reference = String(invoice.invoiceNumber);
+    invoicePayment.method = req.body.payment.method;
+    if (req.body.payment.method == PaymentMethod.INSTRUCTION) {
+      invoicePayment.instructions = req.body.payment;
+    } else if (req.body.payment.method == PaymentMethod.PAYNOW) {
+      invoicePayment.customPaynowRecipient =
+        req.body.payment.customPaynowRecipient;
+    }
+    invoice.payment = invoicePayment;
   }
 
   DI.em.persist(invoice);
@@ -96,6 +127,23 @@ export const replaceInvoice = async (req: Request, res: Response) => {
     newInvoiceEntries.push(invoiceEntry);
   }
   invoice.entries = newInvoiceEntries;
+
+  // payment fields
+  // just recompute everything
+  if (req.body.payment) {
+    const invoicePayment = new InvoicePayment();
+    invoicePayment.total = invoice.total;
+    invoicePayment.reference = String(invoice.invoiceNumber);
+    invoicePayment.method = req.body.payment.method;
+    if (req.body.payment.method == PaymentMethod.INSTRUCTION) {
+      invoicePayment.customPaynowRecipient = undefined; // nullify potential previous values
+      invoicePayment.instructions = req.body.payment;
+    } else if (req.body.payment.method == PaymentMethod.PAYNOW) {
+      invoicePayment.customPaynowRecipient =
+        req.body.payment.customPaynowRecipient;
+    }
+    invoice.payment = invoicePayment;
+  }
 
   // save
   await DI.em.flush();

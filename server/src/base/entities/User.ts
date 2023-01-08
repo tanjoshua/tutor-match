@@ -18,4 +18,8 @@ export class User extends BaseEntity {
 
   @OneToMany(() => Listing, (listing) => listing.owner)
   listings = new Collection<Listing>(this);
+
+  // invoicing fields
+  @Property()
+  nextInvoiceNumber: number = 0;
 }
