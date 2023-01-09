@@ -13,11 +13,23 @@ export const getInvoices = async (req: Request, res: Response) => {
   const page = req.query.page || 1;
   const limit = req.query.limit || 5;
 
-  // process search queries
+  // process filter queries
   const searchQuery: any[] = [];
   if (req.query.state) {
     searchQuery.push({ state: req.query.state });
   }
+
+  // process search query
+  if (req.query.search) {
+    searchQuery.push({
+      $or: [
+        { title: { $re: req.query.search, $options: "i" } },
+        { comments: { $re: req.query.search } },
+      ],
+    });
+  }
+
+  // consolidate filters
   let filter = {};
   if (searchQuery.length !== 0) {
     filter = { $and: searchQuery };
