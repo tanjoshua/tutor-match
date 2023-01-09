@@ -34,6 +34,7 @@ import baseRoutes from "./base/routes";
 import listingRoutes from "./listing/routes";
 import schedulingRoutes from "./scheduling/routes";
 import invoicingRoutes from "./invoicing/routes";
+import { connectToDatabase } from "./services/database.service";
 
 const app = express();
 const MongoDBStore = connectMongo(session);
@@ -67,6 +68,9 @@ const main = async () => {
   DI.passwordResetRepository = DI.orm.em.getRepository(PasswordReset);
   DI.scheduleRepository = DI.orm.em.getRepository(Schedule);
   DI.invoiceRepository = DI.orm.em.getRepository(Invoice);
+
+  // connect native mongodb driver
+  await connectToDatabase();
 
   // serve frontend
   app.use(express.static("build/client"));
