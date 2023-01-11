@@ -15,11 +15,11 @@ export enum PaymentMethod {
 export class PaynowRecipient {
   // can only have either uen or phone number
 
-  constructor(public uen: string, public singaporePhoneNumber: number) {}
+  constructor(public uen: string, public singaporePhoneNumber: string) {}
 }
 
 export class InvoicePayment {
-  public qrCode: string;
+  public qrCode?: string;
 
   constructor(
     public method: PaymentMethod,
@@ -39,18 +39,16 @@ export class InvoiceEntry {
 }
 
 export default class Invoice {
-  constructor(
-    public invoiceNumber: number,
-    public title: string,
-    public owner: any,
-    public client: any,
-    public state: InvoiceState,
-    public entries: InvoiceEntry[],
-    public hasGST: boolean,
-    public comments: string,
-    public payment: InvoicePayment,
-    public id?: ObjectId
-  ) {}
+  public _id?: ObjectId;
+  public invoiceNumber: number;
+  public title: string;
+  public owner: any;
+  public client: any;
+  public state: InvoiceState;
+  public entries: InvoiceEntry[];
+  public hasGST: boolean;
+  public comments: string;
+  public payment?: InvoicePayment;
 
   get gstAmount() {
     let amount = 0;
@@ -75,5 +73,22 @@ export default class Invoice {
     total += this.gstAmount;
 
     return total;
+  }
+
+  toJSON() {
+    return {
+      id: this._id,
+      invoiceNumber: this.invoiceNumber,
+      title: this.title,
+      owner: this.owner,
+      client: this.client,
+      state: this.state,
+      entries: this.entries,
+      hasGST: this.hasGST,
+      comments: this.comments,
+      payment: this.payment,
+      gstAmount: this.gstAmount,
+      total: this.total,
+    };
   }
 }
