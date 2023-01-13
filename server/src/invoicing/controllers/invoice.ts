@@ -45,7 +45,13 @@ export const getInvoices = async (req: Request, res: Response) => {
           from: "user",
           localField: "owner",
           foreignField: "_id",
-          as: "owner",
+          as: "ownerDetails",
+        },
+      },
+      {
+        $unwind: {
+          // flattens ownerDetails array into 1
+          path: "$ownerDetails",
         },
       },
     ])
@@ -58,8 +64,7 @@ export const getInvoices = async (req: Request, res: Response) => {
   // shouldn't run into scalability issues due to pagination
   const invoices = [];
   for (const doc of invoiceDocuments) {
-    const invoice = new Invoice();
-    Object.assign(invoice, doc);
+    const invoice = Invoice.assign(doc as Invoice);
     invoices.push(invoice);
   }
 
@@ -76,7 +81,13 @@ export const getInvoice = async (req: Request, res: Response) => {
           from: "user",
           localField: "owner",
           foreignField: "_id",
-          as: "owner",
+          as: "ownerDetails",
+        },
+      },
+      {
+        $unwind: {
+          // flattens ownerDetails array into 1
+          path: "$ownerDetails",
         },
       },
     ])
@@ -84,8 +95,8 @@ export const getInvoice = async (req: Request, res: Response) => {
   if (!invoiceDocument) {
     throw new HttpError(404, "Invoice not found");
   }
-  const invoice = new Invoice();
-  Object.assign(invoice, invoiceDocument);
+  console.log(invoiceDocument);
+  const invoice = Invoice.assign(invoiceDocument as Invoice);
 
   // compute qr code if necessary
   if (invoice.payment && invoice.payment.method == PaymentMethod.PAYNOW) {

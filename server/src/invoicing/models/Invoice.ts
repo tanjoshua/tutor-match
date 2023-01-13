@@ -1,4 +1,5 @@
 import { ObjectId } from "mongodb";
+import User from "../../base/models/User";
 import { GST_RATE } from "../../utils/constants";
 
 export enum InvoiceState {
@@ -50,6 +51,9 @@ export default class Invoice {
   public comments: string;
   public payment?: InvoicePayment;
 
+  // populated fields
+  public ownerDetails: User;
+
   get gstAmount() {
     let amount = 0;
     if (!this.hasGST) {
@@ -75,6 +79,18 @@ export default class Invoice {
     return total;
   }
 
+  public static assign(obj: Invoice) {
+    const invoice = new Invoice();
+    Object.assign(invoice, obj);
+
+    if (obj.ownerDetails) {
+      console.log(obj.ownerDetails);
+      const ownerDetails = User.assign(obj.ownerDetails);
+      invoice.ownerDetails = ownerDetails;
+    }
+    return invoice;
+  }
+
   toJSON() {
     // populate owner
 
@@ -82,7 +98,7 @@ export default class Invoice {
       id: this._id,
       invoiceNumber: this.invoiceNumber,
       title: this.title,
-      owner: this.owner,
+      ownerDetails: this.ownerDetails,
       client: this.client,
       state: this.state,
       entries: this.entries,
