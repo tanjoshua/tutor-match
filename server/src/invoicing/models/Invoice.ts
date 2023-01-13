@@ -42,7 +42,7 @@ export default class Invoice {
   public _id?: ObjectId;
   public invoiceNumber: number;
   public title: string;
-  public owner: any;
+  public owner: ObjectId;
   public client: any;
   public state: InvoiceState;
   public entries: InvoiceEntry[];
@@ -76,6 +76,8 @@ export default class Invoice {
   }
 
   toJSON() {
+    // populate owner
+
     return {
       id: this._id,
       invoiceNumber: this.invoiceNumber,

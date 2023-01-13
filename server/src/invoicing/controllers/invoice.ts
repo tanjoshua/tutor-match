@@ -41,7 +41,17 @@ export const getInvoices = async (req: Request, res: Response) => {
 
   const totalCount = await collections.invoices!.countDocuments(filter);
   const invoiceDocuments = await collections
-    .invoices!.find(filter)
+    .invoices!.aggregate([
+      { $match: filter },
+      {
+        $lookup: {
+          from: "user",
+          localField: "owner",
+          foreignField: "_id",
+          as: "owner",
+        },
+      },
+    ])
     .sort({ createdAt: -1 })
     .skip((+page - 1) * +limit)
     .limit(+limit)
@@ -61,9 +71,19 @@ export const getInvoices = async (req: Request, res: Response) => {
 
 export const getInvoice = async (req: Request, res: Response) => {
   const { id } = req.params;
-  const invoiceDocument = await collections.invoices!.findOne({
-    _id: new ObjectId(id),
-  });
+  const invoiceDocument = await collections.invoices
+    ?.aggregate([
+      { $match: { _id: new ObjectId(id) } },
+      {
+        $lookup: {
+          from: "user",
+          localField: "owner",
+          foreignField: "_id",
+          as: "owner",
+        },
+      },
+    ])
+    .next();
   if (!invoiceDocument) {
     throw new HttpError(404, "Invoice not found");
   }
@@ -87,7 +107,7 @@ export const getInvoice = async (req: Request, res: Response) => {
 
 export const createInvoice = async (req: Request, res: Response) => {
   // create schedule
-  const owner = req.user!;
+  const owner = req.sessionUser!;
 
   // process invoice entries
   const invoiceEntries = [];
@@ -107,7 +127,7 @@ export const createInvoice = async (req: Request, res: Response) => {
   invoice.invoiceNumber = owner.nextInvoiceNumber;
   owner.nextInvoiceNumber += 1; // increment invoice number count should I handle race condition?
   invoice.title = req.body.title;
-  invoice.owner = owner;
+  invoice.owner = owner._id;
   invoice.state = req.body.state;
   invoice.entries = invoiceEntries;
   invoice.hasGST = !!req.body.hasGST;
