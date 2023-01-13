@@ -1,4 +1,11 @@
-import { SearchIcon } from "@chakra-ui/icons";
+import {
+  AddIcon,
+  AttachmentIcon,
+  CheckIcon,
+  EditIcon,
+  SearchIcon,
+  TimeIcon,
+} from "@chakra-ui/icons";
 import {
   Box,
   Button,
@@ -8,6 +15,7 @@ import {
   InputLeftElement,
   Stack,
   Text,
+  Link,
 } from "@chakra-ui/react";
 import { ReactElement, useEffect, useState } from "react";
 import LayoutWithNav from "../../components/base/LayoutWithNav";
@@ -17,12 +25,13 @@ import _, { debounce } from "lodash";
 
 import { fetcher } from "../../api/fetcher";
 import InvoiceListItem from "../../components/invoicing/InvoiceListItem";
+import useSWR from "swr";
 
 type Props = {};
 const invoiceStateOptions = [
   { label: "Draft", value: "Draft" },
   { label: "Pending Payment", value: "Pending Payment" },
-  { label: "Payment Received", value: "Payment Received" },
+  { label: "Completed", value: "Completed" },
 ];
 const PAGE_SIZE = 4;
 
@@ -31,6 +40,11 @@ const Invoicing = (props: Props) => {
   const [invoiceSearchQuery, setInvoiceSearchQuery] = useState("");
   const [debouncedInvoiceSearchQuery, setDebouncedInvoiceSearchQuery] =
     useState("");
+  const { data: stateCounts, error: stateCountsError } = useSWR(
+    "/invoicing/stateCounts",
+    fetcher
+  );
+  console.log(stateCounts);
   const { data, error, size, setSize, isValidating } = useSWRInfinite(
     (pageIndex, previousPageData) => {
       if (invoiceSearchQuery != debouncedInvoiceSearchQuery) {
@@ -124,7 +138,35 @@ const Invoicing = (props: Props) => {
       </Box>
       <Box flex={2} marginLeft={5}>
         <Stack>
-          <Button />
+          <Button leftIcon={<AddIcon />}>Create Invoice</Button>
+          <Link
+            onClick={() => setInvoiceStateFilter(invoiceStateOptions[0])}
+            fontSize={"2xl"}
+          >
+            <EditIcon /> {stateCounts ? stateCounts.draftCount : "-"} Draft
+            Invoices
+          </Link>
+          <Link
+            onClick={() => setInvoiceStateFilter(invoiceStateOptions[1])}
+            fontSize={"2xl"}
+          >
+            <TimeIcon /> {stateCounts ? stateCounts.pendingCount : "-"} Pending
+            Invoices
+          </Link>
+          <Link
+            onClick={() => setInvoiceStateFilter(invoiceStateOptions[2])}
+            fontSize={"2xl"}
+          >
+            <CheckIcon /> {stateCounts ? stateCounts.completedCount : "-"}{" "}
+            Completed Invoices
+          </Link>
+          <Link
+            onClick={() => setInvoiceStateFilter(invoiceStateOptions[2])}
+            fontSize={"2xl"}
+          >
+            <AttachmentIcon /> {stateCounts ? stateCounts.totalCount : "-"}{" "}
+            Total Invoices
+          </Link>
         </Stack>
       </Box>
     </Flex>

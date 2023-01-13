@@ -5,7 +5,7 @@ import { GST_RATE } from "../../utils/constants";
 export enum InvoiceState {
   DRAFT = "Draft",
   PENDING_PAYMENT = "Pending Payment",
-  RECEIVED = "Payment Received",
+  COMPLETED = "Completed",
 }
 
 export enum PaymentMethod {
@@ -84,7 +84,6 @@ export default class Invoice {
     Object.assign(invoice, obj);
 
     if (obj.ownerDetails) {
-      console.log(obj.ownerDetails);
       const ownerDetails = User.assign(obj.ownerDetails);
       invoice.ownerDetails = ownerDetails;
     }

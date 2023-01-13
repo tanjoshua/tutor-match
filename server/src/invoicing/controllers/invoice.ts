@@ -4,6 +4,7 @@ import HttpError from "../../errors/HttpError";
 import Invoice, {
   InvoiceEntry,
   InvoicePayment,
+  InvoiceState,
   PaymentMethod,
 } from "../models/Invoice";
 import { generatePaynowQR } from "../../utils/paynowQrService";
@@ -114,7 +115,6 @@ export const getInvoice = async (req: Request, res: Response) => {
 };
 
 export const createInvoice = async (req: Request, res: Response) => {
-  // create schedule
   const owner = req.sessionUser!;
 
   // process invoice entries
@@ -240,4 +240,23 @@ export const deleteInvoice = async (req: Request, res: Response) => {
   }
 
   res.status(202).json();
+};
+
+export const getInvoiceStateCounts = async (req: Request, res: Response) => {
+  const owner = req.sessionUser!;
+  const draftCount = await collections.invoices!.countDocuments({
+    owner: new ObjectId(owner._id),
+    state: InvoiceState.DRAFT,
+  });
+  const pendingCount = await collections.invoices!.countDocuments({
+    owner: new ObjectId(owner._id),
+    state: InvoiceState.PENDING_PAYMENT,
+  });
+  const completedCount = await collections.invoices!.countDocuments({
+    owner: owner._id,
+    state: InvoiceState.COMPLETED,
+  });
+  const totalCount = await collections.invoices!.countDocuments();
+
+  res.json({ draftCount, pendingCount, completedCount, totalCount });
 };

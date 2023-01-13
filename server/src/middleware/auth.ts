@@ -4,6 +4,7 @@ import { DI } from "../index";
 import HttpError from "../errors/HttpError";
 import { collections } from "../services/database.service";
 import { ObjectId } from "mongodb";
+import User from "../base/models/User";
 
 export default async (req: Request, _res: Response, next: NextFunction) => {
   if (!req.session.userId) {
@@ -24,7 +25,7 @@ export default async (req: Request, _res: Response, next: NextFunction) => {
     throw new HttpError(401, "Unauthorized");
   }
 
-  req.sessionUser = sessionUser;
+  req.sessionUser = User.assign(sessionUser);
 
   next();
 };
