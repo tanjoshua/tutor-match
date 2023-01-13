@@ -12,12 +12,13 @@ import { ObjectId } from "mongodb";
 
 require("express-async-errors");
 export const getInvoices = async (req: Request, res: Response) => {
+  const user = req.sessionUser!;
   // retrieve options
   const page = req.query.page || 1;
   const limit = req.query.limit || 5;
 
   // process filter queries
-  const searchQuery: any[] = [];
+  const searchQuery: any[] = [{ owner: user._id }];
   if (req.query.state) {
     searchQuery.push({ state: req.query.state });
   }
@@ -33,11 +34,7 @@ export const getInvoices = async (req: Request, res: Response) => {
   }
 
   // consolidate filters
-  // TODO: filter on owner
-  let filter = {};
-  if (searchQuery.length !== 0) {
-    filter = { $and: searchQuery };
-  }
+  const filter = { $and: searchQuery };
 
   const totalCount = await collections.invoices!.countDocuments(filter);
   const invoiceDocuments = await collections

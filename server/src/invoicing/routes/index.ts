@@ -13,7 +13,7 @@ import handleValidatorErrors from "../../middleware/handleValidatorErrors";
 
 const router = Router();
 
-router.get("/", getInvoices);
+router.get("/", auth, getInvoices);
 
 router.get("/:id", getInvoice);
 
