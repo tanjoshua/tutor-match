@@ -26,20 +26,14 @@ import FieldError from "./errors/FieldError";
 // ENTITIES
 import { User, PasswordReset } from "./base/entities";
 import { Listing } from "./listing/entities";
-import {
-  Schedule,
-  ScheduleOverride,
-  TimeslotOverride,
-  WeeklySchedule,
-  WeeklyTimeslot,
-} from "./scheduling/entities";
-import { Invoice, InvoiceEntry } from "./invoicing/entities";
+import { Schedule } from "./scheduling/entities";
 
 // ROUTES
 import baseRoutes from "./base/routes";
 import listingRoutes from "./listing/routes";
 import schedulingRoutes from "./scheduling/routes";
 import invoicingRoutes from "./invoicing/routes";
+import { connectToDatabase } from "./services/database.service";
 
 const app = express();
 const MongoDBStore = connectMongo(session);
@@ -54,24 +48,13 @@ export const DI = {} as {
   listingRepository: EntityRepository<Listing>;
   passwordResetRepository: EntityRepository<PasswordReset>;
   scheduleRepository: EntityRepository<Schedule>;
-  invoiceRepository: EntityRepository<Invoice>;
 };
 
 const main = async () => {
   // setup ORM
   DI.orm = await MikroORM.init({
-    entities: [
-      User,
-      Listing,
-      PasswordReset,
-      Schedule,
-      WeeklySchedule,
-      WeeklyTimeslot,
-      ScheduleOverride,
-      TimeslotOverride,
-      Invoice,
-      InvoiceEntry,
-    ],
+    entities: ["./**/entities/**/*.js"],
+    entitiesTs: ["./**/entities/**/*.ts"],
     clientUrl: MDB_KEY,
     type: "mongo",
     debug: !__prod__,
@@ -82,7 +65,9 @@ const main = async () => {
   DI.listingRepository = DI.orm.em.getRepository(Listing);
   DI.passwordResetRepository = DI.orm.em.getRepository(PasswordReset);
   DI.scheduleRepository = DI.orm.em.getRepository(Schedule);
-  DI.invoiceRepository = DI.orm.em.getRepository(Invoice);
+
+  // connect native mongodb driver
+  await connectToDatabase();
 
   // serve frontend
   app.use(express.static("build/client"));
