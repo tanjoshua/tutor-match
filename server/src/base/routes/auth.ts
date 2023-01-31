@@ -1,7 +1,5 @@
 import { Router } from "express";
 import { body } from "express-validator";
-
-import { DI } from "../../index";
 import {
   login,
   register,
@@ -19,17 +17,7 @@ const router = Router();
 router.post(
   "/register",
   [
-    body("email")
-      .isEmail()
-      .withMessage("Enter a valid email")
-      .custom((value) => {
-        return DI.userRepository.findOne({ email: value }).then((user) => {
-          return user
-            ? Promise.reject("Email already in use")
-            : Promise.resolve();
-        });
-      })
-      .normalizeEmail(),
+    body("email").isEmail().withMessage("Enter a valid email").normalizeEmail(),
     body("password")
       .trim()
       .isLength({ min: 6 })
@@ -75,19 +63,7 @@ router.post(
 router.post(
   "/changeEmail",
   auth,
-  [
-    body("newEmail")
-      .notEmpty()
-      .isEmail()
-      .custom((value) => {
-        return DI.userRepository.findOne({ email: value }).then((user) => {
-          return user
-            ? Promise.reject("Email already in use")
-            : Promise.resolve();
-        });
-      }),
-    body("password").notEmpty(),
-  ],
+  [body("newEmail").notEmpty().isEmail(), body("password").notEmpty()],
   handleValidatorErrors,
   changeEmail
 );

@@ -13,7 +13,7 @@ import { ObjectId } from "mongodb";
 
 require("express-async-errors");
 export const getInvoices = async (req: Request, res: Response) => {
-  const user = req.sessionUser!;
+  const user = req.user!;
   // retrieve options
   const page = req.query.page || 1;
   const limit = req.query.limit || 5;
@@ -115,7 +115,8 @@ export const getInvoice = async (req: Request, res: Response) => {
 };
 
 export const createInvoice = async (req: Request, res: Response) => {
-  const owner = req.sessionUser!;
+  // create schedule
+  const owner = req.user!;
 
   // process invoice entries
   const invoiceEntries = [];
@@ -135,7 +136,7 @@ export const createInvoice = async (req: Request, res: Response) => {
   invoice.invoiceNumber = owner.nextInvoiceNumber;
   owner.nextInvoiceNumber += 1; // increment invoice number count should I handle race condition?
   invoice.title = req.body.title;
-  invoice.owner = owner._id;
+  invoice.owner = owner._id!;
   invoice.state = req.body.state;
   invoice.entries = invoiceEntries;
   invoice.hasGST = !!req.body.hasGST;
@@ -243,7 +244,7 @@ export const deleteInvoice = async (req: Request, res: Response) => {
 };
 
 export const getInvoiceStateCounts = async (req: Request, res: Response) => {
-  const owner = req.sessionUser!;
+  const owner = req.user!;
   const draftCount = await collections.invoices!.countDocuments({
     owner: new ObjectId(owner._id),
     state: InvoiceState.DRAFT,

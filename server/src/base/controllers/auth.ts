@@ -1,13 +1,12 @@
 import { Request, Response } from "express";
 import bcrypt from "bcrypt";
-import { wrap } from "@mikro-orm/core";
 import { v4 } from "uuid";
-
-import { User } from "../entities/User";
+import { collections } from "../../services/database.service";
+import User from "../models/User";
 import HttpError from "../../errors/HttpError";
-import { DI } from "../..";
 import { COOKIE_NAME } from "../../utils/config";
 import { sendEmail } from "../../utils/emailService";
+import { PasswordReset } from "../models/PasswordReset";
 
 require("express-async-errors");
 
@@ -18,20 +17,22 @@ export const register = async (req: Request, res: Response) => {
 
   // create user
   const user = new User();
-  wrap(user).assign({ name, email, password: hashedPassword });
-  await DI.userRepository.persistAndFlush(user);
+  user.name = name;
+  user.email = email;
+  user.password = hashedPassword;
+  await collections.users?.insertOne(user);
 
-  req.session.userId = user.id;
+  req.session.userId = user._id!;
 
   // save into db
-  res.status(201).json({ userId: user.id });
+  res.status(201).json({ userId: user._id });
 };
 
 export const login = async (req: Request, res: Response) => {
   const { email, password } = req.body;
 
   // verify user
-  const user = await DI.userRepository.findOne({ email });
+  const user = await collections.users?.findOne({ email });
 
   if (!user) {
     throw new HttpError(401, "Invalid credentials");
@@ -43,8 +44,8 @@ export const login = async (req: Request, res: Response) => {
   }
 
   // verified
-  req.session.userId = user.id;
-  res.json({ userId: user.id });
+  req.session.userId = user._id;
+  res.json({ userId: user._id });
 };
 
 export const logout = async (req: Request, res: Response) => {
@@ -61,18 +62,17 @@ export const forgotPassword = async (req: Request, res: Response) => {
   const { email } = req.body;
 
   // find user
-  const user = await DI.userRepository.findOne({ email });
+  const user = await collections.users?.findOne({ email });
   if (!user) {
     throw new HttpError(404, "User not found");
   }
 
   // generate token
   const token = v4();
-  const pr = await DI.passwordResetRepository.create({
-    token,
-    userId: user.id,
-  });
-  await DI.passwordResetRepository.persistAndFlush(pr);
+  const pr = new PasswordReset();
+  pr.token = token;
+  pr.userId = user._id;
+  await collections.passwordReset?.insertOne(pr);
 
   // send email
   const html = `<a href="http://localhost:3000/reset-password/${token}">Reset Password</a>`;
@@ -84,24 +84,26 @@ export const resetPassword = async (req: Request, res: Response) => {
   const { token, password } = req.body;
 
   // retrieve user
-  const pr = await DI.passwordResetRepository.findOne(token);
+  const pr = await collections.passwordReset?.findOne({ token: token });
   if (!pr) {
     throw new HttpError(404, "Password reset has expired");
   }
 
   const userId = pr.userId;
-  const user = await DI.userRepository.findOne(userId);
+  const user = await collections.users?.findOne({ _id: userId });
   if (!user) {
     throw new HttpError(404, "User not found");
   }
 
   // store new password
   const hashedPassword = await bcrypt.hash(password, 12);
-  user.password = hashedPassword;
-  await DI.userRepository.flush();
+  await collections.users?.updateOne(
+    { id: user._id },
+    { password: hashedPassword }
+  );
 
   // delete password reset token
-  await DI.passwordResetRepository.removeAndFlush(pr);
+  await collections.passwordReset?.deleteOne({ id: pr._id });
 
   res.json({ message: "success" });
 };
@@ -116,8 +118,10 @@ export const changeEmail = async (req: Request, res: Response) => {
   }
 
   // replace email
-  req.user!.email = newEmail;
-  await DI.userRepository.flush();
+  await collections.users?.updateOne(
+    { _id: req.user!._id },
+    { email: newEmail }
+  );
 
   res.json({ message: "success" });
 };
@@ -133,8 +137,10 @@ export const changePassword = async (req: Request, res: Response) => {
 
   // change password
   const hashedPassword = await bcrypt.hash(newPassword, 12);
-  req.user!.password = hashedPassword;
-  await DI.userRepository.flush();
+  await collections.users?.updateOne(
+    { _id: req.user!._id },
+    { email: hashedPassword }
+  );
 
   res.json({ message: "success" });
 };

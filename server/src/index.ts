@@ -1,11 +1,4 @@
 import express, { Request, Response, NextFunction } from "express";
-import {
-  MikroORM,
-  EntityManager,
-  EntityRepository,
-  RequestContext,
-  ReflectMetadataProvider,
-} from "@mikro-orm/core";
 import cors from "cors";
 import session from "express-session";
 import connectMongo from "connect-mongodb-session";
@@ -23,15 +16,8 @@ import {
 import HttpError from "./errors/HttpError";
 import FieldError from "./errors/FieldError";
 
-// ENTITIES
-import { User, PasswordReset } from "./base/entities";
-import { Listing } from "./listing/entities";
-import { Schedule } from "./scheduling/entities";
-
 // ROUTES
 import baseRoutes from "./base/routes";
-import listingRoutes from "./listing/routes";
-import schedulingRoutes from "./scheduling/routes";
 import invoicingRoutes from "./invoicing/routes";
 import { connectToDatabase } from "./services/database.service";
 
@@ -41,31 +27,8 @@ const store = new MongoDBStore({
   uri: MDB_KEY,
   collection: "sessions",
 });
-export const DI = {} as {
-  orm: MikroORM;
-  em: EntityManager;
-  userRepository: EntityRepository<User>;
-  listingRepository: EntityRepository<Listing>;
-  passwordResetRepository: EntityRepository<PasswordReset>;
-  scheduleRepository: EntityRepository<Schedule>;
-};
 
 const main = async () => {
-  // setup ORM
-  DI.orm = await MikroORM.init({
-    entities: ["./**/entities/**/*.js"],
-    entitiesTs: ["./**/entities/**/*.ts"],
-    clientUrl: MDB_KEY,
-    type: "mongo",
-    debug: !__prod__,
-    metadataProvider: ReflectMetadataProvider,
-  });
-  DI.em = DI.orm.em;
-  DI.userRepository = DI.orm.em.getRepository(User);
-  DI.listingRepository = DI.orm.em.getRepository(Listing);
-  DI.passwordResetRepository = DI.orm.em.getRepository(PasswordReset);
-  DI.scheduleRepository = DI.orm.em.getRepository(Schedule);
-
   // connect native mongodb driver
   await connectToDatabase();
 
@@ -94,8 +57,6 @@ const main = async () => {
     })
   );
 
-  app.use((_req, _res, next) => RequestContext.create(DI.orm.em, next));
-
   // health check
   app.get("/health", (_req, res) => {
     res.send("ok");
@@ -103,8 +64,6 @@ const main = async () => {
 
   // ROUTES
   app.use("/api/base", baseRoutes);
-  app.use("/api/listing", listingRoutes);
-  app.use("/api/scheduling", schedulingRoutes);
   app.use("/api/invoicing", invoicingRoutes);
 
   // 404 route not found
