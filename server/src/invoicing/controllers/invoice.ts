@@ -107,7 +107,7 @@ export const getInvoice = async (req: Request, res: Response) => {
 
 export const createInvoice = async (req: Request, res: Response) => {
   // create schedule
-  const owner = req.sessionUser!;
+  const owner = req.user!;
 
   // process invoice entries
   const invoiceEntries = [];
@@ -127,7 +127,7 @@ export const createInvoice = async (req: Request, res: Response) => {
   invoice.invoiceNumber = owner.nextInvoiceNumber;
   owner.nextInvoiceNumber += 1; // increment invoice number count should I handle race condition?
   invoice.title = req.body.title;
-  invoice.owner = owner._id;
+  invoice.owner = owner._id!;
   invoice.state = req.body.state;
   invoice.entries = invoiceEntries;
   invoice.hasGST = !!req.body.hasGST;
