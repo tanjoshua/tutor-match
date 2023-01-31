@@ -25,7 +25,7 @@ const InvoiceListItem = (props: Props) => {
         </LinkOverlay>
 
         <Box>
-          <Text fontWeight={"bold"}>{props.invoiceNumber}</Text>
+          <Text fontWeight={"bold"}>#{props.invoiceNumber}</Text>
         </Box>
       </Flex>
       <Text>${props.total}</Text>

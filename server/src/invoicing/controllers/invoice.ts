@@ -4,6 +4,7 @@ import HttpError from "../../errors/HttpError";
 import Invoice, {
   InvoiceEntry,
   InvoicePayment,
+  InvoiceState,
   PaymentMethod,
 } from "../models/Invoice";
 import { generatePaynowQR } from "../../utils/paynowQrService";
@@ -12,12 +13,13 @@ import { ObjectId } from "mongodb";
 
 require("express-async-errors");
 export const getInvoices = async (req: Request, res: Response) => {
+  const user = req.user!;
   // retrieve options
   const page = req.query.page || 1;
   const limit = req.query.limit || 5;
 
   // process filter queries
-  const searchQuery: any[] = [];
+  const searchQuery: any[] = [{ owner: user._id }];
   if (req.query.state) {
     searchQuery.push({ state: req.query.state });
   }
@@ -33,11 +35,7 @@ export const getInvoices = async (req: Request, res: Response) => {
   }
 
   // consolidate filters
-  // TODO: filter on owner
-  let filter = {};
-  if (searchQuery.length !== 0) {
-    filter = { $and: searchQuery };
-  }
+  const filter = { $and: searchQuery };
 
   const totalCount = await collections.invoices!.countDocuments(filter);
   const invoiceDocuments = await collections
@@ -48,7 +46,13 @@ export const getInvoices = async (req: Request, res: Response) => {
           from: "user",
           localField: "owner",
           foreignField: "_id",
-          as: "owner",
+          as: "ownerDetails",
+        },
+      },
+      {
+        $unwind: {
+          // flattens ownerDetails array into 1
+          path: "$ownerDetails",
         },
       },
     ])
@@ -61,8 +65,7 @@ export const getInvoices = async (req: Request, res: Response) => {
   // shouldn't run into scalability issues due to pagination
   const invoices = [];
   for (const doc of invoiceDocuments) {
-    const invoice = new Invoice();
-    Object.assign(invoice, doc);
+    const invoice = Invoice.assign(doc as Invoice);
     invoices.push(invoice);
   }
 
@@ -79,7 +82,13 @@ export const getInvoice = async (req: Request, res: Response) => {
           from: "user",
           localField: "owner",
           foreignField: "_id",
-          as: "owner",
+          as: "ownerDetails",
+        },
+      },
+      {
+        $unwind: {
+          // flattens ownerDetails array into 1
+          path: "$ownerDetails",
         },
       },
     ])
@@ -87,8 +96,8 @@ export const getInvoice = async (req: Request, res: Response) => {
   if (!invoiceDocument) {
     throw new HttpError(404, "Invoice not found");
   }
-  const invoice = new Invoice();
-  Object.assign(invoice, invoiceDocument);
+  console.log(invoiceDocument);
+  const invoice = Invoice.assign(invoiceDocument as Invoice);
 
   // compute qr code if necessary
   if (invoice.payment && invoice.payment.method == PaymentMethod.PAYNOW) {
@@ -232,4 +241,23 @@ export const deleteInvoice = async (req: Request, res: Response) => {
   }
 
   res.status(202).json();
+};
+
+export const getInvoiceStateCounts = async (req: Request, res: Response) => {
+  const owner = req.user!;
+  const draftCount = await collections.invoices!.countDocuments({
+    owner: new ObjectId(owner._id),
+    state: InvoiceState.DRAFT,
+  });
+  const pendingCount = await collections.invoices!.countDocuments({
+    owner: new ObjectId(owner._id),
+    state: InvoiceState.PENDING_PAYMENT,
+  });
+  const completedCount = await collections.invoices!.countDocuments({
+    owner: owner._id,
+    state: InvoiceState.COMPLETED,
+  });
+  const totalCount = await collections.invoices!.countDocuments();
+
+  res.json({ draftCount, pendingCount, completedCount, totalCount });
 };

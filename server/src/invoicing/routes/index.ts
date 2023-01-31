@@ -7,15 +7,16 @@ import {
   deleteInvoice,
   replaceInvoice,
   updateState,
+  getInvoiceStateCounts,
 } from "../controllers/invoice";
 import auth from "../../middleware/auth";
 import handleValidatorErrors from "../../middleware/handleValidatorErrors";
 
 const router = Router();
 
-router.get("/", getInvoices);
-
+router.get("/stateCounts", auth, getInvoiceStateCounts);
 router.get("/:id", getInvoice);
+router.get("/", auth, getInvoices);
 
 router.post(
   "/",
