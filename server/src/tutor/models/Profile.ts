@@ -57,7 +57,7 @@ export default class TutorProfile {
   public title: string;
   public levels: Level[];
   public subjects: string[];
-  public type: string; // eg. full time, part time, etc
+  public type: TutorType; // eg. full time, part time, etc
   public qualifications: string; // for teaching experience and academic
   public description: string;
   public pricing: {

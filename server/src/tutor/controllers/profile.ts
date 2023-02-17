@@ -135,3 +135,12 @@ export const deleteProfile = async (req: Request, res: Response) => {
 
   res.status(202).json();
 };
+
+export const getUserTutorProfile = async (req: Request, res: Response) => {
+  const owner = req.user!;
+  const result = await collections.tutorProfiles!.findOne({
+    owner: new ObjectId(owner._id),
+  });
+
+  res.json({ profile: result });
+};
