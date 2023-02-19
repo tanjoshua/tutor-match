@@ -7,9 +7,11 @@ import { useFormik } from "formik";
 import { login } from "@/services/auth";
 import axios from "axios";
 import { useRouter } from "next/router";
+import { useQueryClient } from "react-query";
 
 const Login: NextPageWithLayout = () => {
   const router = useRouter();
+  const queryClient = useQueryClient();
   const formik = useFormik({
     initialValues: {
       email: "",
@@ -18,6 +20,7 @@ const Login: NextPageWithLayout = () => {
     onSubmit: async (values) => {
       try {
         await login(values);
+        queryClient.refetchQueries("me");
         router.push("/");
       } catch (error) {
         if (axios.isAxiosError(error)) {
