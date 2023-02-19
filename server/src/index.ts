@@ -19,6 +19,7 @@ import FieldError from "./errors/FieldError";
 // ROUTES
 import baseRoutes from "./base/routes";
 import invoicingRoutes from "./invoicing/routes";
+import tutorRoutes from "./tutor/routes";
 import { connectToDatabase } from "./services/database.service";
 
 const app = express();
@@ -65,6 +66,7 @@ const main = async () => {
   // ROUTES
   app.use("/api/base", baseRoutes);
   app.use("/api/invoicing", invoicingRoutes);
+  app.use("/api/tutor", tutorRoutes);
 
   // 404 route not found
   app.use((_req, res, _next) => {

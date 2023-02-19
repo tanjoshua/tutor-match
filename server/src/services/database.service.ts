@@ -3,6 +3,7 @@ import * as mongoDB from "mongodb";
 import { PasswordReset } from "../base/models/PasswordReset";
 import User from "../base/models/User";
 import Invoice from "../invoicing/models/Invoice";
+import TutorProfile from "../tutor/models/Profile";
 import { DB_CONN_STRING } from "../utils/config";
 
 // Global Variables
@@ -10,6 +11,7 @@ export const collections: {
   invoices?: mongoDB.Collection<Invoice>;
   users?: mongoDB.Collection<User>;
   passwordReset?: mongoDB.Collection<PasswordReset>;
+  tutorProfiles?: mongoDB.Collection<TutorProfile>;
 } = {};
 
 // Initialize Connection
@@ -23,6 +25,7 @@ export async function connectToDatabase() {
   collections.invoices = db.collection<Invoice>("invoices");
   collections.users = db.collection<User>("user");
   collections.passwordReset = db.collection<PasswordReset>("password-reset");
+  collections.tutorProfiles = db.collection<TutorProfile>("tutor-profiles");
 
   console.log(`Successfully connected to database: ${db.databaseName}.`);
 }
