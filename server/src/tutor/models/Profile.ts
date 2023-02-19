@@ -55,6 +55,7 @@ export default class TutorProfile {
 
   // listing fields
   public title: string;
+  public tutorName: string;
   public levels: Level[];
   public subjects: string[];
   public type: TutorType; // eg. full time, part time, etc
@@ -90,6 +91,7 @@ export default class TutorProfile {
       id: this._id,
       ownerDetails: this.ownerDetails,
 
+      tutorName: this.tutorName,
       title: this.title,
       levels: this.levels,
       subjects: this.subjects,
