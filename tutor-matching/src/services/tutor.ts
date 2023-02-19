@@ -85,6 +85,7 @@ export const getPublicTutorProfiles = ({
   });
 };
 
-export const getUserTutorProfile = () => {
-  return instance.get("tutor/me");
+export const getUserTutorProfile = async () => {
+  const result = await instance.get("tutor/me");
+  return result.data;
 };
