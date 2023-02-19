@@ -3,7 +3,7 @@ import { Request, Response } from "express";
 import HttpError from "../../errors/HttpError";
 import { collections } from "../../services/database.service";
 import { ObjectId } from "mongodb";
-import TutorProfile from "../models/Profile";
+import TutorProfile, { Level } from "../models/Profile";
 
 require("express-async-errors");
 export const getPublicProfiles = async (req: Request, res: Response) => {
@@ -143,4 +143,10 @@ export const getUserTutorProfile = async (req: Request, res: Response) => {
   });
 
   res.json({ profile: result });
+};
+
+export const getTutorLevels = async (_req: Request, res: Response) => {
+  res.json({
+    levels: Object.values(Level),
+  });
 };

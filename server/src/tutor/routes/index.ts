@@ -7,17 +7,20 @@ import {
   replaceProfile,
   deleteProfile,
   getUserTutorProfile,
+  getTutorLevels,
 } from "../controllers/profile";
 
 const router = Router();
 
 router.get("/public", getPublicProfiles);
 
+router.get("/me", auth, getUserTutorProfile);
+
+router.get("/levels", getTutorLevels);
+
 router.post("/", auth, createProfile);
 
 router.put("/", auth, replaceProfile);
-
-router.get("/me", auth, getUserTutorProfile);
 
 router.get("/:id", getProfile);
 

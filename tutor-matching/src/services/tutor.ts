@@ -2,6 +2,7 @@ import instance from "./axiosInstance";
 
 export const createTutorProfile = ({
   title,
+  tutorName,
   levels,
   subjects,
   type,
@@ -11,16 +12,18 @@ export const createTutorProfile = ({
   contactInfo,
 }: {
   title: string;
+  tutorName: string;
   levels: string[];
   subjects: string[];
   type: string;
   qualifications: string;
   description: string;
-  pricing: { rate: number; details: string };
-  contactInfo: { phoneNumber?: number; email?: string };
+  pricing: { rate: string; details: string };
+  contactInfo: { phoneNumber?: string; email?: string };
 }) => {
   return instance.post("/tutor", {
     title,
+    tutorName,
     levels,
     subjects,
     type,
@@ -87,5 +90,10 @@ export const getPublicTutorProfiles = ({
 
 export const getUserTutorProfile = async () => {
   const result = await instance.get("tutor/me");
+  return result.data;
+};
+
+export const getTutorLevels = async () => {
+  const result = await instance.get("tutor/levels");
   return result.data;
 };
