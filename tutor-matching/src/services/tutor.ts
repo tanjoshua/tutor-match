@@ -1,6 +1,7 @@
 import instance from "./axiosInstance";
 
 export const createTutorProfile = ({
+  isPublic,
   title,
   tutorName,
   levels,
@@ -11,6 +12,7 @@ export const createTutorProfile = ({
   pricing,
   contactInfo,
 }: {
+  isPublic: boolean;
   title: string;
   tutorName: string;
   levels: string[];
@@ -22,6 +24,7 @@ export const createTutorProfile = ({
   contactInfo: { phoneNumber?: string; email?: string };
 }) => {
   return instance.post("/tutor", {
+    isPublic,
     title,
     tutorName,
     levels,
@@ -36,6 +39,7 @@ export const createTutorProfile = ({
 
 export const replaceTutorProfile = ({
   id,
+  isPublic,
   title,
   tutorName,
   levels,
@@ -47,6 +51,7 @@ export const replaceTutorProfile = ({
   contactInfo,
 }: {
   id: string;
+  isPublic: boolean;
   title: string;
   tutorName: string;
   levels: string[];
@@ -59,6 +64,7 @@ export const replaceTutorProfile = ({
 }) => {
   return instance.put("/tutor", {
     id,
+    isPublic,
     tutorName,
     title,
     levels,

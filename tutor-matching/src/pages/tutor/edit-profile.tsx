@@ -6,6 +6,7 @@ import {
   createTutorProfile,
   getTutorLevels,
   getUserTutorProfile,
+  replaceTutorProfile,
 } from "@/services/tutor";
 import { useRouter } from "next/router";
 import { useFormik } from "formik";
@@ -19,8 +20,20 @@ const tutorTypes = [
   "Full-Time Tutor",
   "Ex/Current MOE Tutor",
 ];
+const initialValues = {
+  isPublic: false,
+  title: "",
+  tutorName: "",
+  levels: [],
+  subjects: [],
+  type: "",
+  qualifications: "",
+  description: "",
+  pricing: { rate: "", details: "" },
+  contactInfo: { phoneNumber: "", email: "" },
+};
 
-const CreateProfile: NextPageWithLayout = () => {
+const EditProfile: NextPageWithLayout = () => {
   const router = useRouter();
   const { isLoading, error, data, refetch } = useQuery(
     "userTutorProfile",
@@ -32,24 +45,14 @@ const CreateProfile: NextPageWithLayout = () => {
     data: levelsData,
   } = useQuery("tutorLevels", getTutorLevels);
   const formik = useFormik({
-    initialValues: {
-      isPublic: false,
-      title: "",
-      tutorName: "",
-      levels: [],
-      subjects: [],
-      type: "",
-      qualifications: "",
-      description: "",
-      pricing: { rate: "", details: "" },
-      contactInfo: { phoneNumber: "", email: "" },
-    },
+    enableReinitialize: true,
+    initialValues: !isLoading && data.profile ? data.profile : initialValues,
     onSubmit: async (values) => {
       try {
-        await createTutorProfile(values);
+        await replaceTutorProfile({ ...values, id: data.profile.id });
         router.push("/tutor/profile");
       } catch (e) {
-        alert("could not create profile");
+        alert("Could not edit profile");
       }
     },
   });
@@ -64,11 +67,6 @@ const CreateProfile: NextPageWithLayout = () => {
 
   if (isLoading) {
     return <></>;
-  }
-
-  if (data.profile) {
-    // profile already exists, redirecting
-    router.replace("/tutor/profile");
   }
 
   return (
@@ -143,7 +141,10 @@ const CreateProfile: NextPageWithLayout = () => {
                   value.map((x) => x.value)
                 );
               }}
-              value={formik.values.levels.map((x) => ({ value: x, label: x }))}
+              value={formik.values.levels.map((x: string) => ({
+                value: x,
+                label: x,
+              }))}
             />
           </div>
 
@@ -180,7 +181,10 @@ const CreateProfile: NextPageWithLayout = () => {
                 value.map((x) => x.value)
               );
             }}
-            value={formik.values.subjects.map((x) => ({ value: x, label: x }))}
+            value={formik.values.subjects.map((x: string) => ({
+              value: x,
+              label: x,
+            }))}
           />
 
           <p className="mt-2 text-sm text-gray-500">
@@ -227,7 +231,7 @@ const CreateProfile: NextPageWithLayout = () => {
             <div className="text-sm text-gray-900">Rate</div>
             <div className="relative rounded-md border-gray-300 pl-7 mr-2">
               <div className="absolute inset-y-0 left-0 flex items-center pl-3">
-                <span className="text-gray-500 sm:text-sm">$</span>
+                <span className="text-gray-900 sm:text-sm">$</span>
               </div>
               <input
                 type="text"
@@ -348,7 +352,6 @@ const CreateProfile: NextPageWithLayout = () => {
             discoverable on our tutor marketplace.
           </p>
         </div>
-
         {formik.isSubmitting ? (
           <div className="text-center">
             <button
@@ -382,7 +385,7 @@ const CreateProfile: NextPageWithLayout = () => {
               type="submit"
               className="inline-flex justify-center rounded-md border border-transparent bg-indigo-600 py-2 px-4 text-sm font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
             >
-              Create profile
+              Edit profile
             </button>
           </div>
         )}
@@ -391,8 +394,8 @@ const CreateProfile: NextPageWithLayout = () => {
   );
 };
 
-CreateProfile.getLayout = (page: ReactElement) => {
+EditProfile.getLayout = (page: ReactElement) => {
   return <Layout>{page}</Layout>;
 };
 
-export default CreateProfile;
+export default EditProfile;
