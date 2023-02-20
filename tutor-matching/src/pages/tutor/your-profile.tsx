@@ -10,8 +10,9 @@ import {
   UserGroupIcon,
 } from "@heroicons/react/20/solid";
 import { useRouter } from "next/router";
+import Head from "next/head";
 
-const Profile: NextPageWithLayout = () => {
+const YourProfile: NextPageWithLayout = () => {
   const router = useRouter();
   const { isLoading, error, data, refetch } = useQuery(
     "userTutorProfile",
@@ -27,6 +28,9 @@ const Profile: NextPageWithLayout = () => {
     // profile exists
     return (
       <div>
+        <Head>
+          <title>Tutor Profile</title>
+        </Head>
         <div className="lg:flex lg:items-center lg:justify-between px-4 py-5 sm:px-6">
           <div className="min-w-0 flex-1">
             <h2 className="text-2xl font-bold leading-7 text-gray-900 sm:truncate sm:text-3xl sm:tracking-tight">
@@ -117,8 +121,8 @@ const Profile: NextPageWithLayout = () => {
             </div>
             <div className="bg-gray-50 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
               <dt className="text-sm font-medium text-gray-700">Pricing</dt>
-              <dd className="mt-1 text-sm text-gray-900 sm:col-span-2 sm:mt-0">
-                {profile.pricing.rate} / hr
+              <dd className="mt-1 text-sm text-gray-900 sm:col-span-2 sm:mt-0 whitespace-pre-wrap">
+                ${profile.pricing.rate} / hr
                 {profile.pricing.details && (
                   <>
                     <br />
@@ -131,7 +135,7 @@ const Profile: NextPageWithLayout = () => {
               <dt className="text-sm font-medium text-gray-700">
                 Teaching Experience and Academic Qualifications
               </dt>
-              <dd className="mt-1 text-sm text-gray-900 sm:col-span-2 sm:mt-0">
+              <dd className="mt-1 text-sm text-gray-900 sm:col-span-2 sm:mt-0 whitespace-pre-wrap">
                 {profile.qualifications}
               </dd>
             </div>
@@ -139,7 +143,7 @@ const Profile: NextPageWithLayout = () => {
               <dt className="text-sm font-medium text-gray-700">
                 Tutor Description
               </dt>
-              <dd className="mt-1 text-sm text-gray-900 sm:col-span-2 sm:mt-0">
+              <dd className="mt-1 text-sm text-gray-900 sm:col-span-2 sm:mt-0 whitespace-pre-wrap">
                 {profile.description}
               </dd>
             </div>
@@ -149,7 +153,7 @@ const Profile: NextPageWithLayout = () => {
               </dt>
               <dd className="mt-1 text-sm text-gray-900 sm:col-span-2 sm:mt-0">
                 {profile.contactInfo.phoneNumber &&
-                  `Phone Number: ${profile.contactInfo.phoneNumber}`}
+                  `Phone Number: +65 ${profile.contactInfo.phoneNumber}`}
                 {profile.contactInfo.phoneNumber &&
                   profile.contactInfo.email && <br />}
                 {profile.contactInfo.email &&
@@ -189,8 +193,8 @@ const Profile: NextPageWithLayout = () => {
   }
 };
 
-Profile.getLayout = (page: ReactElement) => {
+YourProfile.getLayout = (page: ReactElement) => {
   return <Layout>{page}</Layout>;
 };
 
-export default Profile;
+export default YourProfile;

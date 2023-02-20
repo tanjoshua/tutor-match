@@ -21,7 +21,7 @@ const Login: NextPageWithLayout = () => {
       try {
         await login(values);
         queryClient.refetchQueries("me");
-        router.push("/");
+        router.push("/tutor/your-profile");
       } catch (error) {
         if (axios.isAxiosError(error)) {
           if (error.response?.status === 401) {

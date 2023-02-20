@@ -22,7 +22,11 @@ const Navbar = () => {
     : isLoggedIn
     ? [
         { name: "Dashboard", href: "/tutor/dashboard", current: false },
-        { name: "My Tutor Profile", href: "/tutor/profile", current: false },
+        {
+          name: "My Tutor Profile",
+          href: "/tutor/your-profile",
+          current: false,
+        },
       ]
     : [
         { name: "Request a Tutor", href: "/request", current: false },
