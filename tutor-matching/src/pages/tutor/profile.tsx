@@ -3,8 +3,16 @@ import { ReactElement } from "react";
 import Layout from "../../components/Layout";
 import { useQuery } from "react-query";
 import { getUserTutorProfile } from "@/services/tutor";
+import {
+  LinkIcon,
+  LockClosedIcon,
+  PencilIcon,
+  UserGroupIcon,
+} from "@heroicons/react/20/solid";
+import { useRouter } from "next/router";
 
 const Profile: NextPageWithLayout = () => {
+  const router = useRouter();
   const { isLoading, error, data, refetch } = useQuery(
     "userTutorProfile",
     getUserTutorProfile
@@ -19,39 +27,96 @@ const Profile: NextPageWithLayout = () => {
     // profile exists
     return (
       <div>
-        <div className="px-4 py-5 sm:px-6">
-          <h3 className="text-lg font-medium leading-6 text-gray-900">
-            {profile.title}
-          </h3>
+        <div className="lg:flex lg:items-center lg:justify-between px-4 py-5 sm:px-6">
+          <div className="min-w-0 flex-1">
+            <h2 className="text-2xl font-bold leading-7 text-gray-900 sm:truncate sm:text-3xl sm:tracking-tight">
+              Your Tutor Profile
+            </h2>
+            <div className="mt-1 flex flex-col sm:mt-0 sm:flex-row sm:flex-wrap sm:space-x-6">
+              <div className="mt-2 flex items-center text-sm text-gray-700">
+                {profile.isPublic ? (
+                  <>
+                    <UserGroupIcon
+                      className="mr-1.5 h-5 w-5 flex-shrink-0 text-gray-400"
+                      aria-hidden="true"
+                    />
+                    Public profile
+                  </>
+                ) : (
+                  <>
+                    <LockClosedIcon
+                      className="mr-1.5 h-5 w-5 flex-shrink-0 text-gray-400"
+                      aria-hidden="true"
+                    />
+                    Private profile
+                  </>
+                )}
+              </div>
+            </div>
+          </div>
+          <div className="mt-5 flex lg:mt-0 lg:ml-4">
+            <span className="sm:ml-3">
+              <button
+                className="inline-flex items-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+                onClick={() => router.push("/tutor/edit-profile")}
+              >
+                <PencilIcon
+                  className="-ml-1 mr-2 h-5 w-5 text-gray-700"
+                  aria-hidden="true"
+                />
+                Edit
+              </button>
+            </span>
+
+            <span className="sm:ml-3">
+              <button
+                type="button"
+                className="inline-flex items-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+              >
+                <LinkIcon
+                  className="-ml-1 mr-2 h-5 w-5 text-gray-700"
+                  aria-hidden="true"
+                />
+                View
+              </button>
+            </span>
+          </div>
         </div>
+
         <div className="border-t border-gray-200">
           <dl>
+            <div className="bg-white px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+              <dt className="text-sm font-medium text-gray-700">Title</dt>
+              <dd className="mt-1 text-sm text-gray-900 sm:col-span-2 sm:mt-0">
+                {profile.title}
+              </dd>
+            </div>
             <div className="bg-gray-50 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-              <dt className="text-sm font-medium text-gray-500">Tutor Name</dt>
+              <dt className="text-sm font-medium text-gray-700">Tutor Name</dt>
               <dd className="mt-1 text-sm text-gray-900 sm:col-span-2 sm:mt-0">
                 {profile.tutorName}
               </dd>
             </div>
             <div className="bg-white px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-              <dt className="text-sm font-medium text-gray-500">Levels</dt>
+              <dt className="text-sm font-medium text-gray-700">Levels</dt>
               <dd className="mt-1 text-sm text-gray-900 sm:col-span-2 sm:mt-0">
                 {profile.levels.join(", ")}
               </dd>
             </div>
             <div className="bg-gray-50 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-              <dt className="text-sm font-medium text-gray-500">Subjects</dt>
+              <dt className="text-sm font-medium text-gray-700">Subjects</dt>
               <dd className="mt-1 text-sm text-gray-900 sm:col-span-2 sm:mt-0">
                 {profile.subjects.join(", ")}
               </dd>
             </div>
             <div className="bg-white px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-              <dt className="text-sm font-medium text-gray-500">Tutor Type</dt>
+              <dt className="text-sm font-medium text-gray-700">Tutor Type</dt>
               <dd className="mt-1 text-sm text-gray-900 sm:col-span-2 sm:mt-0">
                 {profile.type}
               </dd>
             </div>
             <div className="bg-gray-50 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-              <dt className="text-sm font-medium text-gray-500">Pricing</dt>
+              <dt className="text-sm font-medium text-gray-700">Pricing</dt>
               <dd className="mt-1 text-sm text-gray-900 sm:col-span-2 sm:mt-0">
                 {profile.pricing.rate} / hr
                 {profile.pricing.details && (
@@ -63,7 +128,7 @@ const Profile: NextPageWithLayout = () => {
               </dd>
             </div>
             <div className="bg-white px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-              <dt className="text-sm font-medium text-gray-500">
+              <dt className="text-sm font-medium text-gray-700">
                 Teaching Experience and Academic Qualifications
               </dt>
               <dd className="mt-1 text-sm text-gray-900 sm:col-span-2 sm:mt-0">
@@ -71,7 +136,7 @@ const Profile: NextPageWithLayout = () => {
               </dd>
             </div>
             <div className="bg-gray-50 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-              <dt className="text-sm font-medium text-gray-500">
+              <dt className="text-sm font-medium text-gray-700">
                 Tutor Description
               </dt>
               <dd className="mt-1 text-sm text-gray-900 sm:col-span-2 sm:mt-0">
@@ -79,7 +144,7 @@ const Profile: NextPageWithLayout = () => {
               </dd>
             </div>
             <div className="bg-white px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-              <dt className="text-sm font-medium text-gray-500">
+              <dt className="text-sm font-medium text-gray-700">
                 Contact Info
               </dt>
               <dd className="mt-1 text-sm text-gray-900 sm:col-span-2 sm:mt-0">

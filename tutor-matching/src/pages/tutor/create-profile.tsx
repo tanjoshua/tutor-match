@@ -33,6 +33,7 @@ const CreateProfile: NextPageWithLayout = () => {
   } = useQuery("tutorLevels", getTutorLevels);
   const formik = useFormik({
     initialValues: {
+      isPublic: false,
       title: "",
       tutorName: "",
       levels: [],
@@ -311,7 +312,7 @@ const CreateProfile: NextPageWithLayout = () => {
             <div className="text-sm text-gray-900">Phone Number:</div>
             <div className="relative rounded-md border-gray-300 pl-10 mr-2">
               <div className="absolute inset-y-0 left-0 flex items-center pl-2">
-                <span className="text-gray-500 sm:text-sm">+65</span>
+                <span className="text-gray-900 sm:text-sm">+65</span>
               </div>
               <input
                 type="text"
@@ -326,6 +327,28 @@ const CreateProfile: NextPageWithLayout = () => {
             Let potential customers contact you
           </p>
         </div>
+        <div className="mb-4">
+          <label className="block mb-2 font-medium text-gray-900">
+            Privacy Settings
+          </label>
+          <div className="flex items-center mb-4">
+            <input
+              id="isPublic"
+              type="checkbox"
+              className="w-4 h-4 text-indigo-600 bg-gray-100 border-gray-300 rounded-lg focus:ring-indigo-500 accent-indigo-500"
+              onChange={formik.handleChange}
+              checked={formik.values.isPublic}
+            />
+            <label className="ml-2 text-sm text-gray-900 ">
+              Public profile
+            </label>
+          </div>
+          <p className="mt-2 text-sm text-gray-500">
+            By making your tutor profile public, your tutor profile will be
+            discoverable on our tutor marketplace.
+          </p>
+        </div>
+
         <div className="text-center">
           <button
             type="submit"
