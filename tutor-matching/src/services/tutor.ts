@@ -37,6 +37,7 @@ export const createTutorProfile = ({
 export const replaceTutorProfile = ({
   id,
   title,
+  tutorName,
   levels,
   subjects,
   type,
@@ -47,16 +48,18 @@ export const replaceTutorProfile = ({
 }: {
   id: string;
   title: string;
+  tutorName: string;
   levels: string[];
   subjects: string[];
   type: string;
   qualifications: string;
   description: string;
-  pricing: { rate: number; details: string };
-  contactInfo: { phoneNumber?: number; email?: string };
+  pricing: { rate: string; details: string };
+  contactInfo: { phoneNumber?: string; email?: string };
 }) => {
   return instance.put("/tutor", {
     id,
+    tutorName,
     title,
     levels,
     subjects,

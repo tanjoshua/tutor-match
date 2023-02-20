@@ -44,7 +44,6 @@ const CreateProfile: NextPageWithLayout = () => {
       contactInfo: { phoneNumber: "", email: "" },
     },
     onSubmit: async (values) => {
-      alert(JSON.stringify(values));
       try {
         await createTutorProfile(values);
         router.push("/tutor/profile");
