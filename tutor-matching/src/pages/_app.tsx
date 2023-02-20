@@ -12,7 +12,20 @@ type AppPropsWithLayout = AppProps & {
   Component: NextPageWithLayout;
 };
 
-const queryClient = new QueryClient();
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      retry: (count, error: any) => {
+        // if 404 error, do not retry
+        if (error?.response?.status == 404) {
+          return false;
+        }
+        // can add more cases here
+        return true;
+      },
+    },
+  },
+});
 export default function App({ Component, pageProps }: AppPropsWithLayout) {
   // Use the layout defined at the page level, if available
   const getLayout = Component.getLayout ?? ((page) => page);
