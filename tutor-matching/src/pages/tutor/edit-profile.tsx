@@ -3,15 +3,12 @@ import { ReactElement, useState } from "react";
 import Layout from "../../components/Layout";
 import { useQuery } from "react-query";
 import {
-  createTutorProfile,
   getTutorLevels,
   getUserTutorProfile,
   replaceTutorProfile,
 } from "@/services/tutor";
 import { useRouter } from "next/router";
 import { useFormik } from "formik";
-import { Listbox } from "@headlessui/react";
-import ReactSelect from "react-select";
 import Head from "next/head";
 import Select from "@/components/shared/Select";
 import Creatable from "@/components/shared/Creatable";
@@ -22,7 +19,6 @@ const tutorTypes = [
   "Ex/Current MOE Tutor",
 ];
 const regionOptions = ["Central", "East", "North", "North-East", "West"];
-const genderOptions = ["Male", "Female"];
 
 const initialValues = {
   isPublic: false,
@@ -98,13 +94,45 @@ const EditProfile: NextPageWithLayout = () => {
           </p>
         </div>
         <div className="mb-4">
+          <label className="block mb-2 font-medium text-gray-900">
+            Tutor Name
+          </label>
+          <input
+            type="text"
+            id="tutorName"
+            className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:indigo-blue-500 focus:border-indigo-500 focus:outline-none block w-full p-2.5"
+            placeholder="Eg. Mr Tan"
+            onChange={formik.handleChange}
+            value={formik.values.tutorName}
+            required
+          />
+          <p className="mt-2 text-sm text-gray-500">
+            Your tutor name does not have to be your full name. It can be
+            something as simple as Mr/Ms surname.
+          </p>
+        </div>
+        <div className="mb-4">
           <label className="block mb-2 font-medium text-gray-900">Gender</label>
           <div className="flex items-center">
-            <input id="gender" type="radio" value="Male" name="gender" />
+            <input
+              id="gender"
+              type="radio"
+              value="Male"
+              name="gender"
+              checked={formik.values.gender === "Male"}
+              onChange={(e) => formik.setFieldValue("gender", e.target.value)}
+            />
             <label className="w-full ml-2 text-sm text-gray-900 ">Male</label>
           </div>
           <div className="flex items-center">
-            <input id="gender" type="radio" value="Female" name="gender" />
+            <input
+              id="gender"
+              type="radio"
+              value="Female"
+              name="gender"
+              checked={formik.values.gender === "Female"}
+              onChange={(e) => formik.setFieldValue("gender", e.target.value)}
+            />
             <label className="w-full ml-2 text-sm text-gray-900 ">Female</label>
           </div>
         </div>
@@ -137,24 +165,6 @@ const EditProfile: NextPageWithLayout = () => {
 
           <p className="mt-2 text-sm text-gray-500">
             You can select multiple regions
-          </p>
-        </div>
-        <div className="mb-4">
-          <label className="block mb-2 font-medium text-gray-900">
-            Tutor Name
-          </label>
-          <input
-            type="text"
-            id="tutorName"
-            className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:indigo-blue-500 focus:border-indigo-500 focus:outline-none block w-full p-2.5"
-            placeholder="Eg. Mr Tan"
-            onChange={formik.handleChange}
-            value={formik.values.tutorName}
-            required
-          />
-          <p className="mt-2 text-sm text-gray-500">
-            Your tutor name does not have to be your full name. It can be
-            something as simple as Mr/Ms surname.
           </p>
         </div>
         <div className="mb-4">
