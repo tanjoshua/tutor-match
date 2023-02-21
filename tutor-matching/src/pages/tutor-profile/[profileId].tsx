@@ -1,5 +1,5 @@
 import { NextPageWithLayout } from "../_app";
-import { ReactElement } from "react";
+import { ReactElement, useState } from "react";
 import Layout from "../../components/Layout";
 import { useQuery } from "react-query";
 import { getTutorProfile, getUserTutorProfile } from "@/services/tutor";
@@ -13,6 +13,7 @@ import {
 } from "@heroicons/react/20/solid";
 import { useRouter } from "next/router";
 import Head from "next/head";
+import ShareModal from "@/components/tutor-profile/ShareModal";
 
 const TutorProfile: NextPageWithLayout = () => {
   const router = useRouter();
@@ -22,6 +23,7 @@ const TutorProfile: NextPageWithLayout = () => {
     () => getTutorProfile({ id: profileId as string }),
     { enabled: !!profileId }
   );
+  const [shareModalIsOpen, setShareModalIsOpen] = useState(false);
 
   if (isLoading) {
     return <></>;
@@ -87,21 +89,24 @@ const TutorProfile: NextPageWithLayout = () => {
             </div>
           </div>
           <div className="mt-5 flex lg:mt-0 lg:ml-4">
-            {/*For any action buttons I want to add in the future. This does not show up */}
-            {false && (
-              <span className="sm:ml-3">
-                <button
-                  className="inline-flex items-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
-                  onClick={() => router.push("/tutor/edit-profile")}
-                >
-                  <PencilIcon
-                    className="-ml-1 mr-2 h-5 w-5 text-gray-700"
-                    aria-hidden="true"
-                  />
-                  Edit
-                </button>
-              </span>
-            )}
+            <span className="sm:ml-3">
+              <button
+                type="button"
+                className="inline-flex items-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+                onClick={() => setShareModalIsOpen(true)}
+              >
+                <LinkIcon
+                  className="-ml-1 mr-2 h-5 w-5 text-gray-700"
+                  aria-hidden="true"
+                />
+                Share
+              </button>
+              <ShareModal
+                link={`${origin}/tutor-profile/${profile.id}`}
+                open={shareModalIsOpen}
+                setOpen={setShareModalIsOpen}
+              />
+            </span>
           </div>
         </div>
 

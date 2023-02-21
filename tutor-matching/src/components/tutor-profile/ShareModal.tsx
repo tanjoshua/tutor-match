@@ -64,7 +64,7 @@ export default function ShareModal({
                       </Dialog.Title>
                       <div className="mt-2">
                         <p className="text-sm text-gray-500">
-                          Share this link with potential customers.
+                          Share this link with others.
                         </p>
                       </div>
                     </div>
