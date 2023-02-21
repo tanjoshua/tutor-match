@@ -6,8 +6,10 @@ import { getTutorProfile, getUserTutorProfile } from "@/services/tutor";
 import {
   LinkIcon,
   LockClosedIcon,
+  MapPinIcon,
   PencilIcon,
   UserGroupIcon,
+  UserIcon,
 } from "@heroicons/react/20/solid";
 import { useRouter } from "next/router";
 import Head from "next/head";
@@ -66,8 +68,21 @@ const TutorProfile: NextPageWithLayout = () => {
               {profile.title}
             </h2>
             <div className="mt-1 flex flex-col sm:mt-0 sm:flex-row sm:flex-wrap sm:space-x-6">
-              <div className="mt-2 flex items-center text-sm text-gray-700">
-                {/* Can add some more information here next time */}
+              <div className="mt-2 flex items-center text-sm text-gray-500">
+                <UserIcon
+                  className="mr-1.5 h-5 w-5 flex-shrink-0 text-gray-400"
+                  aria-hidden="true"
+                />
+                {profile.gender}
+              </div>
+              <div className="mt-2 flex items-center text-sm text-gray-500">
+                <MapPinIcon
+                  className="mr-1.5 h-5 w-5 flex-shrink-0 text-gray-400"
+                  aria-hidden="true"
+                />
+                {profile.regions.length == 5
+                  ? "All regions"
+                  : profile.regions.join(", ")}
               </div>
             </div>
           </div>

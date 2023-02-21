@@ -3,6 +3,8 @@ import instance from "./axiosInstance";
 export const createTutorProfile = ({
   isPublic,
   title,
+  gender,
+  regions,
   tutorName,
   levels,
   subjects,
@@ -14,6 +16,8 @@ export const createTutorProfile = ({
 }: {
   isPublic: boolean;
   title: string;
+  gender: string;
+  regions: string[];
   tutorName: string;
   levels: string[];
   subjects: string[];
@@ -27,6 +31,8 @@ export const createTutorProfile = ({
     isPublic,
     title,
     tutorName,
+    gender,
+    regions,
     levels,
     subjects,
     type,
@@ -41,6 +47,8 @@ export const replaceTutorProfile = ({
   id,
   isPublic,
   title,
+  gender,
+  regions,
   tutorName,
   levels,
   subjects,
@@ -53,6 +61,8 @@ export const replaceTutorProfile = ({
   id: string;
   isPublic: boolean;
   title: string;
+  gender: string;
+  regions: string[];
   tutorName: string;
   levels: string[];
   subjects: string[];
@@ -66,6 +76,8 @@ export const replaceTutorProfile = ({
     id,
     isPublic,
     tutorName,
+    gender,
+    regions,
     title,
     levels,
     subjects,
