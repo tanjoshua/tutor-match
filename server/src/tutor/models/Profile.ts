@@ -48,6 +48,19 @@ export enum TutorType {
   MOE = "Ex/Current MOE Tutor",
 }
 
+export enum Region {
+  Central = "Central",
+  East = "East",
+  North = "North",
+  NorthEast = "North-East",
+  West = "West",
+}
+
+export enum Gender {
+  Male = "Male",
+  Female = "Female",
+}
+
 export default class TutorProfile {
   public _id?: ObjectId;
   public isPublic: boolean; // whether the profile shows up on the marketplace
@@ -55,6 +68,8 @@ export default class TutorProfile {
 
   // listing fields
   public title: string;
+  public gender: Gender;
+  public regions: Region[];
   public tutorName: string;
   public levels: Level[];
   public subjects: string[];
@@ -91,8 +106,10 @@ export default class TutorProfile {
       id: this._id,
       ownerDetails: this.ownerDetails,
 
-      tutorName: this.tutorName,
       title: this.title,
+      regions: this.regions,
+      gender: this.gender,
+      tutorName: this.tutorName,
       levels: this.levels,
       subjects: this.subjects,
       type: this.type,

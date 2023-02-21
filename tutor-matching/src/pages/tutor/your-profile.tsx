@@ -8,6 +8,8 @@ import {
   LockClosedIcon,
   PencilIcon,
   UserGroupIcon,
+  MapPinIcon,
+  UserIcon,
 } from "@heroicons/react/20/solid";
 import { useRouter } from "next/router";
 import Head from "next/head";
@@ -61,6 +63,22 @@ const YourProfile: NextPageWithLayout = () => {
                     Private profile
                   </>
                 )}
+              </div>
+              <div className="mt-2 flex items-center text-sm text-gray-500">
+                <UserIcon
+                  className="mr-1.5 h-5 w-5 flex-shrink-0 text-gray-400"
+                  aria-hidden="true"
+                />
+                {profile.gender}
+              </div>
+              <div className="mt-2 flex items-center text-sm text-gray-500">
+                <MapPinIcon
+                  className="mr-1.5 h-5 w-5 flex-shrink-0 text-gray-400"
+                  aria-hidden="true"
+                />
+                {profile.regions.length == 5
+                  ? "All regions"
+                  : profile.regions.join(", ")}
               </div>
             </div>
           </div>
