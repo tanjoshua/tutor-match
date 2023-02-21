@@ -10,8 +10,8 @@ import {
 import { useRouter } from "next/router";
 import { useFormik } from "formik";
 import { Listbox } from "@headlessui/react";
-import ReactSelect from "react-select";
-import Creatable from "react-select/creatable";
+import Select from "@/components/shared/Select";
+import Creatable from "@/components/shared/Creatable";
 import Head from "next/head";
 
 const tutorTypes = [
@@ -19,6 +19,7 @@ const tutorTypes = [
   "Full-Time Tutor",
   "Ex/Current MOE Tutor",
 ];
+const regionOptions = ["Central", "East", "North", "North-East", "West"];
 
 const CreateProfile: NextPageWithLayout = () => {
   const router = useRouter();
@@ -36,6 +37,8 @@ const CreateProfile: NextPageWithLayout = () => {
       isPublic: false,
       title: "",
       tutorName: "",
+      gender: "",
+      regions: [],
       levels: [],
       subjects: [],
       type: "",
@@ -112,35 +115,75 @@ const CreateProfile: NextPageWithLayout = () => {
           </p>
         </div>
         <div className="mb-4">
+          <label className="block mb-2 font-medium text-gray-900">Gender</label>
+          <div className="flex items-center">
+            <input
+              id="gender"
+              type="radio"
+              value="Male"
+              name="gender"
+              checked={formik.values.gender === "Male"}
+              onChange={(e) => formik.setFieldValue("gender", e.target.value)}
+            />
+            <label className="w-full ml-2 text-sm text-gray-900 ">Male</label>
+          </div>
+          <div className="flex items-center">
+            <input
+              id="gender"
+              type="radio"
+              value="Female"
+              name="gender"
+              checked={formik.values.gender === "Female"}
+              onChange={(e) => formik.setFieldValue("gender", e.target.value)}
+            />
+            <label className="w-full ml-2 text-sm text-gray-900 ">Female</label>
+          </div>
+        </div>
+        <div className="mb-4">
+          <label className="block mb-2 font-medium text-gray-900">
+            Regions taught
+          </label>
+          <div>
+            <Select
+              required
+              isMulti
+              isClearable
+              options={regionOptions.map((value: string) => ({
+                label: value,
+                value: value,
+              }))}
+              name="regions"
+              onChange={(value: any) => {
+                formik.setFieldValue(
+                  "regions",
+                  value.map((x: any) => x.value)
+                );
+              }}
+              value={formik.values.regions.map((x: string) => ({
+                value: x,
+                label: x,
+              }))}
+            />
+          </div>
+
+          <p className="mt-2 text-sm text-gray-500">
+            You can select multiple regions
+          </p>
+        </div>
+        <div className="mb-4">
           <label className="block mb-2 font-medium text-gray-900">
             Levels taught
           </label>
           <div>
-            <ReactSelect
+            <Select
               isMulti
               isClearable
               options={levelOptions}
               name="levels"
-              theme={(theme) => ({
-                ...theme,
-                colors: {
-                  ...theme.colors,
-                  primary: "indigo",
-                },
-              })}
-              styles={{
-                control: (styles) => ({
-                  ...styles,
-                  boxShadow: "none !important",
-                  "*": {
-                    boxShadow: "none !important",
-                  },
-                }),
-              }}
-              onChange={(value) => {
+              onChange={(value: any) => {
                 formik.setFieldValue(
                   "levels",
-                  value.map((x) => x.value)
+                  value.map((x: any) => x.value)
                 );
               }}
               value={formik.values.levels.map((x) => ({ value: x, label: x }))}
@@ -158,26 +201,10 @@ const CreateProfile: NextPageWithLayout = () => {
           <Creatable
             isMulti
             name="subjects"
-            theme={(theme) => ({
-              ...theme,
-              colors: {
-                ...theme.colors,
-                primary: "indigo",
-              },
-            })}
-            styles={{
-              control: (styles) => ({
-                ...styles,
-                boxShadow: "none !important",
-                "*": {
-                  boxShadow: "none !important",
-                },
-              }),
-            }}
-            onChange={(value) => {
+            onChange={(value: any) => {
               formik.setFieldValue(
                 "subjects",
-                value.map((x) => x.value)
+                value.map((x: any) => x.value)
               );
             }}
             value={formik.values.subjects.map((x) => ({ value: x, label: x }))}
@@ -191,27 +218,11 @@ const CreateProfile: NextPageWithLayout = () => {
           <label className="block mb-2 font-medium text-gray-900">
             Tutor type
           </label>
-          <ReactSelect
+          <Select
             name="type"
             isClearable
             options={tutorTypes.map((type) => ({ label: type, value: type }))}
-            theme={(theme) => ({
-              ...theme,
-              colors: {
-                ...theme.colors,
-                primary: "indigo",
-              },
-            })}
-            styles={{
-              control: (styles) => ({
-                ...styles,
-                boxShadow: "none !important",
-                "*": {
-                  boxShadow: "none !important",
-                },
-              }),
-            }}
-            onChange={(value) => {
+            onChange={(value: any) => {
               formik.setFieldValue("type", value ? value.value : "");
             }}
             value={{ label: formik.values.type, value: formik.values.type }}
