@@ -11,7 +11,7 @@ import {
 } from "@heroicons/react/20/solid";
 import { useRouter } from "next/router";
 import Head from "next/head";
-import ShareModal from "@/components/tutor-profile/shareModal";
+import ShareModal from "@/components/tutor-profile/ShareModal";
 
 const YourProfile: NextPageWithLayout = () => {
   const origin =
