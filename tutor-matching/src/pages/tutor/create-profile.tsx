@@ -47,7 +47,7 @@ const CreateProfile: NextPageWithLayout = () => {
     onSubmit: async (values) => {
       try {
         await createTutorProfile(values);
-        router.push("/tutor/profile");
+        router.push("/tutor/your-profile");
       } catch (e) {
         alert("could not create profile");
       }
@@ -68,7 +68,7 @@ const CreateProfile: NextPageWithLayout = () => {
 
   if (data.profile) {
     // profile already exists, redirecting
-    router.replace("/tutor/profile");
+    router.replace("/tutor/your-profile");
   }
 
   return (

@@ -81,8 +81,9 @@ export const deleteTutorProfile = ({ id }: { id: string }) => {
   return instance.delete(`/tutor/${id}`);
 };
 
-export const getTutorProfile = ({ id }: { id: string }) => {
-  return instance.delete(`/tutor/${id}`);
+export const getTutorProfile = async ({ id }: { id: string }) => {
+  const result = await instance.get(`/tutor/${id}`);
+  return result.data;
 };
 
 export const getPublicTutorProfiles = ({

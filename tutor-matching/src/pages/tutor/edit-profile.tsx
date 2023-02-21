@@ -50,7 +50,7 @@ const EditProfile: NextPageWithLayout = () => {
     onSubmit: async (values) => {
       try {
         await replaceTutorProfile({ ...values, id: data.profile.id });
-        router.push("/tutor/profile");
+        router.push("/tutor/your-profile");
       } catch (e) {
         alert("Could not edit profile");
       }
@@ -72,7 +72,7 @@ const EditProfile: NextPageWithLayout = () => {
   return (
     <div>
       <Head>
-        <title>Create Profile</title>
+        <title>Edit Profile</title>
       </Head>
       <form className="px-8 pt-6 pb-8 mb-4" onSubmit={formik.handleSubmit}>
         <div className="mb-4">
