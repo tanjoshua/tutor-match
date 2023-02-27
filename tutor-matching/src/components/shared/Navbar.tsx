@@ -29,7 +29,7 @@ const Navbar = () => {
         },
       ]
     : [
-        { name: "Request a Tutor", href: "/request", current: false },
+        { name: "Request a Tutor", href: "/request/make", current: false },
         { name: "Browse Tutors", href: "/browse", current: false },
         { name: "About", href: "/about", current: false },
         { name: "For Tutors", href: "/for-tutors", current: false },

@@ -5,6 +5,7 @@ export default class TutorRequest {
   public _id?: ObjectId;
 
   // customer fields
+  public name: string;
   public contactInfo: {
     phoneNumber: number; // for future use, currently not in use
     email: string;
@@ -18,9 +19,10 @@ export default class TutorRequest {
   public subjects: string[];
   public type: TutorType[]; // eg. full time, part time, etc
   public pricing: {
-    rate: number;
+    rate: string;
     rateOption: string; // quote me, any, market rate
   };
+  public availability: string;
   public description: string; // provide any additional information
 
   public static assign(obj: TutorRequest) {
@@ -32,6 +34,7 @@ export default class TutorRequest {
   toJSON() {
     return {
       id: this._id,
+      name: this.name,
       contactInfo: this.contactInfo,
       postalCode: this.postalCode,
       region: this.region,
@@ -41,6 +44,7 @@ export default class TutorRequest {
       subjects: this.subjects,
       type: this.type,
       pricing: this.pricing,
+      availability: this.availability,
       description: this.description,
     };
   }
