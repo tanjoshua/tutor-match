@@ -51,7 +51,7 @@ export const getPublicProfiles = async (req: Request, res: Response) => {
     .limit(+limit)
     .toArray();
 
-  // convert invoice documents into invoice objects to allow for usage of helper functions
+  // convert documents into objects to allow for usage of helper functions
   // shouldn't run into scalability issues due to pagination
   const profiles = [];
   for (const doc of profileDocuments) {

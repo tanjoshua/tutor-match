@@ -200,6 +200,7 @@ const CreateProfile: NextPageWithLayout = () => {
           </label>
           <Creatable
             isMulti
+            id="subjects"
             name="subjects"
             onChange={(value: any) => {
               formik.setFieldValue(
@@ -211,7 +212,7 @@ const CreateProfile: NextPageWithLayout = () => {
           />
 
           <p className="mt-2 text-sm text-gray-500">
-            You can also create new subjects not listed
+            You can also create new subject options that are not listed.
           </p>
         </div>
         <div className="mb-4">
