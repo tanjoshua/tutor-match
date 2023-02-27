@@ -1,4 +1,4 @@
-import Creatable from "react-select";
+import Creatable from "react-select/creatable";
 
 export default (props: any) => {
   return (
