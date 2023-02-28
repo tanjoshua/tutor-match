@@ -1,6 +1,6 @@
 import instance from "./axiosInstance";
 
-export const createTutorRequest = ({
+export const createTutorRequest = async ({
   name,
   contactInfo,
   postalCode,
@@ -20,7 +20,7 @@ export const createTutorRequest = ({
   gender: string[];
   level: string;
   subjects: string[];
-  type: string;
+  type: string[];
   pricing: {
     rate: string;
     rateOption: string;
@@ -28,7 +28,7 @@ export const createTutorRequest = ({
   availability: string;
   description: string;
 }) => {
-  return instance.post("/tutor/request", {
+  const result = await instance.post("/tutor/request", {
     name,
     contactInfo,
     postalCode,
@@ -41,6 +41,8 @@ export const createTutorRequest = ({
     availability,
     description,
   });
+
+  return result.data;
 };
 
 export const replaceTutorRequest = ({
@@ -65,7 +67,7 @@ export const replaceTutorRequest = ({
   gender: string[];
   level: string;
   subjects: string[];
-  type: string;
+  type: string[];
   pricing: {
     rate: string;
     rateOption: string;
