@@ -4,6 +4,7 @@ import HttpError from "../../errors/HttpError";
 import { collections } from "../../services/database.service";
 import { ObjectId } from "mongodb";
 import TutorRequest from "../models/TutorRequest";
+import TutorApplication from "../models/TutorApplication";
 
 require("express-async-errors");
 export const getTutorRequests = async (req: Request, res: Response) => {
@@ -92,4 +93,58 @@ export const deleteTutorRequest = async (req: Request, res: Response) => {
   }
 
   res.status(202).json();
+};
+
+export const applyToTutorRequest = async (req: Request, res: Response) => {
+  const id = req.body.id;
+  const owner = req.user!;
+
+  const document = await collections.tutorRequests!.findOne({
+    _id: new ObjectId(id),
+  });
+  if (!document) {
+    throw new HttpError(404, "Not found");
+  }
+
+  // create new application document
+  const tutorApp = new TutorApplication();
+  tutorApp.tutor = owner._id!;
+  tutorApp.tutorRequest = new ObjectId(id);
+  const result = await collections.tutorApplications!.insertOne(tutorApp);
+
+  // insert application into list
+  await collections.tutorRequests!.updateOne(
+    { _id: new ObjectId(id) },
+    { $push: { applicants: result.insertedId } }
+  );
+
+  res.json();
+};
+
+export const withdrawApplication = async (req: Request, res: Response) => {
+  const id = req.body.id;
+  const owner = req.user!;
+
+  // delete application
+  const tutorApp = await collections.tutorApplications!.findOne({
+    tutorRequest: new ObjectId(id),
+    tutor: owner._id!,
+  });
+
+  if (tutorApp) {
+    await collections.tutorApplications!.deleteOne({
+      tutorRequest: new ObjectId(id),
+      tutor: owner._id!,
+    });
+
+    await collections.tutorRequests!.updateOne(
+      {
+        _id: new ObjectId(id),
+      },
+      { $pull: { applicants: tutorApp._id } }
+    );
+  }
+
+  // note: will not throw error if doesn't exist
+  res.json();
 };

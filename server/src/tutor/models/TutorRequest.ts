@@ -25,6 +25,9 @@ export default class TutorRequest {
   public availability: string;
   public description: string; // provide any additional information
 
+  // applicant fields
+  public applicants: ObjectId[] = [];
+
   public static assign(obj: TutorRequest) {
     const newObject = new TutorRequest();
     Object.assign(newObject, obj);

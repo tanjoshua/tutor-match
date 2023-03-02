@@ -10,11 +10,13 @@ import {
   getTutorLevels,
 } from "../controllers/profile";
 import {
+  applyToTutorRequest,
   createTutorRequest,
   deleteTutorRequest,
   getTutorRequest,
   getTutorRequests,
   replaceTutorRequest,
+  withdrawApplication,
 } from "../controllers/request";
 
 const router = Router();
@@ -34,5 +36,8 @@ router.get("/request", getTutorRequests);
 router.post("/request", createTutorRequest);
 router.put("/request", replaceTutorRequest);
 router.delete("/request/:id", deleteTutorRequest);
+
+router.post("/apply-request", auth, applyToTutorRequest);
+router.post("/withdraw-request", auth, withdrawApplication);
 
 export default router;
