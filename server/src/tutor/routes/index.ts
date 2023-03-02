@@ -29,8 +29,8 @@ router.get("/:id", getProfile);
 router.delete("/:id", auth, deleteProfile);
 
 // tutor request routes
-router.get("/request", getTutorRequests);
 router.get("/request/:id", getTutorRequest);
+router.get("/request", getTutorRequests);
 router.post("/request", createTutorRequest);
 router.put("/request", replaceTutorRequest);
 router.delete("/request/:id", deleteTutorRequest);
