@@ -9,6 +9,7 @@ import Creatable from "@/components/shared/Creatable";
 import { RateOptions, Region, TutorType } from "@/utils/enums";
 import Head from "next/head";
 import { postalCodeToRegion } from "@/utils/postalCode";
+import { createTutorRequest } from "@/services/tutorRequest";
 
 const MakeTutorRequest: NextPageWithLayout = () => {
   const {
@@ -53,6 +54,8 @@ const MakeTutorRequest: NextPageWithLayout = () => {
     onSubmit: async (values) => {
       try {
         alert(JSON.stringify(values));
+        const data = await createTutorRequest(values);
+        console.log(data);
       } catch (e) {
         alert("could not make reuqest");
       }

@@ -16,12 +16,13 @@ const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
       retry: (count, error: any) => {
-        // if 404 error, do not retry
-        if (error?.response?.status == 404) {
-          return false;
+        // if no response probably network error and we want to retry?
+        if (!error.response) {
+          return true;
         }
-        // can add more cases here
-        return true;
+
+        // else dont want to retry
+        return false;
       },
     },
   },
