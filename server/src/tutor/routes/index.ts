@@ -16,6 +16,7 @@ import {
   getTutorRequest,
   getTutorRequests,
   replaceTutorRequest,
+  withdrawApplication,
 } from "../controllers/request";
 
 const router = Router();
@@ -37,5 +38,6 @@ router.put("/request", replaceTutorRequest);
 router.delete("/request/:id", deleteTutorRequest);
 
 router.post("/apply-request", auth, applyToTutorRequest);
+router.post("/withdraw-request", auth, withdrawApplication);
 
 export default router;

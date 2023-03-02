@@ -120,3 +120,31 @@ export const applyToTutorRequest = async (req: Request, res: Response) => {
 
   res.json();
 };
+
+export const withdrawApplication = async (req: Request, res: Response) => {
+  const id = req.body.id;
+  const owner = req.user!;
+
+  // delete application
+  const tutorApp = await collections.tutorApplications!.findOne({
+    tutorRequest: new ObjectId(id),
+    tutor: owner._id!,
+  });
+
+  if (tutorApp) {
+    await collections.tutorApplications!.deleteOne({
+      tutorRequest: new ObjectId(id),
+      tutor: owner._id!,
+    });
+
+    await collections.tutorRequests!.updateOne(
+      {
+        _id: new ObjectId(id),
+      },
+      { $pull: { applicants: tutorApp._id } }
+    );
+  }
+
+  // note: will not throw error if doesn't exist
+  res.json();
+};
