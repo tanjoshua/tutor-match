@@ -4,6 +4,7 @@ import { PasswordReset } from "../base/models/PasswordReset";
 import User from "../base/models/User";
 import Invoice from "../invoicing/models/Invoice";
 import TutorProfile from "../tutor/models/Profile";
+import TutorApplication from "../tutor/models/TutorApplication";
 import TutorRequest from "../tutor/models/TutorRequest";
 import { DB_CONN_STRING } from "../utils/config";
 
@@ -15,6 +16,7 @@ export const collections: {
   // tutors
   tutorProfiles?: mongoDB.Collection<TutorProfile>;
   tutorRequests?: mongoDB.Collection<TutorRequest>;
+  tutorApplications?: mongoDB.Collection<TutorApplication>;
 } = {};
 
 // Initialize Connection
@@ -27,11 +29,12 @@ export async function connectToDatabase() {
 
   collections.invoices = db.collection<Invoice>("invoices");
   collections.users = db.collection<User>("user");
-  collections.passwordReset = db.collection<PasswordReset>("password-reset");
+  collections.passwordReset = db.collection<PasswordReset>("passwordReset");
 
   // tutors
-  collections.tutorProfiles = db.collection<TutorProfile>("tutor-profiles");
-  collections.tutorRequests = db.collection<TutorRequest>("tutor-requests");
+  collections.tutorProfiles = db.collection<TutorProfile>("tutorProfiles");
+  collections.tutorRequests = db.collection<TutorRequest>("tutorRequests");
+  collections.tutorApplications = db.collection<TutorApplication>("tutorApps");
 
   console.log(`Successfully connected to database: ${db.databaseName}.`);
 }
