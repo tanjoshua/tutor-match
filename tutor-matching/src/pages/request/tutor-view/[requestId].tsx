@@ -10,10 +10,16 @@ import {
   UserGroupIcon,
   UserIcon,
   ClipboardDocumentIcon,
+  XMarkIcon,
 } from "@heroicons/react/20/solid";
 import { useRouter } from "next/router";
 import Head from "next/head";
-import { getTutorRequest } from "@/services/tutorRequest";
+import {
+  applyToTutorRequest,
+  getHasApplied,
+  getTutorRequest,
+  withdrawApplication,
+} from "@/services/tutorRequest";
 import { RateOptions } from "@/utils/enums";
 
 const TutorProfile: NextPageWithLayout = () => {
@@ -24,6 +30,18 @@ const TutorProfile: NextPageWithLayout = () => {
     () => getTutorRequest({ id: requestId as string }),
     { enabled: !!requestId }
   );
+
+  const {
+    isLoading: hasAppliedLoading,
+    error: hasAppliedError,
+    data: hasAppliedData,
+    refetch: refetchHasApplied,
+  } = useQuery(
+    ["tutorHasApplied", requestId],
+    () => getHasApplied({ id: requestId as string }),
+    { enabled: !!requestId }
+  );
+  console.log(hasAppliedData);
 
   if (isLoading) {
     return <></>;
@@ -72,7 +90,7 @@ const TutorProfile: NextPageWithLayout = () => {
           <div className="min-w-0 flex-1">
             <h2 className="text-2xl font-bold leading-7 text-gray-900 sm:truncate sm:text-3xl sm:tracking-tight">
               {`${tutorRequest.level}: ${tutorRequest.subjects.join(
-                ","
+                ", "
               )} Tutor Request`}
             </h2>
             <div className="mt-1 flex flex-col sm:mt-0 sm:flex-row sm:flex-wrap sm:space-x-6">
@@ -96,16 +114,38 @@ const TutorProfile: NextPageWithLayout = () => {
           </div>
           <div className="mt-5 flex lg:mt-0 lg:ml-4">
             <span className="sm:ml-3">
-              <button
-                type="button"
-                className="inline-flex items-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
-              >
-                <ClipboardDocumentIcon
-                  className="-ml-1 mr-2 h-5 w-5 text-gray-700"
-                  aria-hidden="true"
-                />
-                Apply
-              </button>
+              {hasAppliedData?.hasApplied ? (
+                <button
+                  type="button"
+                  className="inline-flex items-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+                  onClick={async () => {
+                    await withdrawApplication({ id: requestId as string });
+                    refetchHasApplied();
+                  }}
+                >
+                  <XMarkIcon
+                    className="-ml-1 mr-2 h-5 w-5 text-gray-700"
+                    aria-hidden="true"
+                  />
+                  Withdraw
+                </button>
+              ) : (
+                <button
+                  type="button"
+                  className="inline-flex items-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+                  onClick={async () => {
+                    console.log("APPLYING");
+                    await applyToTutorRequest({ id: requestId as string });
+                    refetchHasApplied();
+                  }}
+                >
+                  <ClipboardDocumentIcon
+                    className="-ml-1 mr-2 h-5 w-5 text-gray-700"
+                    aria-hidden="true"
+                  />
+                  Apply
+                </button>
+              )}
             </span>
           </div>
         </div>
