@@ -153,3 +153,15 @@ export const withdrawApplication = async (req: Request, res: Response) => {
   // note: will not throw error if doesn't exist
   res.json();
 };
+
+export const tutorHasApplied = async (req: Request, res: Response) => {
+  const id = req.query.id;
+  const owner = req.user!;
+
+  const tutorApp = await collections.tutorApplications!.findOne({
+    tutorRequest: new ObjectId(id as string),
+    tutor: owner._id!,
+  });
+
+  res.json({ hasApplied: !!tutorApp });
+};
