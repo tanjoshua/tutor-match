@@ -1,4 +1,5 @@
 import { Request, Response } from "express";
+import uniqid from "uniqid";
 
 import HttpError from "../../errors/HttpError";
 import { collections } from "../../services/database.service";
@@ -58,9 +59,13 @@ export const createTutorRequest = async (req: Request, res: Response) => {
   const newObject = new TutorRequest();
   Object.assign(newObject, req.body);
 
-  const result = await collections.tutorRequests?.insertOne(newObject);
+  // generate uniqid for client access token
+  const clientAccessToken = uniqid();
+  newObject.clientAccessToken = clientAccessToken;
 
-  res.status(201).json(result);
+  await collections.tutorRequests?.insertOne(newObject);
+
+  res.status(201).json({ clientAccessToken });
 };
 
 export const replaceTutorRequest = async (req: Request, res: Response) => {
