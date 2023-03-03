@@ -28,6 +28,9 @@ export default class TutorRequest {
   // applicant fields
   public applicants: ObjectId[] = [];
 
+  // other fields
+  public clientAccessToken: string;
+
   public static assign(obj: TutorRequest) {
     const newObject = new TutorRequest();
     Object.assign(newObject, obj);

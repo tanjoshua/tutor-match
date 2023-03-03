@@ -10,8 +10,10 @@ import { RateOptions, Region, TutorType } from "@/utils/enums";
 import Head from "next/head";
 import { postalCodeToRegion } from "@/utils/postalCode";
 import { createTutorRequest } from "@/services/tutorRequest";
+import { useRouter } from "next/router";
 
 const MakeTutorRequest: NextPageWithLayout = () => {
+  const router = useRouter();
   const {
     isLoading: isLoadingLevels,
     error: levelsError,
@@ -55,9 +57,9 @@ const MakeTutorRequest: NextPageWithLayout = () => {
       try {
         alert(JSON.stringify(values));
         const data = await createTutorRequest(values);
-        console.log(data);
+        router.push(`/request/client/${data.clientAccessToken}`);
       } catch (e) {
-        alert("could not make reuqest");
+        alert("could not make request");
       }
     },
   });

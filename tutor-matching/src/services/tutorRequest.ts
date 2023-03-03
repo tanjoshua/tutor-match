@@ -106,3 +106,29 @@ export const getTutorRequests = ({ searchQuery }: { searchQuery?: string }) => {
     params: { search: searchQuery },
   });
 };
+
+export const applyToTutorRequest = async ({ id }: { id: string }) => {
+  const result = await instance.post("/tutor/apply-request", {
+    id,
+  });
+
+  return result.data;
+};
+
+export const withdrawApplication = async ({ id }: { id: string }) => {
+  const result = await instance.post("/tutor/withdraw-request", {
+    id,
+  });
+
+  return result.data;
+};
+
+export const getHasApplied = async ({ id }: { id: string }) => {
+  const result = await instance.get("/tutor/applied", {
+    params: {
+      id,
+    },
+  });
+
+  return result.data;
+};
