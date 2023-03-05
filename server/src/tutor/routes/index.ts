@@ -18,6 +18,8 @@ import {
   replaceTutorRequest,
   withdrawApplication,
   tutorHasApplied,
+  getTutorApplications,
+  getRequestByToken,
 } from "../controllers/request";
 
 const router = Router();
@@ -28,6 +30,9 @@ router.get("/request", getTutorRequests);
 router.post("/request", createTutorRequest);
 router.put("/request", replaceTutorRequest);
 router.delete("/request/:id", deleteTutorRequest);
+
+router.get("/request-client/apps", getTutorApplications);
+router.get("/request-client/:id", getRequestByToken);
 
 router.post("/apply-request", auth, applyToTutorRequest);
 router.post("/withdraw-request", auth, withdrawApplication);

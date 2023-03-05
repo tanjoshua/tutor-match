@@ -165,3 +165,38 @@ export const tutorHasApplied = async (req: Request, res: Response) => {
 
   res.json({ hasApplied: !!tutorApp });
 };
+
+export const getRequestByToken = async (req: Request, res: Response) => {
+  const token = req.query.token;
+
+  const tutorRequest = await collections.tutorRequests!.findOne({
+    clientAccessToken: token,
+  });
+
+  res.json({ tutorRequest });
+};
+
+export const getTutorApplications = async (req: Request, res: Response) => {
+  const token = req.query.token;
+
+  const tutorRequest = await collections.tutorRequests!.findOne({
+    clientAccessToken: token,
+  });
+  if (!tutorRequest) {
+    throw new HttpError(404, "Not found");
+  }
+
+  const apps = await collections
+    .tutorApplications!.aggregate([
+      {
+        $match: {
+          tutorRequest: new ObjectId(tutorRequest._id),
+        },
+      },
+      // will probably add lookup stuff here
+    ])
+    .sort({ createdAt: -1 })
+    .toArray();
+
+  res.json({ tutorApplications: apps });
+};
