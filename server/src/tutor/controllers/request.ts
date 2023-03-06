@@ -166,16 +166,6 @@ export const tutorHasApplied = async (req: Request, res: Response) => {
   res.json({ hasApplied: !!tutorApp });
 };
 
-export const getRequestByToken = async (req: Request, res: Response) => {
-  const token = req.query.token;
-
-  const tutorRequest = await collections.tutorRequests!.findOne({
-    clientAccessToken: token,
-  });
-
-  res.json({ tutorRequest });
-};
-
 export const getTutorApplications = async (req: Request, res: Response) => {
   const token = req.query.token;
 
