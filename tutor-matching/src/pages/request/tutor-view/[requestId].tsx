@@ -41,7 +41,6 @@ const TutorProfile: NextPageWithLayout = () => {
     () => getHasApplied({ id: requestId as string }),
     { enabled: !!requestId }
   );
-  console.log(hasAppliedData);
 
   if (isLoading) {
     return <></>;

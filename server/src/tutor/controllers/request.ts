@@ -188,5 +188,5 @@ export const getTutorApplications = async (req: Request, res: Response) => {
     .sort({ createdAt: -1 })
     .toArray();
 
-  res.json({ tutorApplications: apps });
+  res.json({ tutorApplications: apps, tutorRequest });
 };
