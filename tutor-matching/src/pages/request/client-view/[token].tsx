@@ -1,4 +1,4 @@
-import { NextPageWithLayout } from "../../_app";
+import App, { NextPageWithLayout } from "../../_app";
 import { ReactElement, useState } from "react";
 import Layout from "../../../components/Layout";
 import { useQuery } from "react-query";
@@ -10,6 +10,7 @@ import {
   UserIcon,
   ClipboardDocumentIcon,
   XMarkIcon,
+  ArrowPathIcon,
 } from "@heroicons/react/20/solid";
 import { useRouter } from "next/router";
 import Head from "next/head";
@@ -21,6 +22,9 @@ import {
   withdrawApplication,
 } from "@/services/tutorRequest";
 import { RateOptions } from "@/utils/enums";
+import Spinner from "@/components/shared/Spinner";
+import AppCard from "@/components/tutor-request/AppCard";
+import { ClipboardDocumentCheckIcon } from "@heroicons/react/24/outline";
 
 const tabClasses =
   "inline-block p-4 border-b-2 border-transparent rounded-t-lg hover:text-gray-600 hover:border-gray-300 ";
@@ -30,7 +34,7 @@ const tabClassesSelected =
 const TutorProfile: NextPageWithLayout = () => {
   const router = useRouter();
   const { token } = router.query;
-  const { isLoading, error, data, refetch } = useQuery(
+  const { isLoading, error, data, refetch, isRefetching } = useQuery(
     ["getTutorApplications", token],
     () => getTutorApplications({ token: token as string }),
     { enabled: !!token }
@@ -70,8 +74,9 @@ const TutorProfile: NextPageWithLayout = () => {
 
   if (data?.tutorRequest) {
     const tutorRequest = data.tutorRequest;
-    const tutorApplications = data.tutorApplications;
-    console.log(data.tutorApplications);
+    const pendingApplications: any[] = data.pendingApplications;
+    const hiddenApplications: any[] = data.hiddenApplications;
+    const shortlistedApplications: any[] = data.shortlistedApplications;
 
     // profile exists
     return (
@@ -92,7 +97,28 @@ const TutorProfile: NextPageWithLayout = () => {
             </div>
           </div>
           <div className="mt-5 flex lg:mt-0 lg:ml-4">
-            <span className="sm:ml-3">
+            <span className="">
+              <button
+                type="button"
+                className="inline-flex items-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+                onClick={() => {
+                  refetch();
+                }}
+              >
+                {isRefetching ? (
+                  <>Loading</>
+                ) : (
+                  <>
+                    <ArrowPathIcon
+                      className="-ml-1 mr-2 h-5 w-5 text-gray-700"
+                      aria-hidden="true"
+                    />
+                    Refresh
+                  </>
+                )}
+              </button>
+            </span>
+            <span className="ml-2">
               <button
                 type="button"
                 className="inline-flex items-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
@@ -101,55 +127,86 @@ const TutorProfile: NextPageWithLayout = () => {
                   className="-ml-1 mr-2 h-5 w-5 text-gray-700"
                   aria-hidden="true"
                 />
-                Edit tutor request
+                Edit request
               </button>
             </span>
           </div>
         </div>
 
         <div className="border-t border-gray-200 md:grid md:grid-cols-2 md:items-start">
-          <div className="text-sm font-medium text-center text-gray-500 border-b border-gray-200 mx-2 leading-6">
-            <ul className="flex flex-wrap -mb-px">
-              <li className="mr-2">
-                <button
-                  className={
-                    tabSelected === "Pending" ? tabClassesSelected : tabClasses
-                  }
-                  onClick={() => setTabSelected("Pending")}
-                >
-                  Pending
-                </button>
-              </li>
-              <li className="mr-2">
-                <button
-                  className={
-                    tabSelected === "Hidden" ? tabClassesSelected : tabClasses
-                  }
-                  onClick={() => setTabSelected("Hidden")}
-                >
-                  Hidden
-                </button>
-              </li>
-              <li className="mr-2 md:hidden">
-                <button
-                  className={
-                    tabSelected === "Shortlisted"
-                      ? tabClassesSelected
-                      : tabClasses
-                  }
-                  onClick={() => setTabSelected("Shortlisted")}
-                >
-                  Shortlisted
-                </button>
-              </li>
-            </ul>
+          <div>
+            <div className="text-sm font-medium text-center text-gray-500 border-b border-gray-200 mx-2 leading-6">
+              <ul className="flex flex-wrap -mb-px">
+                <li className="mr-2">
+                  <button
+                    className={
+                      tabSelected === "Pending"
+                        ? tabClassesSelected
+                        : tabClasses
+                    }
+                    onClick={() => setTabSelected("Pending")}
+                  >
+                    Pending
+                  </button>
+                </li>
+                <li className="mr-2">
+                  <button
+                    className={
+                      tabSelected === "Hidden" ? tabClassesSelected : tabClasses
+                    }
+                    onClick={() => setTabSelected("Hidden")}
+                  >
+                    Hidden
+                  </button>
+                </li>
+                <li className="mr-2 md:hidden">
+                  <button
+                    className={
+                      tabSelected === "Shortlisted"
+                        ? tabClassesSelected
+                        : tabClasses
+                    }
+                    onClick={() => setTabSelected("Shortlisted")}
+                  >
+                    Shortlisted
+                  </button>
+                </li>
+              </ul>
+            </div>
+            <div className="p-2">
+              <div>
+                {isRefetching && <Spinner />}
+                {!isRefetching && tabSelected === "Pending" && (
+                  <ul role="list" className="divide-y divide-gray-200">
+                    {pendingApplications.map((app) => (
+                      <AppCard tutorProfile={app.tutorProfile} />
+                    ))}
+                  </ul>
+                )}
+                {!isRefetching && tabSelected === "Hidden" && (
+                  <ul role="list" className="divide-y divide-gray-200">
+                    {hiddenApplications.map((app) => (
+                      <AppCard tutorProfile={app.tutorProfile} />
+                    ))}
+                  </ul>
+                )}
+                {!isRefetching && tabSelected === "Shortlisted" && (
+                  <ul role="list" className="divide-y divide-gray-200">
+                    {shortlistedApplications.map((app) => (
+                      <AppCard tutorProfile={app.tutorProfile} />
+                    ))}
+                  </ul>
+                )}
+              </div>
+            </div>
           </div>
-          <div className="">
+          <div className="hidden md:block">
             <div className="border-b border-gray-200">
-              <div className="text-2xl font-bold  text-gray-900 p-4 leading-6">
+              <div className="text-2xl font-bold text-gray-900 p-4 leading-6">
                 Shortlisted tutors
               </div>
             </div>
+            <div className="p-2">{isRefetching && <Spinner />}</div>
           </div>
         </div>
       </div>
