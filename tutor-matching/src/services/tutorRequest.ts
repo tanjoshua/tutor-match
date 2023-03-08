@@ -132,3 +132,13 @@ export const getHasApplied = async ({ id }: { id: string }) => {
 
   return result.data;
 };
+
+export const getTutorApplications = async ({ token }: { token: string }) => {
+  const result = await instance.get("/tutor/request-client/apps", {
+    params: {
+      token,
+    },
+  });
+
+  return result.data;
+};
