@@ -5,7 +5,7 @@ import HttpError from "../../errors/HttpError";
 import { collections } from "../../services/database.service";
 import { ObjectId } from "mongodb";
 import TutorRequest from "../models/TutorRequest";
-import TutorApplication from "../models/TutorApplication";
+import TutorApplication, { ApplicationState } from "../models/TutorApplication";
 
 require("express-async-errors");
 export const getTutorRequests = async (req: Request, res: Response) => {
@@ -176,17 +176,96 @@ export const getTutorApplications = async (req: Request, res: Response) => {
     throw new HttpError(404, "Not found");
   }
 
-  const apps = await collections
+  const pendingApplications = await collections
     .tutorApplications!.aggregate([
       {
         $match: {
           tutorRequest: new ObjectId(tutorRequest._id),
+          state: ApplicationState.Pending,
         },
       },
-      // will probably add lookup stuff here
+      {
+        $lookup: {
+          from: "tutorProfiles",
+          localField: "tutor",
+          foreignField: "owner",
+          as: "tutorProfile",
+        },
+      },
+      {
+        $unwind: {
+          // this also removes applications with no tutor profile
+          path: "$tutorProfile",
+        },
+      },
+      {
+        $sort: {
+          updatedAt: -1,
+        },
+      },
     ])
-    .sort({ createdAt: -1 })
+    .toArray();
+  const hiddenApplications = await collections
+    .tutorApplications!.aggregate([
+      {
+        $match: {
+          tutorRequest: new ObjectId(tutorRequest._id),
+          state: ApplicationState.Hidden,
+        },
+      },
+      {
+        $lookup: {
+          from: "tutorProfiles",
+          localField: "tutor",
+          foreignField: "owner",
+          as: "tutorProfile",
+        },
+      },
+      {
+        $unwind: {
+          path: "$tutorProfile",
+        },
+      },
+      {
+        $sort: {
+          updatedAt: -1,
+        },
+      },
+    ])
+    .toArray();
+  const shortlistedApplications = await collections
+    .tutorApplications!.aggregate([
+      {
+        $match: {
+          tutorRequest: new ObjectId(tutorRequest._id),
+          state: ApplicationState.Shortlisted,
+        },
+      },
+      {
+        $lookup: {
+          from: "tutorProfiles",
+          localField: "tutor",
+          foreignField: "owner",
+          as: "tutorProfile",
+        },
+      },
+      {
+        $unwind: {
+          path: "$tutorProfile",
+        },
+      },
+      {
+        $sort: {
+          updatedAt: -1,
+        },
+      },
+    ])
     .toArray();
 
-  res.json({ tutorApplications: apps, tutorRequest });
+  res.json({
+    pendingApplications,
+    hiddenApplications,
+    shortlistedApplications,
+    tutorRequest,
+  });
 };
