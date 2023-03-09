@@ -21,7 +21,7 @@ import {
   getTutorRequest,
   withdrawApplication,
 } from "@/services/tutorRequest";
-import { RateOptions } from "@/utils/enums";
+import { ApplicationState, RateOptions } from "@/utils/enums";
 import Spinner from "@/components/shared/Spinner";
 import AppCard from "@/components/tutor-request/AppCard";
 import { ClipboardDocumentCheckIcon } from "@heroicons/react/24/outline";
@@ -39,7 +39,7 @@ const TutorProfile: NextPageWithLayout = () => {
     () => getTutorApplications({ token: token as string }),
     { enabled: !!token }
   );
-  const [tabSelected, setTabSelected] = useState("Pending");
+  const [tabSelected, setTabSelected] = useState(ApplicationState.Pending);
 
   if (isLoading) {
     return <></>;
@@ -140,11 +140,11 @@ const TutorProfile: NextPageWithLayout = () => {
                 <li className="mr-2">
                   <button
                     className={
-                      tabSelected === "Pending"
+                      tabSelected === ApplicationState.Pending
                         ? tabClassesSelected
                         : tabClasses
                     }
-                    onClick={() => setTabSelected("Pending")}
+                    onClick={() => setTabSelected(ApplicationState.Pending)}
                   >
                     Pending
                   </button>
@@ -152,9 +152,11 @@ const TutorProfile: NextPageWithLayout = () => {
                 <li className="mr-2">
                   <button
                     className={
-                      tabSelected === "Hidden" ? tabClassesSelected : tabClasses
+                      tabSelected === ApplicationState.Hidden
+                        ? tabClassesSelected
+                        : tabClasses
                     }
-                    onClick={() => setTabSelected("Hidden")}
+                    onClick={() => setTabSelected(ApplicationState.Hidden)}
                   >
                     Hidden
                   </button>
@@ -162,11 +164,11 @@ const TutorProfile: NextPageWithLayout = () => {
                 <li className="mr-2 md:hidden">
                   <button
                     className={
-                      tabSelected === "Shortlisted"
+                      tabSelected === ApplicationState.Shortlisted
                         ? tabClassesSelected
                         : tabClasses
                     }
-                    onClick={() => setTabSelected("Shortlisted")}
+                    onClick={() => setTabSelected(ApplicationState.Shortlisted)}
                   >
                     Shortlisted
                   </button>
@@ -176,27 +178,46 @@ const TutorProfile: NextPageWithLayout = () => {
             <div className="p-2">
               <div>
                 {isRefetching && <Spinner />}
-                {!isRefetching && tabSelected === "Pending" && (
+                {!isRefetching && tabSelected === ApplicationState.Pending && (
                   <ul role="list" className="divide-y divide-gray-200">
                     {pendingApplications.map((app) => (
-                      <AppCard tutorProfile={app.tutorProfile} />
+                      <AppCard
+                        key={app._id}
+                        tutorProfile={app.tutorProfile}
+                        id={app._id}
+                        refetch={refetch}
+                        normal
+                      />
                     ))}
                   </ul>
                 )}
-                {!isRefetching && tabSelected === "Hidden" && (
+                {!isRefetching && tabSelected === ApplicationState.Hidden && (
                   <ul role="list" className="divide-y divide-gray-200">
                     {hiddenApplications.map((app) => (
-                      <AppCard tutorProfile={app.tutorProfile} />
+                      <AppCard
+                        key={app._id}
+                        tutorProfile={app.tutorProfile}
+                        id={app._id}
+                        refetch={refetch}
+                        hidden
+                      />
                     ))}
                   </ul>
                 )}
-                {!isRefetching && tabSelected === "Shortlisted" && (
-                  <ul role="list" className="divide-y divide-gray-200">
-                    {shortlistedApplications.map((app) => (
-                      <AppCard tutorProfile={app.tutorProfile} />
-                    ))}
-                  </ul>
-                )}
+                {!isRefetching &&
+                  tabSelected === ApplicationState.Shortlisted && (
+                    <ul role="list" className="divide-y divide-gray-200">
+                      {shortlistedApplications.map((app) => (
+                        <AppCard
+                          key={app._id}
+                          tutorProfile={app.tutorProfile}
+                          id={app._id}
+                          refetch={refetch}
+                          shortlist
+                        />
+                      ))}
+                    </ul>
+                  )}
               </div>
             </div>
           </div>
@@ -206,7 +227,22 @@ const TutorProfile: NextPageWithLayout = () => {
                 Shortlisted tutors
               </div>
             </div>
-            <div className="p-2">{isRefetching && <Spinner />}</div>
+            <div className="p-2">
+              {isRefetching && <Spinner />}
+              {!isRefetching && (
+                <ul role="list" className="divide-y divide-gray-200">
+                  {shortlistedApplications.map((app) => (
+                    <AppCard
+                      key={app._id}
+                      tutorProfile={app.tutorProfile}
+                      id={app._id}
+                      refetch={refetch}
+                      shortlist
+                    />
+                  ))}
+                </ul>
+              )}
+            </div>
           </div>
         </div>
       </div>

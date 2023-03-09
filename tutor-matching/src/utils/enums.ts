@@ -59,3 +59,9 @@ export enum RateOptions {
   Max = "Indicate max rate",
   Market = "Market rate",
 }
+
+export enum ApplicationState {
+  Pending = "Pending",
+  Shortlisted = "Shortlisted",
+  Hidden = "Hidden",
+}
