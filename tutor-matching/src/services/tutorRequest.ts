@@ -108,7 +108,7 @@ export const getTutorRequests = ({ searchQuery }: { searchQuery?: string }) => {
 };
 
 export const applyToTutorRequest = async ({ id }: { id: string }) => {
-  const result = await instance.post("/tutor/apply-request", {
+  const result = await instance.post("/tutor/applyRequest", {
     id,
   });
 
@@ -116,7 +116,7 @@ export const applyToTutorRequest = async ({ id }: { id: string }) => {
 };
 
 export const withdrawApplication = async ({ id }: { id: string }) => {
-  const result = await instance.post("/tutor/withdraw-request", {
+  const result = await instance.post("/tutor/withdrawRequest", {
     id,
   });
 
@@ -134,10 +134,25 @@ export const getHasApplied = async ({ id }: { id: string }) => {
 };
 
 export const getTutorApplications = async ({ token }: { token: string }) => {
-  const result = await instance.get("/tutor/request-client/apps", {
+  const result = await instance.get("/tutor/requestClient/apps", {
     params: {
       token,
     },
+  });
+
+  return result.data;
+};
+
+export const updateTutorApplicationState = async ({
+  applicationId,
+  newState,
+}: {
+  applicationId: string;
+  newState: string;
+}) => {
+  const result = await instance.post("/tutor/requestClient/updateAppState", {
+    id: applicationId,
+    state: newState,
   });
 
   return result.data;
