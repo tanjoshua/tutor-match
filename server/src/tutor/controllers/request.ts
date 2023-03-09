@@ -269,3 +269,26 @@ export const getTutorApplications = async (req: Request, res: Response) => {
     tutorRequest,
   });
 };
+
+export const updateTutorApplicationState = async (
+  req: Request,
+  res: Response
+) => {
+  const id = req.body.id;
+  const state = req.body.state;
+
+  // insert application into list
+  const result = await collections.tutorApplications!.updateOne(
+    { _id: new ObjectId(id) },
+    {
+      $set: {
+        state,
+      },
+    }
+  );
+  if (!result.matchedCount) {
+    throw new HttpError(404, "Not found");
+  }
+
+  res.json();
+};

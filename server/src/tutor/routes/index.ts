@@ -19,6 +19,7 @@ import {
   withdrawApplication,
   tutorHasApplied,
   getTutorApplications,
+  updateTutorApplicationState,
 } from "../controllers/request";
 
 const router = Router();
@@ -30,10 +31,13 @@ router.post("/request", createTutorRequest);
 router.put("/request", replaceTutorRequest);
 router.delete("/request/:id", deleteTutorRequest);
 
-router.get("/request-client/apps", getTutorApplications);
+// client side
+router.get("/requestClient/apps", getTutorApplications);
+router.post("/requestClient/updateAppState", updateTutorApplicationState);
 
-router.post("/apply-request", auth, applyToTutorRequest);
-router.post("/withdraw-request", auth, withdrawApplication);
+// tutor side
+router.post("/applyRequest", auth, applyToTutorRequest);
+router.post("/withdrawRequest", auth, withdrawApplication);
 router.get("/applied", auth, tutorHasApplied);
 
 // tutor profile routes
