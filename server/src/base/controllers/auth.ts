@@ -98,6 +98,7 @@ export const resetPassword = async (req: Request, res: Response) => {
   // store new password
   const hashedPassword = await bcrypt.hash(password, 12);
   await collections.users?.updateOne(
+    // TODO: UPDATEONE NO LONGER WORKS LIKE THIS, NEED TO USE $SET
     { id: user._id },
     { password: hashedPassword }
   );
