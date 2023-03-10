@@ -3,22 +3,16 @@ import { ReactElement } from "react";
 import Layout from "../../components/Layout";
 import Select from "@/components/shared/Select";
 import { useFormik } from "formik";
-import { useQuery } from "react-query";
-import { getTutorLevels } from "@/services/tutor";
 import Creatable from "@/components/shared/Creatable";
 import { RateOptions, Region, TutorType } from "@/utils/enums";
 import Head from "next/head";
 import { postalCodeToRegion } from "@/utils/postalCode";
 import { createTutorRequest } from "@/services/tutorRequest";
 import { useRouter } from "next/router";
+import { levelOptions } from "@/utils/options";
 
 const MakeTutorRequest: NextPageWithLayout = () => {
   const router = useRouter();
-  const {
-    isLoading: isLoadingLevels,
-    error: levelsError,
-    data: levelsData,
-  } = useQuery("tutorLevels", getTutorLevels);
   const formik = useFormik<{
     // types so that i can use .include
     // customer fields
@@ -97,14 +91,7 @@ const MakeTutorRequest: NextPageWithLayout = () => {
                       required
                       isClearable
                       name="level"
-                      options={
-                        isLoadingLevels || levelsError
-                          ? []
-                          : levelsData.levels.map((level: string) => ({
-                              label: level,
-                              value: level,
-                            }))
-                      }
+                      options={levelOptions}
                       onChange={(value: any) => {
                         formik.setFieldValue("level", value ? value.value : "");
                       }}
@@ -357,7 +344,7 @@ const MakeTutorRequest: NextPageWithLayout = () => {
               </div>
             </div>
             <div className="mt-5 md:col-span-2 md:mt-0">
-              <div className="overflow-hidden shadow sm:rounded-md">
+              <div className="shadow sm:rounded-md">
                 <div className="space-y-4 bg-white px-4 py-5 sm:p-6">
                   <div>
                     <label className="block mb-2 font-medium text-gray-900">
@@ -419,10 +406,10 @@ const MakeTutorRequest: NextPageWithLayout = () => {
                         label: formik.values.region,
                         value: formik.values.region,
                       }}
-                      isDisabled
                     />
                     <p className="mt-2 text-sm text-gray-500">
-                      Auto selected from postal code
+                      Auto selected from postal code. Change the selection if
+                      you think it is wrong.
                     </p>
                   </div>
                 </div>
