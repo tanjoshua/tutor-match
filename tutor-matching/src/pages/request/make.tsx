@@ -1,5 +1,5 @@
 import { NextPageWithLayout } from "../_app";
-import { ReactElement } from "react";
+import { ReactElement, useState } from "react";
 import Layout from "../../components/Layout";
 import Select from "@/components/shared/Select";
 import { useFormik } from "formik";
@@ -10,9 +10,18 @@ import { postalCodeToRegion } from "@/utils/postalCode";
 import { createTutorRequest } from "@/services/tutorRequest";
 import { useRouter } from "next/router";
 import { levelOptions } from "@/utils/options";
+import ClientViewModal from "@/components/tutor-request/ClientViewModal";
 
 const MakeTutorRequest: NextPageWithLayout = () => {
   const router = useRouter();
+  const [openModal, setOpenModal] = useState(false);
+  const origin =
+    typeof window !== "undefined" && window.location.origin
+      ? window.location.origin
+      : ""; // getting hostname for shareable link
+  const [clientLink, setClientLink] = useState(
+    `${origin}/request/client-view/c0ugn0lex2l1w`
+  );
   const formik = useFormik<{
     // types so that i can use .include
     // customer fields
@@ -50,7 +59,10 @@ const MakeTutorRequest: NextPageWithLayout = () => {
     onSubmit: async (values) => {
       try {
         const data = await createTutorRequest(values);
-        router.push(`/request/client-view/${data.clientAccessToken}`);
+        setClientLink(
+          `${origin}/request/client-view/${data.clientAccessToken}`
+        );
+        setOpenModal(true);
       } catch (e) {
         alert("could not make request");
       }
@@ -62,6 +74,11 @@ const MakeTutorRequest: NextPageWithLayout = () => {
       <Head>
         <title>Tutor Request</title>
       </Head>
+      <ClientViewModal
+        link={clientLink}
+        open={openModal}
+        setOpen={setOpenModal}
+      />
       <form onSubmit={formik.handleSubmit}>
         <div className="min-w-0 flex-1">
           <h2 className="text-2xl font-bold leading-7 text-gray-900 sm:truncate sm:text-3xl sm:tracking-tight">
