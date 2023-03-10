@@ -1,24 +1,27 @@
 import { NextPageWithLayout } from "../_app";
-import { ReactElement } from "react";
+import { ReactElement, useState } from "react";
 import Layout from "../../components/Layout";
 import Select from "@/components/shared/Select";
 import { useFormik } from "formik";
-import { useQuery } from "react-query";
-import { getTutorLevels } from "@/services/tutor";
 import Creatable from "@/components/shared/Creatable";
 import { RateOptions, Region, TutorType } from "@/utils/enums";
 import Head from "next/head";
 import { postalCodeToRegion } from "@/utils/postalCode";
 import { createTutorRequest } from "@/services/tutorRequest";
 import { useRouter } from "next/router";
+import { levelOptions } from "@/utils/options";
+import ClientViewModal from "@/components/tutor-request/ClientViewModal";
 
 const MakeTutorRequest: NextPageWithLayout = () => {
   const router = useRouter();
-  const {
-    isLoading: isLoadingLevels,
-    error: levelsError,
-    data: levelsData,
-  } = useQuery("tutorLevels", getTutorLevels);
+  const [openModal, setOpenModal] = useState(false);
+  const origin =
+    typeof window !== "undefined" && window.location.origin
+      ? window.location.origin
+      : ""; // getting hostname for shareable link
+  const [clientLink, setClientLink] = useState(
+    `${origin}/request/client-view/c0ugn0lex2l1w`
+  );
   const formik = useFormik<{
     // types so that i can use .include
     // customer fields
@@ -55,9 +58,11 @@ const MakeTutorRequest: NextPageWithLayout = () => {
     },
     onSubmit: async (values) => {
       try {
-        alert(JSON.stringify(values));
         const data = await createTutorRequest(values);
-        router.push(`/request/client/${data.clientAccessToken}`);
+        setClientLink(
+          `${origin}/request/client-view/${data.clientAccessToken}`
+        );
+        setOpenModal(true);
       } catch (e) {
         alert("could not make request");
       }
@@ -69,6 +74,11 @@ const MakeTutorRequest: NextPageWithLayout = () => {
       <Head>
         <title>Tutor Request</title>
       </Head>
+      <ClientViewModal
+        link={clientLink}
+        open={openModal}
+        setOpen={setOpenModal}
+      />
       <form onSubmit={formik.handleSubmit}>
         <div className="min-w-0 flex-1">
           <h2 className="text-2xl font-bold leading-7 text-gray-900 sm:truncate sm:text-3xl sm:tracking-tight">
@@ -98,14 +108,7 @@ const MakeTutorRequest: NextPageWithLayout = () => {
                       required
                       isClearable
                       name="level"
-                      options={
-                        isLoadingLevels || levelsError
-                          ? []
-                          : levelsData.levels.map((level: string) => ({
-                              label: level,
-                              value: level,
-                            }))
-                      }
+                      options={levelOptions}
                       onChange={(value: any) => {
                         formik.setFieldValue("level", value ? value.value : "");
                       }}
@@ -358,7 +361,7 @@ const MakeTutorRequest: NextPageWithLayout = () => {
               </div>
             </div>
             <div className="mt-5 md:col-span-2 md:mt-0">
-              <div className="overflow-hidden shadow sm:rounded-md">
+              <div className="shadow sm:rounded-md">
                 <div className="space-y-4 bg-white px-4 py-5 sm:p-6">
                   <div>
                     <label className="block mb-2 font-medium text-gray-900">
@@ -420,10 +423,10 @@ const MakeTutorRequest: NextPageWithLayout = () => {
                         label: formik.values.region,
                         value: formik.values.region,
                       }}
-                      isDisabled
                     />
                     <p className="mt-2 text-sm text-gray-500">
-                      Auto selected from postal code
+                      Auto selected from postal code. Change the selection if
+                      you think it is wrong.
                     </p>
                   </div>
                 </div>

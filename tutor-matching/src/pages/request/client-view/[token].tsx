@@ -86,11 +86,11 @@ const TutorProfile: NextPageWithLayout = () => {
         </Head>
         <div className="lg:flex lg:items-center lg:justify-between px-4 py-5 sm:px-6">
           <div className="min-w-0 flex-1">
-            <h2 className="text-2xl font-bold leading-7 text-gray-900 sm:truncate sm:text-3xl sm:tracking-tight">
+            <h1 className="text-2xl font-bold leading-7 text-gray-900 sm:truncate sm:text-3xl sm:tracking-tight">
               {`Hello ${tutorRequest.name}, here are the tutors that have applied`}
-            </h2>
+            </h1>
             <div className="mt-1 flex flex-col sm:mt-0 sm:flex-row sm:flex-wrap sm:space-x-6">
-              <p className="mt-2 text-sm text-gray-500">
+              <p className="text-sm text-gray-500">
                 New tutors who apply to your tutor request will show up here.
                 This list will be constantly updated so check back in regularly!
               </p>
