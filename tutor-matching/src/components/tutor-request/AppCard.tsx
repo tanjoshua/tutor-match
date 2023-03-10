@@ -1,10 +1,10 @@
 import {
-  ClipboardDocumentCheckIcon,
+  BookmarkIcon,
+  BookmarkSlashIcon,
   EyeIcon,
   EyeSlashIcon,
   XCircleIcon,
 } from "@heroicons/react/24/outline";
-import { EyeSlashIcon as SolidEye } from "@heroicons/react/20/solid";
 import { updateTutorApplicationState } from "@/services/tutorRequest";
 import { ApplicationState } from "@/utils/enums";
 
@@ -76,7 +76,7 @@ export default ({
                     updateState(id, ApplicationState.Pending);
                   }}
                 >
-                  <XCircleIcon className="h-6 w-6 text-indigo-600 hover:text-indigo-500" />
+                  <BookmarkSlashIcon className="h-6 w-6 text-indigo-600 hover:text-indigo-500" />
                 </button>
               )}
               {hidden && (
@@ -113,7 +113,7 @@ export default ({
                   updateState(id, ApplicationState.Shortlisted);
                 }}
               >
-                <ClipboardDocumentCheckIcon className="h-6 w-6 mr-1" />
+                <BookmarkIcon className="h-6 w-6 mr-1" />
                 Shortlist
               </button>
             </div>
