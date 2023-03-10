@@ -55,9 +55,8 @@ const MakeTutorRequest: NextPageWithLayout = () => {
     },
     onSubmit: async (values) => {
       try {
-        alert(JSON.stringify(values));
         const data = await createTutorRequest(values);
-        router.push(`/request/client/${data.clientAccessToken}`);
+        router.push(`/request/client-view/${data.clientAccessToken}`);
       } catch (e) {
         alert("could not make request");
       }
