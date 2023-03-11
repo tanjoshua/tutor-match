@@ -6,7 +6,7 @@ import Invoice from "../invoicing/models/Invoice";
 import TutorProfile from "../tutor/models/Profile";
 import TutorApplication from "../tutor/models/TutorApplication";
 import TutorRequest from "../tutor/models/TutorRequest";
-import { DB_CONN_STRING } from "../utils/config";
+import { DB_CONN_STRING, DB_NAME } from "../utils/config";
 
 // Global Variables
 export const collections: {
@@ -25,7 +25,7 @@ export async function connectToDatabase() {
 
   await client.connect();
 
-  const db: mongoDB.Db = client.db(process.env.DB_NAME);
+  const db: mongoDB.Db = client.db(DB_NAME);
 
   collections.invoices = db.collection<Invoice>("invoices");
   collections.users = db.collection<User>("user");

@@ -6,6 +6,8 @@ import { collections } from "../../services/database.service";
 import { ObjectId } from "mongodb";
 import TutorRequest from "../models/TutorRequest";
 import TutorApplication, { ApplicationState } from "../models/TutorApplication";
+import { sendEmail } from "../../services/email.service";
+import { generateNewTutorRequestEmail } from "../../utils/generateEmails";
 
 require("express-async-errors");
 export const getTutorRequests = async (req: Request, res: Response) => {
@@ -64,6 +66,15 @@ export const createTutorRequest = async (req: Request, res: Response) => {
   newObject.clientAccessToken = clientAccessToken;
 
   await collections.tutorRequests?.insertOne(newObject);
+
+  // send email (no need to wait)
+  sendEmail(
+    generateNewTutorRequestEmail(
+      newObject.name,
+      newObject.contactInfo.email,
+      clientAccessToken
+    )
+  );
 
   res.status(201).json({ clientAccessToken });
 };
