@@ -7,7 +7,7 @@ import { ObjectId } from "mongodb";
 import TutorRequest from "../models/TutorRequest";
 import TutorApplication, { ApplicationState } from "../models/TutorApplication";
 import { sendEmail } from "../../services/email.service";
-import { generateNewTutorRequestEmail } from "../../utils/generateEmails";
+import { generateNewTutorRequestEmail } from "../../utils/emailFactory";
 
 require("express-async-errors");
 export const getTutorRequests = async (req: Request, res: Response) => {
