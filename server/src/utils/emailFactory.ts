@@ -26,3 +26,24 @@ export const generateNewTutorRequestEmail = (
     from: EMAIL,
   };
 };
+
+export const generatePasswordResetEmail = (
+  recipientEmail: string,
+  token: string
+) => {
+  const link = `${BASE_URL}/reset-password/${token}`;
+  const htmlBody = `
+    <p>
+        Reset your password <a href="${link}" target="_blank">here</a>.
+        <br>
+        <br>
+        Thank you.
+    </p>
+  `;
+  return {
+    subject: "New Tutor Request",
+    html: htmlBody,
+    to: recipientEmail,
+    from: EMAIL,
+  };
+};

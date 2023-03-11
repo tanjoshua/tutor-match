@@ -5,8 +5,9 @@ import { collections } from "../../services/database.service";
 import User from "../models/User";
 import HttpError from "../../errors/HttpError";
 import { COOKIE_NAME } from "../../utils/config";
-import { sendEmail } from "../../utils/emailService";
 import { PasswordReset } from "../models/PasswordReset";
+import { sendEmail } from "../../services/email.service";
+import { generatePasswordResetEmail } from "../../utils/emailFactory";
 
 require("express-async-errors");
 
@@ -75,8 +76,8 @@ export const forgotPassword = async (req: Request, res: Response) => {
   await collections.passwordReset?.insertOne(pr);
 
   // send email
-  const html = `<a href="http://localhost:3000/reset-password/${token}">Reset Password</a>`;
-  await sendEmail(email, "Reset Password", html);
+  sendEmail(generatePasswordResetEmail(email, token));
+
   res.json();
 };
 
