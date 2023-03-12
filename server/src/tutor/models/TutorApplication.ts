@@ -1,4 +1,5 @@
 import { ObjectId } from "mongodb";
+import TutorProfile from "./Profile";
 
 export enum ApplicationState {
   Pending = "Pending",
@@ -13,9 +14,17 @@ export default class TutorApplication {
   public tutor: ObjectId;
   public state: ApplicationState = ApplicationState.Pending;
 
+  // populated fields
+  public tutorProfile?: TutorProfile;
+
   public static assign(obj: TutorApplication) {
     const newObject = new TutorApplication();
     Object.assign(newObject, obj);
+
+    if (obj.tutorProfile) {
+      const tutorProfile = TutorProfile.assign(obj.tutorProfile);
+      newObject.tutorProfile = tutorProfile;
+    }
     return newObject;
   }
 
@@ -25,6 +34,7 @@ export default class TutorApplication {
       tutorRequest: this.tutorRequest,
       tutor: this.tutor,
       state: this.state,
+      tutorProfile: this.tutorProfile,
     };
   }
 }

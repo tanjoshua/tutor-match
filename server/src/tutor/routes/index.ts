@@ -20,6 +20,7 @@ import {
   tutorHasApplied,
   getTutorApplications,
   updateTutorApplicationState,
+  getTutorApplication,
 } from "../controllers/request";
 
 const router = Router();
@@ -33,6 +34,7 @@ router.delete("/request/:id", deleteTutorRequest);
 
 // client side
 router.get("/requestClient/apps", getTutorApplications);
+router.get("/requestClient/application", getTutorApplication);
 router.post("/requestClient/updateAppState", updateTutorApplicationState);
 
 // tutor side
