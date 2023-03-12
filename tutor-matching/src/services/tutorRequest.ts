@@ -157,3 +157,13 @@ export const updateTutorApplicationState = async ({
 
   return result.data;
 };
+
+export const getTutorApplication = async ({ id }: { id: string }) => {
+  const result = await instance.get("/tutor/requestClient/application", {
+    params: {
+      id,
+    },
+  });
+
+  return result.data;
+};

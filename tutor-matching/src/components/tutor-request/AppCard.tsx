@@ -23,6 +23,8 @@ export default ({
   normal,
   shortlist,
   hidden,
+  showDetails,
+  updateState,
 }: {
   tutorProfile: TutorProfile;
   id: string;
@@ -30,12 +32,9 @@ export default ({
   normal?: boolean; // normal pending card
   shortlist?: boolean; // short list card type
   hidden?: boolean; // hidden card type
+  showDetails: Function;
+  updateState: (applicationId: string, state: string) => void;
 }) => {
-  const updateState = async (applicationId: string, state: string) => {
-    await updateTutorApplicationState({ applicationId, newState: state });
-    refetch();
-  };
-
   // normal version
   return (
     <li className="flex py-6">
@@ -100,7 +99,12 @@ export default ({
           </p>
         </div>
         <div className="flex flex-1 items-end justify-between text-sm">
-          <a className="flex-1 text-indigo-600 hover:text-indigo-500" href="/">
+          <a
+            className="flex-1 text-indigo-600 hover:text-indigo-500 cursor-pointer"
+            onClick={() => {
+              showDetails(id);
+            }}
+          >
             Read more
           </a>
 

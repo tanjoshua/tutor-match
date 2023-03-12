@@ -303,3 +303,32 @@ export const updateTutorApplicationState = async (
 
   res.json();
 };
+
+export const getTutorApplication = async (req: Request, res: Response) => {
+  const { id } = req.query;
+  const document = await collections.tutorApplications
+    ?.aggregate([
+      { $match: { _id: new ObjectId(id as string) } },
+      {
+        $lookup: {
+          from: "tutorProfiles",
+          localField: "tutor",
+          foreignField: "owner",
+          as: "tutorProfile",
+        },
+      },
+      {
+        $unwind: {
+          path: "$tutorProfile",
+        },
+      },
+    ])
+    .next();
+
+  if (!document) {
+    throw new HttpError(404, "Not found");
+  }
+  const object = TutorApplication.assign(document as TutorApplication);
+
+  res.json({ tutorApplication: object });
+};
