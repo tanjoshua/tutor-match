@@ -1,7 +1,7 @@
 import App, { NextPageWithLayout } from "../../_app";
 import { ReactElement, useState } from "react";
 import Layout from "../../../components/Layout";
-import { useQuery } from "react-query";
+import { useQuery, useQueryClient } from "react-query";
 import {
   LockClosedIcon,
   MapPinIcon,
@@ -19,12 +19,14 @@ import {
   getHasApplied,
   getTutorApplications,
   getTutorRequest,
+  updateTutorApplicationState,
   withdrawApplication,
 } from "@/services/tutorRequest";
 import { ApplicationState, RateOptions } from "@/utils/enums";
 import Spinner from "@/components/shared/Spinner";
 import AppCard from "@/components/tutor-request/AppCard";
 import { ClipboardDocumentCheckIcon } from "@heroicons/react/24/outline";
+import TutorDetailsModal from "@/components/tutor-request/TutorDetailsModal";
 
 const tabClasses =
   "inline-block p-4 border-b-2 border-transparent rounded-t-lg hover:text-gray-600 hover:border-gray-300 ";
@@ -34,12 +36,27 @@ const tabClassesSelected =
 const TutorProfile: NextPageWithLayout = () => {
   const router = useRouter();
   const { token } = router.query;
+  const queryClient = useQueryClient();
   const { isLoading, error, data, refetch, isRefetching } = useQuery(
     ["getTutorApplications", token],
     () => getTutorApplications({ token: token as string }),
     { enabled: !!token }
   );
   const [tabSelected, setTabSelected] = useState(ApplicationState.Pending);
+  const [tutorDetailsModalOpen, setTutorDetailsModalOpen] = useState(false);
+  const [appId, setAppId] = useState("");
+
+  const showTutorDetails = (id: string) => {
+    setAppId(id);
+    setTutorDetailsModalOpen(true);
+  };
+  const updateState = async (applicationId: string, state: string) => {
+    await updateTutorApplicationState({ applicationId, newState: state });
+    refetch();
+    queryClient.refetchQueries({
+      queryKey: ["getTutorApplication", applicationId],
+    });
+  };
 
   if (isLoading) {
     return <></>;
@@ -84,6 +101,12 @@ const TutorProfile: NextPageWithLayout = () => {
         <Head>
           <title>{`Tutor Applications`}</title>
         </Head>
+        <TutorDetailsModal
+          id={appId}
+          open={tutorDetailsModalOpen}
+          setOpen={setTutorDetailsModalOpen}
+          updateState={updateState}
+        />
         <div className="lg:flex lg:items-center lg:justify-between px-4 py-5 sm:px-6">
           <div className="min-w-0 flex-1">
             <h1 className="text-2xl font-bold leading-7 text-gray-900 sm:truncate sm:text-3xl sm:tracking-tight">
@@ -187,6 +210,8 @@ const TutorProfile: NextPageWithLayout = () => {
                         id={app._id}
                         refetch={refetch}
                         normal
+                        showDetails={showTutorDetails}
+                        updateState={updateState}
                       />
                     ))}
                   </ul>
@@ -200,6 +225,8 @@ const TutorProfile: NextPageWithLayout = () => {
                         id={app._id}
                         refetch={refetch}
                         hidden
+                        showDetails={showTutorDetails}
+                        updateState={updateState}
                       />
                     ))}
                   </ul>
@@ -214,6 +241,8 @@ const TutorProfile: NextPageWithLayout = () => {
                           id={app._id}
                           refetch={refetch}
                           shortlist
+                          showDetails={showTutorDetails}
+                          updateState={updateState}
                         />
                       ))}
                     </ul>
@@ -238,6 +267,8 @@ const TutorProfile: NextPageWithLayout = () => {
                       id={app._id}
                       refetch={refetch}
                       shortlist
+                      showDetails={showTutorDetails}
+                      updateState={updateState}
                     />
                   ))}
                 </ul>
