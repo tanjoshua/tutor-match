@@ -1,5 +1,5 @@
 import { NextPageWithLayout } from "../_app";
-import { ReactElement, useState } from "react";
+import { ReactElement, useEffect, useState } from "react";
 import Layout from "../../components/Layout";
 import Select from "@/components/shared/Select";
 import { useFormik } from "formik";
@@ -9,8 +9,9 @@ import Head from "next/head";
 import { postalCodeToRegion } from "@/utils/postalCode";
 import { createTutorRequest } from "@/services/tutorRequest";
 import { useRouter } from "next/router";
-import { levelOptions } from "@/utils/options";
+import { levelOptions } from "@/utils/options/levels";
 import ClientViewModal from "@/components/tutor-request/ClientViewModal";
+import { getSubjectOptions } from "@/utils/options/subjects";
 
 const MakeTutorRequest: NextPageWithLayout = () => {
   const router = useRouter();
@@ -111,6 +112,7 @@ const MakeTutorRequest: NextPageWithLayout = () => {
                       options={levelOptions}
                       onChange={(value: any) => {
                         formik.setFieldValue("level", value ? value.value : "");
+                        formik.setFieldValue("subjects", []);
                       }}
                       value={{
                         label: formik.values.level,
@@ -136,6 +138,8 @@ const MakeTutorRequest: NextPageWithLayout = () => {
                         value: x,
                         label: x,
                       }))}
+                      isDisabled={!formik.values.level}
+                      options={getSubjectOptions(formik.values.level)}
                     />
                     <p className="mt-2 text-sm text-gray-500">
                       You can also create new options that are not listed.

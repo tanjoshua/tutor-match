@@ -91,13 +91,13 @@ export const JCSubjectOptions = JCSubjects.map((subject) => ({
 
 // helper functions
 export const getSubjectOptions = (level: string) => {
-  if (level in PrimaryLevels) {
+  if (PrimaryLevels.includes(level)) {
     return PrimarySubjectOptions;
-  } else if (level in LowerSecondaryLevels) {
+  } else if (LowerSecondaryLevels.includes(level)) {
     return LowerSecondarySubjectOptions;
-  } else if (level in UpperSecondaryLevels) {
+  } else if (UpperSecondaryLevels.includes(level)) {
     return UpperSecondarySubjectOptions;
-  } else if (level in JCLevels) {
+  } else if (JCLevels.includes(level)) {
     return JCSubjectOptions;
   } else {
     return [];

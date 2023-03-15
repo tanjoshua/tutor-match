@@ -19,7 +19,6 @@ interface TutorProfile {
 export default ({
   tutorProfile,
   id,
-  refetch,
   normal,
   shortlist,
   hidden,
@@ -28,7 +27,6 @@ export default ({
 }: {
   tutorProfile: TutorProfile;
   id: string;
-  refetch: Function;
   normal?: boolean; // normal pending card
   shortlist?: boolean; // short list card type
   hidden?: boolean; // hidden card type
