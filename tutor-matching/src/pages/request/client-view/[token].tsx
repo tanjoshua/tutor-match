@@ -208,7 +208,6 @@ const TutorProfile: NextPageWithLayout = () => {
                         key={app._id}
                         tutorProfile={app.tutorProfile}
                         id={app._id}
-                        refetch={refetch}
                         normal
                         showDetails={showTutorDetails}
                         updateState={updateState}
@@ -223,7 +222,6 @@ const TutorProfile: NextPageWithLayout = () => {
                         key={app._id}
                         tutorProfile={app.tutorProfile}
                         id={app._id}
-                        refetch={refetch}
                         hidden
                         showDetails={showTutorDetails}
                         updateState={updateState}
@@ -239,7 +237,6 @@ const TutorProfile: NextPageWithLayout = () => {
                           key={app._id}
                           tutorProfile={app.tutorProfile}
                           id={app._id}
-                          refetch={refetch}
                           shortlist
                           showDetails={showTutorDetails}
                           updateState={updateState}
@@ -265,7 +262,6 @@ const TutorProfile: NextPageWithLayout = () => {
                       key={app._id}
                       tutorProfile={app.tutorProfile}
                       id={app._id}
-                      refetch={refetch}
                       shortlist
                       showDetails={showTutorDetails}
                       updateState={updateState}

@@ -72,7 +72,13 @@ export default class TutorProfile {
   public regions: Region[];
   public tutorName: string;
   public levels: Level[];
-  public subjects: string[];
+  public subjects: {
+    primary: string[];
+    lowerSecondary: string[];
+    upperSecondary: string[];
+    jc: string[];
+    other: string[];
+  };
   public type: TutorType; // eg. full time, part time, etc
   public qualifications: string; // for teaching experience and academic
   public description: string;

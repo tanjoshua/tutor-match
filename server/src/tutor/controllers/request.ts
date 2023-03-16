@@ -16,7 +16,13 @@ export const getTutorRequests = async (req: Request, res: Response) => {
   const limit = req.query.limit || 5;
 
   // filter
-  const filter = {};
+  const filters: any[] = [];
+  if (req.query.searchQuery) {
+    filters.push({
+      $or: [{ name: { $regex: req.query.searchQuery, $options: "i" } }],
+    });
+  }
+  const filter = { $and: filters };
 
   const totalCount = await collections.tutorRequests!.countDocuments(filter);
   const documents = await collections

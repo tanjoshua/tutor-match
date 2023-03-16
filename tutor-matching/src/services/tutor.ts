@@ -20,7 +20,13 @@ export const createTutorProfile = ({
   regions: string[];
   tutorName: string;
   levels: string[];
-  subjects: string[];
+  subjects: {
+    primary: string[];
+    lowerSecondary: string[];
+    upperSecondary: string[];
+    jc: string[];
+    other: string[];
+  };
   type: string;
   qualifications: string;
   description: string;
@@ -65,7 +71,13 @@ export const replaceTutorProfile = ({
   regions: string[];
   tutorName: string;
   levels: string[];
-  subjects: string[];
+  subjects: {
+    primary: string[];
+    lowerSecondary: string[];
+    upperSecondary: string[];
+    jc: string[];
+    other: string[];
+  };
   type: string;
   qualifications: string;
   description: string;
