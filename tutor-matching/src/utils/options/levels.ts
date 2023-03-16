@@ -71,3 +71,14 @@ export const levelOptions = [
     })),
   },
 ];
+
+export enum LevelCategories {
+  Primary = "Primary",
+  LowerSecondary = "Lower Secondary",
+  UpperSecondary = "Upper Secondary",
+  JC = "JC",
+}
+
+export const levelCategoryOptions = Object.values(LevelCategories).map(
+  (value) => ({ label: value, value })
+);

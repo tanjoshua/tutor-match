@@ -1,5 +1,7 @@
+import { Level } from "../enums";
 import {
   JCLevels,
+  LevelCategories,
   LowerSecondaryLevels,
   PrimaryLevels,
   UpperSecondaryLevels,
@@ -98,6 +100,20 @@ export const getSubjectOptions = (level: string) => {
   } else if (UpperSecondaryLevels.includes(level)) {
     return UpperSecondarySubjectOptions;
   } else if (JCLevels.includes(level)) {
+    return JCSubjectOptions;
+  } else {
+    return [];
+  }
+};
+
+export const levelCategoryToSubjectOptions = (level: LevelCategories) => {
+  if (level === LevelCategories.Primary) {
+    return PrimarySubjectOptions;
+  } else if (level === LevelCategories.LowerSecondary) {
+    return LowerSecondarySubjectOptions;
+  } else if (level === LevelCategories.UpperSecondary) {
+    return UpperSecondarySubjectOptions;
+  } else if (level === LevelCategories.JC) {
     return JCSubjectOptions;
   } else {
     return [];

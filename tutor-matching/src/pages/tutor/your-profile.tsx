@@ -139,8 +139,19 @@ const YourProfile: NextPageWithLayout = () => {
             </div>
             <div className="bg-gray-50 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
               <dt className="text-sm font-medium text-gray-700">Subjects</dt>
-              <dd className="mt-1 text-sm text-gray-900 sm:col-span-2 sm:mt-0">
-                {profile.subjects.join(", ")}
+              <dd className="mt-1 text-sm text-gray-900 sm:col-span-2 sm:mt-0 whitespace-pre-wrap">
+                {profile.subjects.primary.length &&
+                  `Primary: ${profile.subjects.primary.join(", ")}\n`}
+                {profile.subjects.lowerSecondary.length &&
+                  `Lower secondary: ${profile.subjects.lowerSecondary.join(
+                    ", "
+                  )}\n`}
+                {profile.subjects.upperSecondary.length &&
+                  `Upper secondary: ${profile.subjects.upperSecondary.join(
+                    ", "
+                  )}\n`}
+                {profile.subjects.jc.length &&
+                  `JC: ${profile.subjects.jc.join(", ")}\n`}
               </dd>
             </div>
             <div className="bg-white px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">

@@ -1,5 +1,5 @@
 import { NextPageWithLayout } from "../_app";
-import { ReactElement, useState } from "react";
+import { Fragment, ReactElement, useState } from "react";
 import Layout from "../../components/Layout";
 import { useQuery } from "react-query";
 import {
@@ -13,6 +13,13 @@ import { Listbox } from "@headlessui/react";
 import Select from "@/components/shared/Select";
 import Creatable from "@/components/shared/Creatable";
 import Head from "next/head";
+import {
+  JCSubjectOptions,
+  LowerSecondarySubjectOptions,
+  PrimarySubjectOptions,
+  UpperSecondarySubjectOptions,
+} from "@/utils/options/subjects";
+import { LevelCategories, levelCategoryOptions } from "@/utils/options/levels";
 
 const tutorTypes = [
   "Part-Time Tutor",
@@ -20,6 +27,44 @@ const tutorTypes = [
   "Ex/Current MOE Tutor",
 ];
 const regionOptions = ["Central", "East", "North", "North-East", "West"];
+type InitialValue = {
+  isPublic: boolean;
+  title: string;
+  tutorName: string;
+  gender: string;
+  regions: string[];
+  levels: string[];
+  subjects: {
+    primary: string[];
+    lowerSecondary: string[];
+    upperSecondary: string[];
+    jc: string[];
+  };
+  type: string;
+  qualifications: string;
+  description: string;
+  pricing: { rate: string; details: string };
+  contactInfo: { phoneNumber: string; email: string };
+};
+const initialValues = {
+  isPublic: false,
+  title: "",
+  tutorName: "",
+  gender: "",
+  regions: [],
+  levels: [],
+  subjects: {
+    primary: [],
+    lowerSecondary: [],
+    upperSecondary: [],
+    jc: [],
+  },
+  type: "",
+  qualifications: "",
+  description: "",
+  pricing: { rate: "", details: "" },
+  contactInfo: { phoneNumber: "", email: "" },
+};
 
 const CreateProfile: NextPageWithLayout = () => {
   const router = useRouter();
@@ -27,26 +72,8 @@ const CreateProfile: NextPageWithLayout = () => {
     "userTutorProfile",
     getUserTutorProfile
   );
-  const {
-    isLoading: isLoadingLevels,
-    error: levelsError,
-    data: levelsData,
-  } = useQuery("tutorLevels", getTutorLevels);
-  const formik = useFormik({
-    initialValues: {
-      isPublic: false,
-      title: "",
-      tutorName: "",
-      gender: "",
-      regions: [],
-      levels: [],
-      subjects: [],
-      type: "",
-      qualifications: "",
-      description: "",
-      pricing: { rate: "", details: "" },
-      contactInfo: { phoneNumber: "", email: "" },
-    },
+  const formik = useFormik<InitialValue>({
+    initialValues: initialValues,
     onSubmit: async (values) => {
       try {
         await createTutorProfile(values);
@@ -56,14 +83,6 @@ const CreateProfile: NextPageWithLayout = () => {
       }
     },
   });
-
-  const levelOptions =
-    isLoadingLevels || levelsError
-      ? []
-      : levelsData.levels.map((level: string) => ({
-          label: level,
-          value: level,
-        }));
 
   if (isLoading) {
     return <></>;
@@ -85,7 +104,7 @@ const CreateProfile: NextPageWithLayout = () => {
           <input
             type="text"
             id="title"
-            className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-indigo-500 focus:border-indigo-500 focus:outline-none block w-full p-2.5"
+            className="border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-indigo-500 focus:border-indigo-500 focus:outline-none block w-full p-2.5"
             placeholder="Eg. Mathematics Tutor with 5 years of experience."
             onChange={formik.handleChange}
             value={formik.values.title}
@@ -103,7 +122,7 @@ const CreateProfile: NextPageWithLayout = () => {
           <input
             type="text"
             id="tutorName"
-            className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:indigo-blue-500 focus:border-indigo-500 focus:outline-none block w-full p-2.5"
+            className="border border-gray-300 text-gray-900 text-sm rounded-lg focus:indigo-blue-500 focus:border-indigo-500 focus:outline-none block w-full p-2.5"
             placeholder="Eg. Mr Tan"
             onChange={formik.handleChange}
             value={formik.values.tutorName}
@@ -178,7 +197,7 @@ const CreateProfile: NextPageWithLayout = () => {
             <Select
               isMulti
               isClearable
-              options={levelOptions}
+              options={levelCategoryOptions}
               name="levels"
               onChange={(value: any) => {
                 formik.setFieldValue(
@@ -198,21 +217,101 @@ const CreateProfile: NextPageWithLayout = () => {
           <label className="block mb-2 font-medium text-gray-900">
             Subjects taught
           </label>
-          <Creatable
-            isMulti
-            id="subjects"
-            name="subjects"
-            onChange={(value: any) => {
-              formik.setFieldValue(
-                "subjects",
-                value.map((x: any) => x.value)
-              );
-            }}
-            value={formik.values.subjects.map((x) => ({ value: x, label: x }))}
-          />
+          <div className="-my-1">
+            {formik.values.levels.includes(LevelCategories.Primary) && (
+              <div className="md:flex flex-row items-center py-1">
+                <div className="w-32">Primary: </div>
+                <div className="flex-1">
+                  <Creatable
+                    isMulti
+                    name="subjects.primary"
+                    onChange={(value: any) => {
+                      formik.setFieldValue(
+                        "subjects.primary",
+                        value.map((x: any) => x.value)
+                      );
+                    }}
+                    value={formik.values.subjects.primary.map((x) => ({
+                      value: x,
+                      label: x,
+                    }))}
+                    options={PrimarySubjectOptions}
+                  />
+                </div>
+              </div>
+            )}
+            {formik.values.levels.includes(LevelCategories.LowerSecondary) && (
+              <div className="md:flex flex-row items-center py-1">
+                <div className="w-32">Lower Secondary: </div>
+                <div className="flex-1">
+                  <Creatable
+                    isMulti
+                    name="subjects.lowerSecondary"
+                    onChange={(value: any) => {
+                      formik.setFieldValue(
+                        "subjects.lowerSecondary",
+                        value.map((x: any) => x.value)
+                      );
+                    }}
+                    value={formik.values.subjects.lowerSecondary.map((x) => ({
+                      value: x,
+                      label: x,
+                    }))}
+                    options={LowerSecondarySubjectOptions}
+                  />
+                </div>
+              </div>
+            )}
+            {formik.values.levels.includes(LevelCategories.UpperSecondary) && (
+              <div className="md:flex flex-row items-center py-1">
+                <div className="w-32">Upper Secondary: </div>
+                <div className="flex-1">
+                  <Creatable
+                    isMulti
+                    name="subjects.upperSecondary"
+                    onChange={(value: any) => {
+                      formik.setFieldValue(
+                        "subjects.upperSecondary",
+                        value.map((x: any) => x.value)
+                      );
+                    }}
+                    value={formik.values.subjects.upperSecondary.map((x) => ({
+                      value: x,
+                      label: x,
+                    }))}
+                    options={UpperSecondarySubjectOptions}
+                  />
+                </div>
+              </div>
+            )}
+            {formik.values.levels.includes(LevelCategories.JC) && (
+              <div className="md:flex flex-row items-center py-1">
+                <div className="w-32">JC: </div>
+                <div className="flex-1">
+                  <Creatable
+                    isMulti
+                    name="subjects.js"
+                    onChange={(value: any) => {
+                      formik.setFieldValue(
+                        "subjects.jc",
+                        value.map((x: any) => x.value)
+                      );
+                    }}
+                    value={formik.values.subjects.jc.map((x) => ({
+                      value: x,
+                      label: x,
+                    }))}
+                    options={JCSubjectOptions}
+                  />
+                </div>
+              </div>
+            )}
+          </div>
 
           <p className="mt-2 text-sm text-gray-500">
-            You can also create new subject options that are not listed.
+            {formik.values.levels.length === 0
+              ? "Select levels taught for options."
+              : "You can also create new subject options that are not listed."}
           </p>
         </div>
         <div className="mb-4">
@@ -244,7 +343,7 @@ const CreateProfile: NextPageWithLayout = () => {
               <input
                 type="text"
                 id="pricing.rate"
-                className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-indigo-500 focus:border-indigo-500 focus:outline-none block p-2.5"
+                className=" border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-indigo-500 focus:border-indigo-500 focus:outline-none block p-2.5"
                 placeholder="0.00"
                 onChange={formik.handleChange}
                 value={formik.values.pricing.rate}
@@ -255,7 +354,7 @@ const CreateProfile: NextPageWithLayout = () => {
           <div>
             <div className="mb-2 text-sm text-gray-900">Pricing details</div>
             <textarea
-              className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg block w-full p-2.5 focus:border-indigo-600 focus:outline-none"
+              className=" border border-gray-300 text-gray-900 text-sm rounded-lg block w-full p-2.5 focus:border-indigo-600 focus:outline-none"
               id="pricing.details"
               rows={3}
               placeholder=""
@@ -273,7 +372,7 @@ const CreateProfile: NextPageWithLayout = () => {
             Tutoring experience and academic qualifications
           </label>
           <textarea
-            className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg block w-full p-2.5 focus:border-indigo-600 focus:outline-none"
+            className="border border-gray-300 text-gray-900 text-sm rounded-lg block w-full p-2.5 focus:border-indigo-600 focus:outline-none"
             id="qualifications"
             rows={3}
             placeholder=""
@@ -292,7 +391,7 @@ const CreateProfile: NextPageWithLayout = () => {
             Tutor description
           </label>
           <textarea
-            className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg block w-full p-2.5 focus:border-indigo-600 focus:outline-none"
+            className="border border-gray-300 text-gray-900 text-sm rounded-lg block w-full p-2.5 focus:border-indigo-600 focus:outline-none"
             id="description"
             rows={3}
             placeholder=""
@@ -315,7 +414,7 @@ const CreateProfile: NextPageWithLayout = () => {
             <input
               type="email"
               id="contactInfo.email"
-              className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-indigo-500 focus:border-indigo-500 focus:outline-none block p-2.5 w-full"
+              className="border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-indigo-500 focus:border-indigo-500 focus:outline-none block p-2.5 w-full"
               onChange={formik.handleChange}
               value={formik.values.contactInfo.email}
             />
@@ -329,7 +428,7 @@ const CreateProfile: NextPageWithLayout = () => {
               <input
                 type="text"
                 id="contactInfo.phoneNumber"
-                className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-indigo-500 focus:border-indigo-500 focus:outline-none block p-2.5"
+                className="border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-indigo-500 focus:border-indigo-500 focus:outline-none block p-2.5"
                 onChange={formik.handleChange}
                 value={formik.values.contactInfo.phoneNumber}
               />

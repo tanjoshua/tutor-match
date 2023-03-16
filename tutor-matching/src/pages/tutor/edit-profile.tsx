@@ -12,6 +12,13 @@ import { useFormik } from "formik";
 import Head from "next/head";
 import Select from "@/components/shared/Select";
 import Creatable from "@/components/shared/Creatable";
+import {
+  PrimarySubjectOptions,
+  LowerSecondarySubjectOptions,
+  UpperSecondarySubjectOptions,
+  JCSubjectOptions,
+} from "@/utils/options/subjects";
+import { LevelCategories } from "@/utils/options/levels";
 
 const tutorTypes = [
   "Part-Time Tutor",
@@ -19,7 +26,25 @@ const tutorTypes = [
   "Ex/Current MOE Tutor",
 ];
 const regionOptions = ["Central", "East", "North", "North-East", "West"];
-
+type InitialValue = {
+  isPublic: boolean;
+  title: string;
+  tutorName: string;
+  gender: string;
+  regions: string[];
+  levels: string[];
+  subjects: {
+    primary: string[];
+    lowerSecondary: string[];
+    upperSecondary: string[];
+    jc: string[];
+  };
+  type: string;
+  qualifications: string;
+  description: string;
+  pricing: { rate: string; details: string };
+  contactInfo: { phoneNumber: string; email: string };
+};
 const initialValues = {
   isPublic: false,
   title: "",
@@ -27,7 +52,12 @@ const initialValues = {
   gender: "",
   regions: [],
   levels: [],
-  subjects: [],
+  subjects: {
+    primary: [],
+    lowerSecondary: [],
+    upperSecondary: [],
+    jc: [],
+  },
   type: "",
   qualifications: "",
   description: "",
@@ -46,12 +76,12 @@ const EditProfile: NextPageWithLayout = () => {
     error: levelsError,
     data: levelsData,
   } = useQuery("tutorLevels", getTutorLevels);
-  const formik = useFormik({
+  const formik = useFormik<InitialValue>({
     enableReinitialize: true,
     initialValues: !isLoading && data.profile ? data.profile : initialValues,
     onSubmit: async (values) => {
       try {
-        await replaceTutorProfile({ ...values, id: data.profile.id });
+        await replaceTutorProfile({ ...values, id: data.profile._id });
         router.push("/tutor/your-profile");
       } catch (e) {
         alert("Could not edit profile");
@@ -198,20 +228,96 @@ const EditProfile: NextPageWithLayout = () => {
           <label className="block mb-2 font-medium text-gray-900">
             Subjects taught
           </label>
-          <Creatable
-            isMulti
-            name="subjects"
-            onChange={(value: any) => {
-              formik.setFieldValue(
-                "subjects",
-                value.map((x: any) => x.value)
-              );
-            }}
-            value={formik.values.subjects.map((x: string) => ({
-              value: x,
-              label: x,
-            }))}
-          />
+          <div className="-my-1">
+            {formik.values.levels.includes(LevelCategories.Primary) && (
+              <div className="md:flex flex-row items-center py-1">
+                <div className="w-32">Primary: </div>
+                <div className="flex-1">
+                  <Creatable
+                    isMulti
+                    name="subjects.primary"
+                    onChange={(value: any) => {
+                      formik.setFieldValue(
+                        "subjects.primary",
+                        value.map((x: any) => x.value)
+                      );
+                    }}
+                    value={formik.values.subjects.primary.map((x) => ({
+                      value: x,
+                      label: x,
+                    }))}
+                    options={PrimarySubjectOptions}
+                  />
+                </div>
+              </div>
+            )}
+            {formik.values.levels.includes(LevelCategories.LowerSecondary) && (
+              <div className="md:flex flex-row items-center py-1">
+                <div className="w-32">Lower Secondary: </div>
+                <div className="flex-1">
+                  <Creatable
+                    isMulti
+                    name="subjects.lowerSecondary"
+                    onChange={(value: any) => {
+                      formik.setFieldValue(
+                        "subjects.lowerSecondary",
+                        value.map((x: any) => x.value)
+                      );
+                    }}
+                    value={formik.values.subjects.lowerSecondary.map((x) => ({
+                      value: x,
+                      label: x,
+                    }))}
+                    options={LowerSecondarySubjectOptions}
+                  />
+                </div>
+              </div>
+            )}
+            {formik.values.levels.includes(LevelCategories.UpperSecondary) && (
+              <div className="md:flex flex-row items-center py-1">
+                <div className="w-32">Upper Secondary: </div>
+                <div className="flex-1">
+                  <Creatable
+                    isMulti
+                    name="subjects.upperSecondary"
+                    onChange={(value: any) => {
+                      formik.setFieldValue(
+                        "subjects.upperSecondary",
+                        value.map((x: any) => x.value)
+                      );
+                    }}
+                    value={formik.values.subjects.upperSecondary.map((x) => ({
+                      value: x,
+                      label: x,
+                    }))}
+                    options={UpperSecondarySubjectOptions}
+                  />
+                </div>
+              </div>
+            )}
+            {formik.values.levels.includes(LevelCategories.JC) && (
+              <div className="md:flex flex-row items-center py-1">
+                <div className="w-32">JC: </div>
+                <div className="flex-1">
+                  <Creatable
+                    isMulti
+                    name="subjects.js"
+                    onChange={(value: any) => {
+                      formik.setFieldValue(
+                        "subjects.jc",
+                        value.map((x: any) => x.value)
+                      );
+                    }}
+                    value={formik.values.subjects.jc.map((x) => ({
+                      value: x,
+                      label: x,
+                    }))}
+                    options={JCSubjectOptions}
+                  />
+                </div>
+              </div>
+            )}
+          </div>
 
           <p className="mt-2 text-sm text-gray-500">
             You can also create new subjects not listed
