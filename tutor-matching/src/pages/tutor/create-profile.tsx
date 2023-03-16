@@ -39,6 +39,7 @@ type InitialValue = {
     lowerSecondary: string[];
     upperSecondary: string[];
     jc: string[];
+    other: string[];
   };
   type: string;
   qualifications: string;
@@ -58,6 +59,7 @@ const initialValues = {
     lowerSecondary: [],
     upperSecondary: [],
     jc: [],
+    other: [],
   },
   type: "",
   qualifications: "",
@@ -302,6 +304,27 @@ const CreateProfile: NextPageWithLayout = () => {
                       label: x,
                     }))}
                     options={JCSubjectOptions}
+                  />
+                </div>
+              </div>
+            )}
+            {formik.values.levels.includes(LevelCategories.Other) && (
+              <div className="md:flex flex-row items-center py-1">
+                <div className="w-32">Other: </div>
+                <div className="flex-1">
+                  <Creatable
+                    isMulti
+                    name="subjects.other"
+                    onChange={(value: any) => {
+                      formik.setFieldValue(
+                        "subjects.other",
+                        value.map((x: any) => x.value)
+                      );
+                    }}
+                    value={formik.values.subjects.other.map((x) => ({
+                      value: x,
+                      label: x,
+                    }))}
                   />
                 </div>
               </div>

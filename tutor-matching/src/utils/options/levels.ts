@@ -77,6 +77,7 @@ export enum LevelCategories {
   LowerSecondary = "Lower Secondary",
   UpperSecondary = "Upper Secondary",
   JC = "JC",
+  Other = "Other",
 }
 
 export const levelCategoryOptions = Object.values(LevelCategories).map(

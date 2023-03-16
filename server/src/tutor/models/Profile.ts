@@ -77,6 +77,7 @@ export default class TutorProfile {
     lowerSecondary: string[];
     upperSecondary: string[];
     jc: string[];
+    other: string[];
   };
   public type: TutorType; // eg. full time, part time, etc
   public qualifications: string; // for teaching experience and academic

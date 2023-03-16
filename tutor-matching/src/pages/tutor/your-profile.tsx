@@ -152,6 +152,8 @@ const YourProfile: NextPageWithLayout = () => {
                   )}\n`}
                 {profile.subjects.jc.length &&
                   `JC: ${profile.subjects.jc.join(", ")}\n`}
+                {profile.subjects.other.length &&
+                  `Other: ${profile.subjects.other.join(", ")}\n`}
               </dd>
             </div>
             <div className="bg-white px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">

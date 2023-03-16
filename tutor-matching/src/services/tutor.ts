@@ -25,6 +25,7 @@ export const createTutorProfile = ({
     lowerSecondary: string[];
     upperSecondary: string[];
     jc: string[];
+    other: string[];
   };
   type: string;
   qualifications: string;
@@ -75,6 +76,7 @@ export const replaceTutorProfile = ({
     lowerSecondary: string[];
     upperSecondary: string[];
     jc: string[];
+    other: string[];
   };
   type: string;
   qualifications: string;
