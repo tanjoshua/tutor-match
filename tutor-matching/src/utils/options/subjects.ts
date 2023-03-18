@@ -119,3 +119,17 @@ export const levelCategoryToSubjectOptions = (level: LevelCategories) => {
     return [];
   }
 };
+
+export const levelToLevelCategory = (level: string) => {
+  if (PrimaryLevels.includes(level)) {
+    return LevelCategories.Primary;
+  } else if (LowerSecondaryLevels.includes(level)) {
+    return LevelCategories.LowerSecondary;
+  } else if (UpperSecondaryLevels.includes(level)) {
+    return LevelCategories.UpperSecondary;
+  } else if (JCLevels.includes(level)) {
+    return LevelCategories.JC;
+  } else {
+    return LevelCategories.Other;
+  }
+};

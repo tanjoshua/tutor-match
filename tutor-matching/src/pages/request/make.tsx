@@ -11,7 +11,10 @@ import { createTutorRequest } from "@/services/tutorRequest";
 import { useRouter } from "next/router";
 import { levelOptions } from "@/utils/options/levels";
 import ClientViewModal from "@/components/tutor-request/ClientViewModal";
-import { getSubjectOptions } from "@/utils/options/subjects";
+import {
+  getSubjectOptions,
+  levelToLevelCategory,
+} from "@/utils/options/subjects";
 
 const MakeTutorRequest: NextPageWithLayout = () => {
   const router = useRouter();
@@ -59,7 +62,10 @@ const MakeTutorRequest: NextPageWithLayout = () => {
     },
     onSubmit: async (values) => {
       try {
-        const data = await createTutorRequest(values);
+        const data = await createTutorRequest({
+          levelCategory: levelToLevelCategory(values.level),
+          ...values,
+        });
         setClientLink(
           `${origin}/request/client-view/${data.clientAccessToken}`
         );
