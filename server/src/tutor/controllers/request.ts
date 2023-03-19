@@ -12,17 +12,31 @@ import { generateNewTutorRequestEmail } from "../../utils/emailFactory";
 require("express-async-errors");
 export const getTutorRequests = async (req: Request, res: Response) => {
   // retrieve options
-  const page = req.query.page || 1;
-  const limit = req.query.limit || 5;
+  const page = req.body.page || 1;
+  const limit = req.body.limit || 5;
 
   // filter
   const filters: any[] = [];
-  if (req.query.searchQuery) {
-    filters.push({
-      $or: [{ name: { $regex: req.query.searchQuery, $options: "i" } }],
-    });
+
+  if (req.body.region?.length > 0)
+    filters.push({ region: { $in: req.body.region } });
+  if (req.body.gender) filters.push({ gender: req.body.gender });
+  if (req.body.type?.length > 0) filters.push({ type: { $in: req.body.type } });
+  if (req.body.levelCategories?.length > 0) {
+    const levelFilters: any[] = [];
+    for (const levelCategory of req.body.levelCategories) {
+      const filter: { levelCategory?: any; subjects?: any } = {
+        levelCategory: levelCategory,
+      };
+      if (req.body.subjects && req.body.subjects[levelCategory]?.length > 0)
+        filter.subjects = { $in: req.body.subjects[levelCategory] };
+      levelFilters.push(filter);
+    }
+    filters.push({ $or: levelFilters });
   }
-  const filter = { $and: filters };
+
+  const filter: { $and?: any } = {};
+  if (filters.length > 0) filter.$and = filters;
 
   const totalCount = await collections.tutorRequests!.countDocuments(filter);
   const documents = await collections

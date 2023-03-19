@@ -7,6 +7,7 @@ export const createTutorRequest = async ({
   region,
   gender,
   level,
+  levelCategory,
   subjects,
   type,
   pricing,
@@ -19,6 +20,7 @@ export const createTutorRequest = async ({
   region: string;
   gender: string[];
   level: string;
+  levelCategory: string;
   subjects: string[];
   type: string[];
   pricing: {
@@ -35,6 +37,7 @@ export const createTutorRequest = async ({
     region,
     gender,
     level,
+    levelCategory,
     subjects,
     type,
     pricing,
@@ -53,6 +56,7 @@ export const replaceTutorRequest = ({
   region,
   gender,
   level,
+  levelCategory,
   subjects,
   type,
   pricing,
@@ -66,6 +70,7 @@ export const replaceTutorRequest = ({
   region: string;
   gender: string[];
   level: string;
+  levelCategory: string;
   subjects: string[];
   type: string[];
   pricing: {
@@ -83,6 +88,7 @@ export const replaceTutorRequest = ({
     region,
     gender,
     level,
+    levelCategory,
     subjects,
     type,
     pricing,
@@ -101,10 +107,33 @@ export const getTutorRequest = async ({ id }: { id: string }) => {
 };
 
 // TODO: add more filters
-export const getTutorRequests = ({ searchQuery }: { searchQuery?: string }) => {
-  return instance.get(`/tutor/request`, {
-    params: { search: searchQuery },
+export const getTutorRequests = async ({
+  region,
+  gender,
+  levels,
+  subjects,
+  type,
+  page,
+  limit,
+}: {
+  region?: string[];
+  gender?: string;
+  levels?: string[];
+  subjects?: any;
+  type?: string[];
+  page?: number;
+  limit?: number;
+}) => {
+  const result = await instance.post(`/tutor/getRequests`, {
+    region,
+    gender,
+    levels,
+    subjects,
+    type,
+    page,
+    limit,
   });
+  return result.data;
 };
 
 export const applyToTutorRequest = async ({ id }: { id: string }) => {

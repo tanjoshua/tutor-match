@@ -26,14 +26,14 @@ import {
 const router = Router();
 
 // tutor request routes
-router.get("/request", getTutorRequests);
+router.post("/getRequests", getTutorRequests);
 router.get("/request/:id", getTutorRequest);
 router.post("/request", createTutorRequest);
 router.put("/request", replaceTutorRequest);
 router.delete("/request/:id", deleteTutorRequest);
 
 // client side
-router.get("/requestClient/apps", getTutorApplications);
+router.post("/requestClient/apps", getTutorApplications);
 router.get("/requestClient/application", getTutorApplication);
 router.post("/requestClient/updateAppState", updateTutorApplicationState);
 
