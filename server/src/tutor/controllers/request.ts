@@ -40,11 +40,7 @@ export const getTutorRequests = async (req: Request, res: Response) => {
 
   const totalCount = await collections.tutorRequests!.countDocuments(filter);
   const documents = await collections
-    .tutorRequests!.aggregate([
-      { $match: filter },
-      // will probably add lookup stuff here
-    ])
-    .sort({ createdAt: -1 })
+    .tutorRequests!.aggregate([{ $match: filter }, { $sort: { _id: -1 } }])
     .skip((+page - 1) * +limit)
     .limit(+limit)
     .toArray();
@@ -58,6 +54,39 @@ export const getTutorRequests = async (req: Request, res: Response) => {
   }
 
   res.json({ tutorRequests: objects, count: totalCount });
+};
+
+export const getAppliedRequests = async (req: Request, res: Response) => {
+  const tutor = req.user!;
+  const applications = await collections
+    .tutorApplications!.aggregate([
+      {
+        $match: {
+          tutor: new ObjectId(tutor._id),
+        },
+      },
+      {
+        $lookup: {
+          from: "tutorRequests",
+          localField: "tutorRequest",
+          foreignField: "_id",
+          as: "tutorProfile",
+        },
+      },
+      {
+        $unwind: {
+          path: "$tutorRequests",
+        },
+      },
+      {
+        $sort: {
+          _id: -1,
+        },
+      },
+    ])
+    .toArray();
+
+  res.json({ applications });
 };
 
 export const getTutorRequest = async (req: Request, res: Response) => {
@@ -231,7 +260,7 @@ export const getTutorApplications = async (req: Request, res: Response) => {
       },
       {
         $sort: {
-          updatedAt: -1,
+          _id: -1,
         },
       },
     ])
@@ -259,7 +288,7 @@ export const getTutorApplications = async (req: Request, res: Response) => {
       },
       {
         $sort: {
-          updatedAt: -1,
+          _id: -1,
         },
       },
     ])
@@ -287,7 +316,7 @@ export const getTutorApplications = async (req: Request, res: Response) => {
       },
       {
         $sort: {
-          updatedAt: -1,
+          _id: -1,
         },
       },
     ])

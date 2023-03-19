@@ -136,6 +136,11 @@ export const getTutorRequests = async ({
   return result.data;
 };
 
+export const getAppliedRequests = async () => {
+  const result = await instance.post(`/tutor/appliedRequests`);
+  return result.data;
+};
+
 export const applyToTutorRequest = async ({ id }: { id: string }) => {
   const result = await instance.post("/tutor/applyRequest", {
     id,

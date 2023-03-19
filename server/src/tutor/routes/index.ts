@@ -21,12 +21,14 @@ import {
   getTutorApplications,
   updateTutorApplicationState,
   getTutorApplication,
+  getAppliedRequests,
 } from "../controllers/request";
 
 const router = Router();
 
 // tutor request routes
-router.post("/getRequests", getTutorRequests);
+router.post("/getRequests", auth, getTutorRequests);
+router.get("/appliedRequests", auth, getAppliedRequests);
 router.get("/request/:id", getTutorRequest);
 router.post("/request", createTutorRequest);
 router.put("/request", replaceTutorRequest);
