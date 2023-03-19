@@ -9,7 +9,7 @@ import {
   PencilIcon,
   UserGroupIcon,
   UserIcon,
-  ClipboardDocumentIcon,
+  ClipboardDocumentListIcon,
   XMarkIcon,
 } from "@heroicons/react/20/solid";
 import { useRouter } from "next/router";
@@ -137,7 +137,7 @@ const TutorProfile: NextPageWithLayout = () => {
                     refetchHasApplied();
                   }}
                 >
-                  <ClipboardDocumentIcon
+                  <ClipboardDocumentListIcon
                     className="-ml-1 mr-2 h-5 w-5 text-gray-700"
                     aria-hidden="true"
                   />
