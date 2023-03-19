@@ -107,26 +107,33 @@ export const getTutorRequest = async ({ id }: { id: string }) => {
 };
 
 // TODO: add more filters
-export const getTutorRequests = ({
+export const getTutorRequests = async ({
   region,
   gender,
   levels,
   subjects,
   type,
+  page,
+  limit,
 }: {
   region?: string[];
   gender?: string;
   levels?: string[];
   subjects?: any;
   type?: string[];
+  page?: number;
+  limit?: number;
 }) => {
-  return instance.post(`/tutor/getRequests`, {
+  const result = await instance.post(`/tutor/getRequests`, {
     region,
     gender,
     levels,
     subjects,
     type,
+    page,
+    limit,
   });
+  return result.data;
 };
 
 export const applyToTutorRequest = async ({ id }: { id: string }) => {
