@@ -35,7 +35,7 @@ export default function PaginateFooter({
   total: number;
   setPage: Function;
 }) {
-  const startIndex = (page - 1) * limit + 1;
+  const startIndex = Math.min((page - 1) * limit + 1, total);
   const endIndex = Math.min(startIndex + limit - 1, total);
   const maxPage = Math.ceil(total / limit);
   const pages = getPageArray(page, maxPage);

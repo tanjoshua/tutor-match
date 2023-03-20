@@ -32,6 +32,9 @@ export default class TutorRequest {
   // other fields
   public clientAccessToken: string;
 
+  // non stored fields
+  public applied?: boolean;
+
   public static assign(obj: TutorRequest) {
     const newObject = new TutorRequest();
     Object.assign(newObject, obj);
@@ -54,6 +57,8 @@ export default class TutorRequest {
       pricing: this.pricing,
       availability: this.availability,
       description: this.description,
+
+      applied: this.applied,
     };
   }
 }

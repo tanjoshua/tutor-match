@@ -1,3 +1,7 @@
+import {
+  applyToTutorRequest,
+  withdrawApplication,
+} from "@/services/tutorRequest";
 import { RateOptions } from "@/utils/enums";
 import {
   MapPinIcon,
@@ -7,6 +11,7 @@ import {
 } from "@heroicons/react/20/solid";
 import {
   BookmarkIcon,
+  ClipboardDocumentCheckIcon,
   ClipboardDocumentListIcon,
   EyeSlashIcon,
 } from "@heroicons/react/24/outline";
@@ -14,9 +19,11 @@ import {
 export default ({
   tutorRequest,
   showDetails,
+  refetch,
 }: {
   tutorRequest: any;
   showDetails: Function;
+  refetch: Function;
 }) => {
   // normal version
   return (
@@ -78,14 +85,31 @@ export default ({
         </a>
 
         <div className="flex">
-          <button
-            type="button"
-            className="font-medium text-indigo-600 hover:text-indigo-500 flex content-center"
-            onClick={() => {}}
-          >
-            <ClipboardDocumentListIcon className="h-6 w-6 mr-1" />
-            Apply
-          </button>
+          {tutorRequest.applied ? (
+            <button
+              type="button"
+              className="font-medium text-indigo-600 hover:text-indigo-500 flex content-center"
+              onClick={async () => {
+                await withdrawApplication({ id: tutorRequest._id });
+                refetch();
+              }}
+            >
+              <ClipboardDocumentCheckIcon className="h-6 w-6 mr-1" />
+              Applied
+            </button>
+          ) : (
+            <button
+              type="button"
+              className="font-medium text-indigo-600 hover:text-indigo-500 flex content-center"
+              onClick={async () => {
+                await applyToTutorRequest({ id: tutorRequest._id });
+                refetch();
+              }}
+            >
+              <ClipboardDocumentListIcon className="h-6 w-6 mr-1" />
+              Apply
+            </button>
+          )}
         </div>
       </div>
     </div>

@@ -50,12 +50,16 @@ const TutorProfile: NextPageWithLayout = () => {
     page: 1,
     limit: 5,
   });
-  const [tabSelected, setTabSelected] = useState<"Requests" | "Applied">(
-    "Requests"
-  );
   useEffect(() => {
     setPaginationQuery({ ...paginationQuery, page: 1 });
   }, [filters]);
+  const [appliedPaginationQuery, setAppliedPaginationQuery] = useState({
+    page: 1,
+    limit: 5,
+  });
+  const [tabSelected, setTabSelected] = useState<"Requests" | "Applied">(
+    "Requests"
+  );
   const { isLoading, error, data, refetch, isRefetching } = useQuery(
     ["getTutorRequest", filters, paginationQuery],
     () => getTutorRequests({ ...filters, ...paginationQuery })
@@ -67,7 +71,7 @@ const TutorProfile: NextPageWithLayout = () => {
     refetch: appliedRefetch,
     isRefetching: appliedIsRefetching,
   } = useQuery(["getAppliedRequests"], () =>
-    getAppliedRequests({ ...paginationQuery })
+    getAppliedRequests({ ...appliedPaginationQuery })
   );
 
   const setPage = (page: number) => {
@@ -276,7 +280,10 @@ const TutorProfile: NextPageWithLayout = () => {
                   className={
                     tabSelected === "Requests" ? tabClassesSelected : tabClasses
                   }
-                  onClick={() => setTabSelected("Requests")}
+                  onClick={() => {
+                    refetch();
+                    setTabSelected("Requests");
+                  }}
                 >
                   Tutor Requests
                 </button>
@@ -286,7 +293,10 @@ const TutorProfile: NextPageWithLayout = () => {
                   className={
                     tabSelected === "Applied" ? tabClassesSelected : tabClasses
                   }
-                  onClick={() => setTabSelected("Applied")}
+                  onClick={() => {
+                    appliedRefetch();
+                    setTabSelected("Applied");
+                  }}
                 >
                   Applied
                 </button>
@@ -305,6 +315,7 @@ const TutorProfile: NextPageWithLayout = () => {
                         key={tutorRequest._id}
                         tutorRequest={tutorRequest}
                         showDetails={() => {}}
+                        refetch={refetch}
                       />
                     ))}
                   </div>
@@ -324,15 +335,16 @@ const TutorProfile: NextPageWithLayout = () => {
                   {appliedData.applications.map((application: any) => (
                     <RequestCard
                       key={application._id}
-                      tutorRequest={application.tutorRequest}
+                      tutorRequest={application.tutorRequestDetails}
                       showDetails={() => {}}
+                      refetch={appliedRefetch}
                     />
                   ))}
                 </div>
                 <PaginateFooter
-                  page={paginationQuery.page}
-                  limit={paginationQuery.limit}
-                  total={data?.count}
+                  page={appliedPaginationQuery.page}
+                  limit={appliedPaginationQuery.limit}
+                  total={appliedData?.count}
                   setPage={setPage}
                 />
               </div>
