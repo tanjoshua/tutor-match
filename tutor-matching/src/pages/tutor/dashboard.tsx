@@ -25,6 +25,7 @@ import Creatable from "@/components/shared/Creatable";
 import RequestCard from "@/components/tutor-request/RequestCard";
 import PaginateFooter from "@/components/shared/PaginateFooter";
 import TutorRequestModal from "@/components/tutor-request/TutorRequestModal";
+import { getUserTutorProfile } from "@/services/tutor";
 
 const tabClasses =
   "inline-block p-4 border-b-2 border-transparent rounded-t-lg hover:text-gray-600 hover:border-gray-300 ";
@@ -76,6 +77,24 @@ const TutorProfile: NextPageWithLayout = () => {
   } = useQuery(["getAppliedRequests"], () =>
     getAppliedRequests({ ...appliedPaginationQuery })
   );
+  const {
+    isLoading: tutorProfileIsLoading,
+    error: tutorProfileError,
+    data: tutorProfileData,
+    refetch: tutorProfileRefetch,
+  } = useQuery("userTutorProfile", getUserTutorProfile);
+  useEffect(() => {
+    if (tutorProfileData?.profile) {
+      setFilters({
+        ...filters,
+        region: tutorProfileData.profile.regions,
+        gender: tutorProfileData.profile.gender,
+        type: [tutorProfileData.profile.type],
+        levelCategories: tutorProfileData.profile.levels,
+        subjects: tutorProfileData.profile.subjects,
+      });
+    }
+  }, [tutorProfileData]);
 
   const setPage = (page: number) => {
     setPaginationQuery({ ...paginationQuery, page: page });
