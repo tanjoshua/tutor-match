@@ -11,6 +11,7 @@ import { generateNewTutorRequestEmail } from "../../utils/emailFactory";
 
 require("express-async-errors");
 export const getTutorRequests = async (req: Request, res: Response) => {
+  const tutor = req.user!;
   // retrieve options
   const page = req.body.page || 1;
   const limit = req.body.limit || 5;
@@ -40,11 +41,7 @@ export const getTutorRequests = async (req: Request, res: Response) => {
 
   const totalCount = await collections.tutorRequests!.countDocuments(filter);
   const documents = await collections
-    .tutorRequests!.aggregate([
-      { $match: filter },
-      // will probably add lookup stuff here
-    ])
-    .sort({ createdAt: -1 })
+    .tutorRequests!.aggregate([{ $match: filter }, { $sort: { _id: -1 } }])
     .skip((+page - 1) * +limit)
     .limit(+limit)
     .toArray();
@@ -54,10 +51,59 @@ export const getTutorRequests = async (req: Request, res: Response) => {
   const objects = [];
   for (const doc of documents) {
     const object = TutorRequest.assign(doc as TutorRequest);
-    objects.push(object);
+    const tutorApp = await collections.tutorApplications!.findOne({
+      tutorRequest: object._id,
+      tutor: tutor._id,
+    });
+    objects.push({ ...object, applied: !!tutorApp });
   }
 
   res.json({ tutorRequests: objects, count: totalCount });
+};
+
+export const getAppliedRequests = async (req: Request, res: Response) => {
+  const tutor = req.user!;
+  // retrieve options
+  const page = req.query.page || 1;
+  const limit = req.query.limit || 5;
+  const totalCount = await collections.tutorApplications!.countDocuments({
+    tutor: new ObjectId(tutor._id),
+  });
+  const applications = await collections
+    .tutorApplications!.aggregate([
+      {
+        $match: {
+          tutor: new ObjectId(tutor._id),
+        },
+      },
+      {
+        $lookup: {
+          from: "tutorRequests",
+          localField: "tutorRequest",
+          foreignField: "_id",
+          as: "tutorRequestDetails",
+        },
+      },
+      {
+        $unwind: {
+          path: "$tutorRequestDetails",
+        },
+      },
+      {
+        $addFields: {
+          "tutorRequestDetails.applied": true,
+        },
+      },
+      {
+        $sort: {
+          _id: -1,
+        },
+      },
+    ])
+    .skip((+page - 1) * +limit)
+    .limit(+limit)
+    .toArray();
+  res.json({ applications, count: totalCount });
 };
 
 export const getTutorRequest = async (req: Request, res: Response) => {
@@ -231,7 +277,7 @@ export const getTutorApplications = async (req: Request, res: Response) => {
       },
       {
         $sort: {
-          updatedAt: -1,
+          _id: -1,
         },
       },
     ])
@@ -259,7 +305,7 @@ export const getTutorApplications = async (req: Request, res: Response) => {
       },
       {
         $sort: {
-          updatedAt: -1,
+          _id: -1,
         },
       },
     ])
@@ -287,7 +333,7 @@ export const getTutorApplications = async (req: Request, res: Response) => {
       },
       {
         $sort: {
-          updatedAt: -1,
+          _id: -1,
         },
       },
     ])

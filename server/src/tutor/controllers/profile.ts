@@ -46,7 +46,7 @@ export const getPublicProfiles = async (req: Request, res: Response) => {
         },
       },
     ])
-    .sort({ createdAt: -1 })
+    .sort({ _id: -1 })
     .skip((+page - 1) * +limit)
     .limit(+limit)
     .toArray();
