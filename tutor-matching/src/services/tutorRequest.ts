@@ -136,8 +136,19 @@ export const getTutorRequests = async ({
   return result.data;
 };
 
-export const getAppliedRequests = async () => {
-  const result = await instance.post(`/tutor/appliedRequests`);
+export const getAppliedRequests = async ({
+  page,
+  limit,
+}: {
+  page: number;
+  limit: number;
+}) => {
+  const result = await instance.get(`/tutor/appliedRequests`, {
+    params: {
+      page,
+      limit,
+    },
+  });
   return result.data;
 };
 

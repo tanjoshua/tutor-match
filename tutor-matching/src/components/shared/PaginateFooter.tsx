@@ -84,6 +84,7 @@ export default function PaginateFooter({
             </a>
             {pages.map((p, i) => (
               <a
+                key={i}
                 className={
                   p === page ? selectedPageClasses : nonSelectedPageClasses
                 }

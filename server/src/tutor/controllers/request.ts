@@ -58,6 +58,9 @@ export const getTutorRequests = async (req: Request, res: Response) => {
 
 export const getAppliedRequests = async (req: Request, res: Response) => {
   const tutor = req.user!;
+  // retrieve options
+  const page = req.query.page || 1;
+  const limit = req.query.limit || 5;
   const applications = await collections
     .tutorApplications!.aggregate([
       {
@@ -70,12 +73,12 @@ export const getAppliedRequests = async (req: Request, res: Response) => {
           from: "tutorRequests",
           localField: "tutorRequest",
           foreignField: "_id",
-          as: "tutorProfile",
+          as: "tutorRequestDetails",
         },
       },
       {
         $unwind: {
-          path: "$tutorRequests",
+          path: "$tutorRequestDetails",
         },
       },
       {
@@ -84,6 +87,8 @@ export const getAppliedRequests = async (req: Request, res: Response) => {
         },
       },
     ])
+    .skip((+page - 1) * +limit)
+    .limit(+limit)
     .toArray();
 
   res.json({ applications });

@@ -7,10 +7,16 @@ import { ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/20/solid";
 import { useRouter } from "next/router";
 import Head from "next/head";
 import {
+  getAppliedRequests,
   getTutorApplications,
   getTutorRequests,
 } from "@/services/tutorRequest";
-import { ApplicationState, RateOptions, Region } from "@/utils/enums";
+import {
+  ApplicationState,
+  RateOptions,
+  Region,
+  TutorType,
+} from "@/utils/enums";
 import Spinner from "@/components/shared/Spinner";
 import Select from "@/components/shared/Select";
 import { LevelCategories, levelCategoryOptions } from "@/utils/options/levels";
@@ -42,15 +48,26 @@ const TutorProfile: NextPageWithLayout = () => {
   });
   const [paginationQuery, setPaginationQuery] = useState({
     page: 1,
-    limit: 2,
+    limit: 5,
   });
-  const [tabSelected, setTabSelected] = useState(ApplicationState.Pending);
+  const [tabSelected, setTabSelected] = useState<"Requests" | "Applied">(
+    "Requests"
+  );
   useEffect(() => {
     setPaginationQuery({ ...paginationQuery, page: 1 });
   }, [filters]);
   const { isLoading, error, data, refetch, isRefetching } = useQuery(
     ["getTutorRequest", filters, paginationQuery],
     () => getTutorRequests({ ...filters, ...paginationQuery })
+  );
+  const {
+    isLoading: appliedIsLoading,
+    error: appliedError,
+    data: appliedData,
+    refetch: appliedRefetch,
+    isRefetching: appliedIsRefetching,
+  } = useQuery(["getAppliedRequests"], () =>
+    getAppliedRequests({ ...paginationQuery })
   );
 
   const setPage = (page: number) => {
@@ -166,6 +183,27 @@ const TutorProfile: NextPageWithLayout = () => {
               />
             </div>
             <div className="my-2">
+              <label className="block font-medium text-gray-900">Type</label>
+              <Select
+                isMulti
+                isClearable
+                options={Object.values(TutorType).map((value) => ({
+                  label: value,
+                  value: value,
+                }))}
+                value={filters.type.map((x) => ({
+                  value: x,
+                  label: x,
+                }))}
+                onChange={(value: any) => {
+                  setFilters({
+                    ...filters,
+                    type: value.map((x: any) => x.value),
+                  });
+                }}
+              />
+            </div>
+            <div className="my-2">
               <label className="block font-medium text-gray-900">Levels</label>
               <Select
                 isMulti
@@ -195,7 +233,7 @@ const TutorProfile: NextPageWithLayout = () => {
               {Object.values(LevelCategories).map((level) => {
                 if (filters.levelCategories.includes(level)) {
                   return (
-                    <div className="my-2">
+                    <div className="my-2" key={level}>
                       <label className="block text-sm text-gray-900">
                         {level}:
                       </label>
@@ -236,11 +274,9 @@ const TutorProfile: NextPageWithLayout = () => {
               <li className="mr-2">
                 <button
                   className={
-                    tabSelected === ApplicationState.Pending
-                      ? tabClassesSelected
-                      : tabClasses
+                    tabSelected === "Requests" ? tabClassesSelected : tabClasses
                   }
-                  onClick={() => setTabSelected(ApplicationState.Pending)}
+                  onClick={() => setTabSelected("Requests")}
                 >
                   Tutor Requests
                 </button>
@@ -248,11 +284,9 @@ const TutorProfile: NextPageWithLayout = () => {
               <li className="mr-2">
                 <button
                   className={
-                    tabSelected === ApplicationState.Hidden
-                      ? tabClassesSelected
-                      : tabClasses
+                    tabSelected === "Applied" ? tabClassesSelected : tabClasses
                   }
-                  onClick={() => setTabSelected(ApplicationState.Hidden)}
+                  onClick={() => setTabSelected("Applied")}
                 >
                   Applied
                 </button>
@@ -260,14 +294,37 @@ const TutorProfile: NextPageWithLayout = () => {
             </ul>
           </div>
           <div className="p-2">
-            {isRefetching || isLoading ? (
+            {tabSelected === "Requests" ? (
+              isRefetching || isLoading ? (
+                <Spinner />
+              ) : (
+                <div>
+                  <div className="divide-y-2">
+                    {data.tutorRequests.map((tutorRequest: any) => (
+                      <RequestCard
+                        key={tutorRequest._id}
+                        tutorRequest={tutorRequest}
+                        showDetails={() => {}}
+                      />
+                    ))}
+                  </div>
+                  <PaginateFooter
+                    page={paginationQuery.page}
+                    limit={paginationQuery.limit}
+                    total={data?.count}
+                    setPage={setPage}
+                  />
+                </div>
+              )
+            ) : appliedIsRefetching || appliedIsLoading ? (
               <Spinner />
             ) : (
               <div>
                 <div className="divide-y-2">
-                  {data.tutorRequests.map((tutorRequest: any) => (
+                  {appliedData.applications.map((application: any) => (
                     <RequestCard
-                      tutorRequest={tutorRequest}
+                      key={application._id}
+                      tutorRequest={application.tutorRequest}
                       showDetails={() => {}}
                     />
                   ))}
