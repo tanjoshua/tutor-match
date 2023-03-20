@@ -129,7 +129,7 @@ const TutorProfile: NextPageWithLayout = () => {
                 }}
               >
                 {isRefetching ? (
-                  <>Loading</>
+                  <>Loading...</>
                 ) : (
                   <>
                     <ArrowPathIcon
@@ -200,8 +200,8 @@ const TutorProfile: NextPageWithLayout = () => {
             </div>
             <div className="p-2">
               <div>
-                {isRefetching && <Spinner />}
-                {!isRefetching && tabSelected === ApplicationState.Pending && (
+                {isLoading && <Spinner />}
+                {!isLoading && tabSelected === ApplicationState.Pending && (
                   <ul role="list" className="divide-y divide-gray-200">
                     {pendingApplications.map((app) => (
                       <AppCard
@@ -254,8 +254,8 @@ const TutorProfile: NextPageWithLayout = () => {
               </div>
             </div>
             <div className="p-2">
-              {isRefetching && <Spinner />}
-              {!isRefetching && (
+              {isLoading && <Spinner />}
+              {!isLoading && (
                 <ul role="list" className="divide-y divide-gray-200">
                   {shortlistedApplications.map((app) => (
                     <AppCard

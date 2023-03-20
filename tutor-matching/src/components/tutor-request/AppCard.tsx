@@ -64,18 +64,6 @@ export default ({
                   <EyeSlashIcon className="h-6 w-6 text-indigo-600 hover:text-indigo-500" />
                 </button>
               )}
-              {shortlist && (
-                <button
-                  className="rounded-md transititext-primary"
-                  data-te-toggle="tooltip"
-                  title="Remove from shortlist"
-                  onClick={() => {
-                    updateState(id, ApplicationState.Pending);
-                  }}
-                >
-                  <BookmarkSlashIcon className="h-6 w-6 text-indigo-600 hover:text-indigo-500" />
-                </button>
-              )}
               {hidden && (
                 <button
                   className="rounded-md transititext-primary"
@@ -114,9 +102,27 @@ export default ({
                 onClick={() => {
                   updateState(id, ApplicationState.Shortlisted);
                 }}
+                data-te-toggle="tooltip"
+                title="Shortlist"
               >
                 <BookmarkIcon className="h-6 w-6 mr-1" />
                 Shortlist
+              </button>
+            </div>
+          )}
+          {shortlist && (
+            <div className="flex">
+              <button
+                type="button"
+                className="font-medium text-indigo-600 hover:text-indigo-500 flex content-center "
+                data-te-toggle="tooltip"
+                title="Remove from shortlist"
+                onClick={() => {
+                  updateState(id, ApplicationState.Pending);
+                }}
+              >
+                <BookmarkSlashIcon className="h-6 w-6 mr-1" />
+                Remove
               </button>
             </div>
           )}

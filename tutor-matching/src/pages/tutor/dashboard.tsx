@@ -111,7 +111,7 @@ const TutorProfile: NextPageWithLayout = () => {
               }}
             >
               {isRefetching || appliedIsRefetching ? (
-                <>Loading</>
+                <>Loading...</>
               ) : (
                 <>
                   <ArrowPathIcon
@@ -126,8 +126,8 @@ const TutorProfile: NextPageWithLayout = () => {
         </div>
       </div>
 
-      <div className="border-t border-gray-200 lg:grid lg:grid-cols-5 lg:items-start">
-        <div className="md:col-span-2">
+      <div className="border-t border-gray-200 lg:grid lg:grid-cols-3 lg:items-start lg:gap-x-3 ">
+        <div className="lg:col-span-1">
           <div className="border-b border-gray-200">
             <div className="text-2xl font-bold text-gray-900 p-4 leading-6">
               Tutor request filters
@@ -261,7 +261,7 @@ const TutorProfile: NextPageWithLayout = () => {
             </div>
           </div>
         </div>
-        <div className="md:col-span-3">
+        <div className="lg:col-span-2">
           <div className="text-sm font-medium text-center text-gray-500 border-b border-gray-200 mx-2 leading-6">
             <ul className="flex flex-wrap -mb-px">
               <li className="mr-2">
@@ -294,7 +294,7 @@ const TutorProfile: NextPageWithLayout = () => {
           </div>
           <div className="p-2">
             {tabSelected === "Requests" ? (
-              isRefetching || isLoading ? (
+              isLoading ? (
                 <Spinner />
               ) : (
                 <div>
@@ -316,7 +316,7 @@ const TutorProfile: NextPageWithLayout = () => {
                   />
                 </div>
               )
-            ) : appliedIsRefetching || appliedIsLoading ? (
+            ) : appliedIsLoading ? (
               <Spinner />
             ) : (
               <div>

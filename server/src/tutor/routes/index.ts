@@ -35,7 +35,7 @@ router.put("/request", replaceTutorRequest);
 router.delete("/request/:id", deleteTutorRequest);
 
 // client side
-router.post("/requestClient/apps", getTutorApplications);
+router.get("/requestClient/apps", getTutorApplications);
 router.get("/requestClient/application", getTutorApplication);
 router.post("/requestClient/updateAppState", updateTutorApplicationState);
 
