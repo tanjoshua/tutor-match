@@ -8,6 +8,7 @@ import TutorRequest from "../models/TutorRequest";
 import TutorApplication, { ApplicationState } from "../models/TutorApplication";
 import { sendEmail } from "../../services/email.service";
 import { generateNewTutorRequestEmail } from "../../utils/emailFactory";
+import { formatDuration } from "../../utils/date";
 
 require("express-async-errors");
 export const getTutorRequests = async (req: Request, res: Response) => {
@@ -55,7 +56,10 @@ export const getTutorRequests = async (req: Request, res: Response) => {
       tutorRequest: object._id,
       tutor: tutor._id,
     });
-    objects.push({ ...object, applied: !!tutorApp });
+    const created = object._id!.getTimestamp();
+    const age = formatDuration(new Date(), created);
+
+    objects.push({ ...object, applied: !!tutorApp, age: `${age} ago` });
   }
 
   res.json({ tutorRequests: objects, count: totalCount });
@@ -103,6 +107,7 @@ export const getAppliedRequests = async (req: Request, res: Response) => {
     .skip((+page - 1) * +limit)
     .limit(+limit)
     .toArray();
+
   res.json({ applications, count: totalCount });
 };
 
