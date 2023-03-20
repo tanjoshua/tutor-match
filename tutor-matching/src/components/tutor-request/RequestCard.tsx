@@ -33,14 +33,11 @@ export default ({
         <div className="flex justify-between text-base font-medium text-gray-900">
           <h3>{`${tutorRequest.level}: ${tutorRequest.subjects.join(",")}`}</h3>
           <div className="flex items-center">
-            <div className="flex items-center text-sm text-gray-500">
-              <CurrencyDollarIcon
-                className="h-5 w-5 flex-shrink-0 text-gray-400 mr-0.5"
-                aria-hidden="true"
-              />
-              {tutorRequest.pricing.rateOption === RateOptions.Max
-                ? `${tutorRequest.pricing.rate}/hr`
-                : tutorRequest.pricing.rateOption}
+            <div className="text-sm text-gray-500 hidden md:block">
+              {tutorRequest.age}
+            </div>
+            <div className="text-sm text-gray-500 md:hidden">
+              {tutorRequest.age?.split(" ")[0]}
             </div>
           </div>
         </div>
@@ -71,6 +68,15 @@ export default ({
                 ? "All types"
                 : tutorRequest.type.join(", ")}
             </div>
+          </div>
+          <div className="flex items-center text-sm text-gray-500">
+            <CurrencyDollarIcon
+              className="h-5 w-5 flex-shrink-0 text-gray-400"
+              aria-hidden="true"
+            />
+            {tutorRequest.pricing.rateOption === RateOptions.Max
+              ? `${tutorRequest.pricing.rate}/hr`
+              : tutorRequest.pricing.rateOption}
           </div>
 
           <div className="line-clamp-1">{`Availability: ${tutorRequest.availability}`}</div>
