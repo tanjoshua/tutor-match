@@ -17,6 +17,7 @@ import {
   LowerSecondarySubjectOptions,
   UpperSecondarySubjectOptions,
   JCSubjectOptions,
+  levelCategoryToSubjectOptions,
 } from "@/utils/options/subjects";
 import { LevelCategories, levelCategoryOptions } from "@/utils/options/levels";
 
@@ -33,13 +34,7 @@ type InitialValue = {
   gender: string;
   regions: string[];
   levels: string[];
-  subjects: {
-    primary: string[];
-    lowerSecondary: string[];
-    upperSecondary: string[];
-    jc: string[];
-    other: string[];
-  };
+  subjects: any;
   type: string;
   qualifications: string;
   description: string;
@@ -53,13 +48,7 @@ const initialValues = {
   gender: "",
   regions: [],
   levels: [],
-  subjects: {
-    primary: [],
-    lowerSecondary: [],
-    upperSecondary: [],
-    jc: [],
-    other: [],
-  },
+  subjects: {},
   type: "",
   qualifications: "",
   description: "",
@@ -90,14 +79,6 @@ const EditProfile: NextPageWithLayout = () => {
       }
     },
   });
-
-  const levelOptions =
-    isLoadingLevels || levelsError
-      ? []
-      : levelsData.levels.map((level: string) => ({
-          label: level,
-          value: level,
-        }));
 
   if (isLoading) {
     return <></>;
@@ -231,115 +212,38 @@ const EditProfile: NextPageWithLayout = () => {
             Subjects taught
           </label>
           <div className="-my-1">
-            {formik.values.levels.includes(LevelCategories.Primary) && (
-              <div className="md:flex flex-row items-center py-1">
-                <div className="w-32">Primary: </div>
-                <div className="flex-1">
-                  <Creatable
-                    isMulti
-                    name="subjects.primary"
-                    onChange={(value: any) => {
-                      formik.setFieldValue(
-                        "subjects.primary",
-                        value.map((x: any) => x.value)
-                      );
-                    }}
-                    value={formik.values.subjects.primary.map((x) => ({
-                      value: x,
-                      label: x,
-                    }))}
-                    options={PrimarySubjectOptions}
-                  />
-                </div>
-              </div>
-            )}
-            {formik.values.levels.includes(LevelCategories.LowerSecondary) && (
-              <div className="md:flex flex-row items-center py-1">
-                <div className="w-32">Lower Secondary: </div>
-                <div className="flex-1">
-                  <Creatable
-                    isMulti
-                    name="subjects.lowerSecondary"
-                    onChange={(value: any) => {
-                      formik.setFieldValue(
-                        "subjects.lowerSecondary",
-                        value.map((x: any) => x.value)
-                      );
-                    }}
-                    value={formik.values.subjects.lowerSecondary.map((x) => ({
-                      value: x,
-                      label: x,
-                    }))}
-                    options={LowerSecondarySubjectOptions}
-                  />
-                </div>
-              </div>
-            )}
-            {formik.values.levels.includes(LevelCategories.UpperSecondary) && (
-              <div className="md:flex flex-row items-center py-1">
-                <div className="w-32">Upper Secondary: </div>
-                <div className="flex-1">
-                  <Creatable
-                    isMulti
-                    name="subjects.upperSecondary"
-                    onChange={(value: any) => {
-                      formik.setFieldValue(
-                        "subjects.upperSecondary",
-                        value.map((x: any) => x.value)
-                      );
-                    }}
-                    value={formik.values.subjects.upperSecondary.map((x) => ({
-                      value: x,
-                      label: x,
-                    }))}
-                    options={UpperSecondarySubjectOptions}
-                  />
-                </div>
-              </div>
-            )}
-            {formik.values.levels.includes(LevelCategories.JC) && (
-              <div className="md:flex flex-row items-center py-1">
-                <div className="w-32">JC: </div>
-                <div className="flex-1">
-                  <Creatable
-                    isMulti
-                    name="subjects.js"
-                    onChange={(value: any) => {
-                      formik.setFieldValue(
-                        "subjects.jc",
-                        value.map((x: any) => x.value)
-                      );
-                    }}
-                    value={formik.values.subjects.jc.map((x) => ({
-                      value: x,
-                      label: x,
-                    }))}
-                    options={JCSubjectOptions}
-                  />
-                </div>
-              </div>
-            )}
-            {formik.values.levels.includes(LevelCategories.Other) && (
-              <div className="md:flex flex-row items-center py-1">
-                <div className="w-32">Other: </div>
-                <div className="flex-1">
-                  <Creatable
-                    isMulti
-                    name="subjects.other"
-                    onChange={(value: any) => {
-                      formik.setFieldValue(
-                        "subjects.other",
-                        value.map((x: any) => x.value)
-                      );
-                    }}
-                    value={formik.values.subjects.other.map((x) => ({
-                      value: x,
-                      label: x,
-                    }))}
-                  />
-                </div>
-              </div>
-            )}
+            {Object.values(LevelCategories).map((level) => {
+              if (formik.values.levels.includes(level)) {
+                return (
+                  <div className="md:flex flex-row items-center py-1">
+                    <div className="w-32">{level}: </div>
+                    <div className="flex-1">
+                      <Creatable
+                        className="text-sm"
+                        isMulti
+                        isClearable
+                        options={levelCategoryToSubjectOptions(level)}
+                        value={
+                          formik.values.subjects[level]
+                            ? formik.values.subjects[level].map((x: any) => ({
+                                value: x,
+                                label: x,
+                              }))
+                            : []
+                        }
+                        onChange={(value: any) => {
+                          const newSubjects = { ...formik.values.subjects };
+                          newSubjects[level] = value.map(
+                            (value: any) => value.value
+                          );
+                          formik.setFieldValue("subjects", newSubjects);
+                        }}
+                      />
+                    </div>
+                  </div>
+                );
+              }
+            })}
           </div>
 
           <p className="mt-2 text-sm text-gray-500">

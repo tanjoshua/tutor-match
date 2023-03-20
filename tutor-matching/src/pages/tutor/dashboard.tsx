@@ -2,7 +2,11 @@ import { NextPageWithLayout } from "../_app";
 import { ReactElement, useEffect, useState } from "react";
 import Layout from "../../components/Layout";
 import { useQuery } from "react-query";
-import { PencilIcon, ArrowPathIcon } from "@heroicons/react/20/solid";
+import {
+  PencilIcon,
+  ArrowPathIcon,
+  XCircleIcon,
+} from "@heroicons/react/20/solid";
 import { ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/20/solid";
 import { useRouter } from "next/router";
 import Head from "next/head";
@@ -25,6 +29,8 @@ import Creatable from "@/components/shared/Creatable";
 import RequestCard from "@/components/tutor-request/RequestCard";
 import PaginateFooter from "@/components/shared/PaginateFooter";
 import TutorRequestModal from "@/components/tutor-request/TutorRequestModal";
+import { getUserTutorProfile } from "@/services/tutor";
+import { XMarkIcon } from "@heroicons/react/24/outline";
 
 const tabClasses =
   "inline-block p-4 border-b-2 border-transparent rounded-t-lg hover:text-gray-600 hover:border-gray-300 ";
@@ -76,6 +82,24 @@ const TutorProfile: NextPageWithLayout = () => {
   } = useQuery(["getAppliedRequests"], () =>
     getAppliedRequests({ ...appliedPaginationQuery })
   );
+  const {
+    isLoading: tutorProfileIsLoading,
+    error: tutorProfileError,
+    data: tutorProfileData,
+    refetch: tutorProfileRefetch,
+  } = useQuery("userTutorProfile", getUserTutorProfile);
+  useEffect(() => {
+    if (tutorProfileData?.profile) {
+      setFilters({
+        ...filters,
+        region: tutorProfileData.profile.regions,
+        gender: tutorProfileData.profile.gender,
+        type: [tutorProfileData.profile.type],
+        levelCategories: tutorProfileData.profile.levels,
+        subjects: tutorProfileData.profile.subjects,
+      });
+    }
+  }, [tutorProfileData]);
 
   const setPage = (page: number) => {
     setPaginationQuery({ ...paginationQuery, page: page });
@@ -142,14 +166,45 @@ const TutorProfile: NextPageWithLayout = () => {
         </div>
       </div>
 
-      <div className="border-t border-gray-200 lg:grid lg:grid-cols-3 lg:items-start lg:gap-x-3 ">
+      <div className="border-t border-gray-200 lg:grid lg:grid-cols-3 lg:items-start lg:gap-x-3">
         <div className="lg:col-span-1">
-          <div className="border-b border-gray-200">
-            <div className="text-2xl font-bold text-gray-900 p-4 leading-6">
+          <div className="pt-2 px-2 ">
+            <div className="text-2xl font-bold text-gray-900">
               Tutor request filters
             </div>
+            <div className="flex">
+              <div
+                className="text-sm text-gray-500 mr-2 hover:underline cursor-pointer"
+                onClick={() => {
+                  setFilters({
+                    region: [],
+                    gender: "",
+                    type: [],
+                    levelCategories: [],
+                    subjects: {},
+                  });
+                }}
+              >
+                Clear filters
+              </div>
+              <div
+                className="text-sm text-gray-500 hover:underline cursor-pointer"
+                onClick={() => {
+                  setFilters({
+                    ...filters,
+                    region: tutorProfileData.profile.regions,
+                    gender: tutorProfileData.profile.gender,
+                    type: [tutorProfileData.profile.type],
+                    levelCategories: tutorProfileData.profile.levels,
+                    subjects: tutorProfileData.profile.subjects,
+                  });
+                }}
+              >
+                Autofill
+              </div>
+            </div>
           </div>
-          <div className="p-2">
+          <div className="px-2">
             <div className="my-2">
               <label className="block font-medium text-gray-900">Region</label>
               <Select
@@ -324,12 +379,18 @@ const TutorProfile: NextPageWithLayout = () => {
                       />
                     ))}
                   </div>
-                  <PaginateFooter
-                    page={paginationQuery.page}
-                    limit={paginationQuery.limit}
-                    total={data?.count}
-                    setPage={setPage}
-                  />
+                  {data.tutorRequests.length === 0 ? (
+                    <div className="text-sm text-gray-500">
+                      No matching requests
+                    </div>
+                  ) : (
+                    <PaginateFooter
+                      page={paginationQuery.page}
+                      limit={paginationQuery.limit}
+                      total={data?.count}
+                      setPage={setPage}
+                    />
+                  )}
                 </div>
               )
             ) : appliedIsLoading ? (
@@ -346,12 +407,18 @@ const TutorProfile: NextPageWithLayout = () => {
                     />
                   ))}
                 </div>
-                <PaginateFooter
-                  page={appliedPaginationQuery.page}
-                  limit={appliedPaginationQuery.limit}
-                  total={appliedData?.count}
-                  setPage={setPage}
-                />
+                {appliedData.applications.length === 0 ? (
+                  <div className="text-sm text-gray-500">
+                    No applied requests
+                  </div>
+                ) : (
+                  <PaginateFooter
+                    page={appliedPaginationQuery.page}
+                    limit={appliedPaginationQuery.limit}
+                    total={appliedData?.count}
+                    setPage={setPage}
+                  />
+                )}
               </div>
             )}
           </div>
