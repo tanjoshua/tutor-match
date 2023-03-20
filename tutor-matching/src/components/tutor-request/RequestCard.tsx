@@ -8,6 +8,7 @@ import {
   UserIcon,
   TagIcon,
   CurrencyDollarIcon,
+  XMarkIcon,
 } from "@heroicons/react/20/solid";
 import {
   BookmarkIcon,
@@ -79,23 +80,30 @@ export default ({
       <div className="flex flex-1 items-end justify-between text-sm">
         <a
           className="flex-1 text-indigo-600 hover:text-indigo-500 cursor-pointer"
-          onClick={() => {}}
+          href={`/request/tutor-view/${tutorRequest._id}`}
+          target="_blank"
         >
-          Read more
+          Open in new tab
         </a>
 
         <div className="flex">
           {tutorRequest.applied ? (
             <button
               type="button"
-              className="font-medium text-indigo-600 hover:text-indigo-500 flex content-center"
+              className="font-medium text-indigo-600 hover:text-indigo-500 flex content-center group/apply"
               onClick={async () => {
                 await withdrawApplication({ id: tutorRequest._id });
                 refetch();
               }}
             >
-              <ClipboardDocumentCheckIcon className="h-6 w-6 mr-1" />
-              Applied
+              <div className="flex group-hover/apply:hidden">
+                <ClipboardDocumentCheckIcon className="h-6 w-6 mr-1" />
+                Applied
+              </div>
+              <div className="hidden group-hover/apply:flex">
+                <XMarkIcon className="h-6 w-6 mr-1" />
+                Withdraw
+              </div>
             </button>
           ) : (
             <button
