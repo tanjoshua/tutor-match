@@ -24,6 +24,7 @@ import { levelCategoryToSubjectOptions } from "@/utils/options/subjects";
 import Creatable from "@/components/shared/Creatable";
 import RequestCard from "@/components/tutor-request/RequestCard";
 import PaginateFooter from "@/components/shared/PaginateFooter";
+import TutorRequestModal from "@/components/tutor-request/TutorRequestModal";
 
 const tabClasses =
   "inline-block p-4 border-b-2 border-transparent rounded-t-lg hover:text-gray-600 hover:border-gray-300 ";
@@ -60,6 +61,8 @@ const TutorProfile: NextPageWithLayout = () => {
   const [tabSelected, setTabSelected] = useState<"Requests" | "Applied">(
     "Requests"
   );
+  const [requestDetailsModalOpen, setRequestDetailsModalOpen] = useState(false);
+  const [requestData, setRequestData] = useState<any>({});
   const { isLoading, error, data, refetch, isRefetching } = useQuery(
     ["getTutorRequest", filters, paginationQuery],
     () => getTutorRequests({ ...filters, ...paginationQuery })
@@ -77,6 +80,10 @@ const TutorProfile: NextPageWithLayout = () => {
   const setPage = (page: number) => {
     setPaginationQuery({ ...paginationQuery, page: page });
   };
+  const showRequestDetails = (data: any) => {
+    setRequestData(data);
+    setRequestDetailsModalOpen(true);
+  };
 
   if (error) {
     return <></>;
@@ -88,6 +95,15 @@ const TutorProfile: NextPageWithLayout = () => {
       <Head>
         <title>{`Tutor Dashboard`}</title>
       </Head>
+      <TutorRequestModal
+        open={requestDetailsModalOpen}
+        setOpen={setRequestDetailsModalOpen}
+        tutorRequest={requestData}
+        refetch={() => {
+          refetch();
+          appliedRefetch();
+        }}
+      />
       <div className="lg:flex lg:items-center lg:justify-between px-4 py-5 sm:px-6">
         <div className="min-w-0 flex-1">
           <h1 className="text-2xl font-bold leading-7 text-gray-900 sm:truncate sm:text-3xl sm:tracking-tight">
@@ -303,7 +319,7 @@ const TutorProfile: NextPageWithLayout = () => {
                       <RequestCard
                         key={tutorRequest._id}
                         tutorRequest={tutorRequest}
-                        showDetails={() => {}}
+                        showDetails={showRequestDetails}
                         refetch={refetch}
                       />
                     ))}
@@ -325,7 +341,7 @@ const TutorProfile: NextPageWithLayout = () => {
                     <RequestCard
                       key={application._id}
                       tutorRequest={application.tutorRequestDetails}
-                      showDetails={() => {}}
+                      showDetails={showRequestDetails}
                       refetch={appliedRefetch}
                     />
                   ))}

@@ -9,12 +9,11 @@ import {
   TagIcon,
   CurrencyDollarIcon,
   XMarkIcon,
+  ClipboardDocumentCheckIcon as ClipboardDocumentCheckIconSolid,
 } from "@heroicons/react/20/solid";
 import {
-  BookmarkIcon,
   ClipboardDocumentCheckIcon,
   ClipboardDocumentListIcon,
-  EyeSlashIcon,
 } from "@heroicons/react/24/outline";
 
 export default ({
@@ -31,7 +30,16 @@ export default ({
     <div className="py-6 flex flex-1 flex-col">
       <div>
         <div className="flex justify-between text-base font-medium text-gray-900">
-          <h3>{`${tutorRequest.level}: ${tutorRequest.subjects.join(",")}`}</h3>
+          <h3 className="flex items-center">
+            {`${tutorRequest.level}: ${tutorRequest.subjects.join(",")}`}
+            {tutorRequest.applied && (
+              <ClipboardDocumentCheckIconSolid
+                className="ml-1 h-5 w-5 flex-shrink-0 text-indigo-600 "
+                data-te-toggle="tooltip"
+                title="Applied"
+              />
+            )}
+          </h3>
           <div className="flex items-center">
             <div className="text-sm text-gray-500 hidden md:block">
               {tutorRequest.age}
@@ -86,10 +94,11 @@ export default ({
       <div className="flex flex-1 items-end justify-between text-sm">
         <a
           className="flex-1 text-indigo-600 hover:text-indigo-500 cursor-pointer"
-          href={`/request/tutor-view/${tutorRequest._id}`}
-          target="_blank"
+          onClick={() => {
+            showDetails(tutorRequest);
+          }}
         >
-          Open in new tab
+          Read more
         </a>
 
         <div className="flex">
