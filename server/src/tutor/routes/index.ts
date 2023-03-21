@@ -45,7 +45,7 @@ router.post("/withdrawRequest", auth, withdrawApplication);
 router.get("/applied", auth, tutorHasApplied);
 
 // tutor profile routes
-router.get("/public", getPublicProfiles);
+router.post("/getPublicProfiles", getPublicProfiles);
 router.get("/me", auth, getUserTutorProfile);
 router.get("/levels", getTutorLevels);
 router.post("/", auth, createProfile);

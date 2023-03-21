@@ -174,7 +174,7 @@ const TutorProfile: NextPageWithLayout = () => {
             </div>
             <div className="flex">
               <div
-                className="text-sm text-gray-500 mr-2 hover:underline cursor-pointer"
+                className="text-sm text-gray-500 mr-2 underline cursor-pointer hover:text-gray-400"
                 onClick={() => {
                   setFilters({
                     region: [],
@@ -188,7 +188,7 @@ const TutorProfile: NextPageWithLayout = () => {
                 Clear filters
               </div>
               <div
-                className="text-sm text-gray-500 hover:underline cursor-pointer"
+                className="text-sm text-gray-500 underline cursor-pointer hover:text-gray-400"
                 onClick={() => {
                   setFilters({
                     ...filters,

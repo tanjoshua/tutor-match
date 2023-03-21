@@ -12,20 +12,40 @@ export const getPublicProfiles = async (req: Request, res: Response) => {
   const limit = req.query.limit || 5;
 
   // only process public profiles
-  const searchQuery: any[] = [{ isPublic: true }];
+  const filters: any[] = [{ isPublic: true }];
 
   // process search query
   if (req.query.search) {
-    searchQuery.push({
+    filters.push({
       $or: [
         { title: { $regex: req.query.search, $options: "i" } },
         { subjects: { $regex: req.query.search, $options: "i" } },
+        { qualifications: { $regex: req.query.search, $options: "i" } },
+        { description: { $regex: req.query.search, $options: "i" } },
       ],
     });
   }
+  if (req.body.region?.length > 0)
+    filters.push({ region: { $in: req.body.region } });
+  if (req.body.gender?.length > 0)
+    filters.push({ gender: { $in: req.body.gender } });
+  if (req.body.type?.length > 0) filters.push({ type: { $in: req.body.type } });
+  if (req.body.levelCategories?.length > 0) {
+    const levelFilters: any[] = [];
+    for (const levelCategory of req.body.levelCategories) {
+      const filter: { levelCategory?: any; subjects?: any } = {
+        levelCategory: levelCategory,
+      };
+      if (req.body.subjects && req.body.subjects[levelCategory]?.length > 0)
+        filter.subjects = { $in: req.body.subjects[levelCategory] };
+      levelFilters.push(filter);
+    }
+    filters.push({ $or: levelFilters });
+  }
 
   // consolidate filters
-  const filter = { $and: searchQuery };
+  const filter: { $and?: any } = {};
+  if (filters.length > 0) filter.$and = filters;
 
   const totalCount = await collections.tutorProfiles!.countDocuments(filter);
   const profileDocuments = await collections
