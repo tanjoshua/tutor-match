@@ -25,8 +25,8 @@ export const getPublicProfiles = async (req: Request, res: Response) => {
       ],
     });
   }
-  if (req.body.region?.length > 0)
-    filters.push({ region: { $in: req.body.region } });
+  if (req.body.regions?.length > 0)
+    filters.push({ regions: { $in: req.body.regions } });
   if (req.body.gender?.length > 0)
     filters.push({ gender: { $in: req.body.gender } });
   if (req.body.type?.length > 0) filters.push({ type: { $in: req.body.type } });

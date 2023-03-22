@@ -112,7 +112,7 @@ export const getTutorProfile = async ({ id }: { id: string }) => {
 
 export const getPublicTutorProfiles = async ({
   searchQuery,
-  region,
+  regions,
   gender,
   levels,
   subjects,
@@ -121,7 +121,7 @@ export const getPublicTutorProfiles = async ({
   limit,
 }: {
   searchQuery?: string;
-  region?: string[];
+  regions?: string[];
   gender?: string[];
   levels?: string[];
   subjects?: any;
@@ -131,7 +131,7 @@ export const getPublicTutorProfiles = async ({
 }) => {
   const result = await instance.post(`/tutor/getPublicProfiles`, {
     searchQuery,
-    region,
+    regions,
     gender,
     levels,
     subjects,
