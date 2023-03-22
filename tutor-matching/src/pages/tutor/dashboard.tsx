@@ -210,6 +210,7 @@ const TutorProfile: NextPageWithLayout = () => {
               <Select
                 isMulti
                 isClearable
+                placeholder="Any region"
                 options={Object.values(Region).map((value) => ({
                   label: value,
                   value: value,
@@ -230,6 +231,7 @@ const TutorProfile: NextPageWithLayout = () => {
               <label className="block font-medium text-gray-900">Gender</label>
               <Select
                 isClearable
+                placeholder="No gender filters"
                 options={["Male", "Female"].map((value) => ({
                   label: value,
                   value: value,
@@ -251,6 +253,7 @@ const TutorProfile: NextPageWithLayout = () => {
               <Select
                 isMulti
                 isClearable
+                placeholder="No type filter"
                 options={Object.values(TutorType).map((value) => ({
                   label: value,
                   value: value,
@@ -272,6 +275,7 @@ const TutorProfile: NextPageWithLayout = () => {
               <Select
                 isMulti
                 isClearable
+                placeholder="All levels"
                 options={levelCategoryOptions}
                 value={filters.levelCategories.map((x) => ({
                   value: x,
@@ -305,6 +309,7 @@ const TutorProfile: NextPageWithLayout = () => {
                         className="text-sm"
                         isMulti
                         isClearable
+                        placeholder={`All ${level} subjects`}
                         options={levelCategoryToSubjectOptions(level)}
                         value={
                           filters.subjects[level]

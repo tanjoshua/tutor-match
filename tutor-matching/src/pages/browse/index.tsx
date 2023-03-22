@@ -15,7 +15,7 @@ import Spinner from "@/components/shared/Spinner";
 import RequestCard from "@/components/tutor-request/RequestCard";
 import PaginateFooter from "@/components/shared/PaginateFooter";
 import { getPublicTutorProfiles } from "@/services/tutor";
-import ProfileCard from "@/components/tutor-request/ProfileCard";
+import ProfileCard from "@/components/tutor-profile/ProfileCard";
 
 const stringifyFilters = ({
   regions,
@@ -112,8 +112,7 @@ const BrowseTutors: NextPageWithLayout = () => {
           </h1>
           <div className="mt-1 flex flex-col sm:mt-0 sm:flex-row sm:flex-wrap sm:space-x-6">
             <p className="text-sm text-gray-500">
-              Apply to requests from potential clients. This list will be
-              constantly updated so check back in regularly!
+              Only displaying public profiles
             </p>
           </div>
         </div>
@@ -165,6 +164,7 @@ const BrowseTutors: NextPageWithLayout = () => {
               <Select
                 isMulti
                 isClearable
+                placeholder="Any region"
                 options={Object.values(Region).map((value) => ({
                   label: value,
                   value: value,
@@ -191,6 +191,7 @@ const BrowseTutors: NextPageWithLayout = () => {
               <Select
                 isClearable
                 isMulti
+                placeholder="Any gender"
                 options={["Male", "Female"].map((value) => ({
                   label: value,
                   value: value,
@@ -217,6 +218,7 @@ const BrowseTutors: NextPageWithLayout = () => {
               <Select
                 isMulti
                 isClearable
+                placeholder="Any type"
                 options={Object.values(TutorType).map((value) => ({
                   label: value,
                   value: value,
@@ -243,6 +245,7 @@ const BrowseTutors: NextPageWithLayout = () => {
               <Select
                 isMulti
                 isClearable
+                placeholder="Any level"
                 options={levelCategoryOptions}
                 value={filters.levelCategories.map((x) => ({
                   value: x,
@@ -281,6 +284,7 @@ const BrowseTutors: NextPageWithLayout = () => {
                         className="text-sm"
                         isMulti
                         isClearable
+                        placeholder={`Any ${level.toLowerCase()} subject`}
                         options={levelCategoryToSubjectOptions(level)}
                         value={
                           filters.subjects[level]
@@ -321,7 +325,7 @@ const BrowseTutors: NextPageWithLayout = () => {
               <div>
                 <div className="divide-y-2">
                   {data.profiles?.map((tutor: any) => (
-                    <ProfileCard tutorProfile={tutor} />
+                    <ProfileCard tutorProfile={tutor} key={tutor.id} />
                   ))}
                 </div>
                 {data?.profiles?.length === 0 ? (
