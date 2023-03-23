@@ -1,5 +1,5 @@
 import { NextPageWithLayout } from "../_app";
-import { ReactElement, use, useEffect, useState } from "react";
+import { ReactElement, use, useEffect, useRef, useState } from "react";
 import Layout from "../../components/Layout";
 import { useRouter } from "next/router";
 import { useQuery } from "react-query";
@@ -23,12 +23,14 @@ const stringifyFilters = ({
   type,
   levelCategories,
   subjects,
+  search,
 }: {
   regions: string[];
   gender: string[];
   type: string[];
   levelCategories: string[];
   subjects: any;
+  search: string;
 }) => {
   const output = {
     regions: regions.length ? regions : null,
@@ -36,6 +38,7 @@ const stringifyFilters = ({
     type: type.length ? type : null,
     levelCategories: levelCategories.length ? levelCategories : null,
     subjects: Object.keys(subjects).length ? subjects : null,
+    search: search ? search : null,
   };
   return JSON.stringify(output, (k, v) => {
     if (v !== null) return v;
@@ -47,6 +50,7 @@ const initialFilters = {
   type: [],
   levelCategories: [],
   subjects: {},
+  search: "",
 };
 const BrowseTutors: NextPageWithLayout = () => {
   const router = useRouter();
@@ -57,7 +61,9 @@ const BrowseTutors: NextPageWithLayout = () => {
     type: string[];
     levelCategories: string[];
     subjects: any;
+    search: string;
   }>(initialFilters);
+  const searchRef = useRef<HTMLInputElement>(null);
   useEffect(() => {
     if (router.query.filters && JSON.parse(router.query.filters as string)) {
       setFilters({
@@ -65,13 +71,7 @@ const BrowseTutors: NextPageWithLayout = () => {
         ...JSON.parse(router.query.filters as string),
       });
     } else {
-      setFilters({
-        regions: [],
-        gender: [],
-        type: [],
-        levelCategories: [],
-        subjects: {},
-      });
+      setFilters(initialFilters);
     }
   }, [router]);
   const [paginationQuery, setPaginationQuery] = useState({
@@ -90,6 +90,7 @@ const BrowseTutors: NextPageWithLayout = () => {
   const setPage = (page: number) => {
     setPaginationQuery({ ...paginationQuery, page: page });
   };
+
   const showTutorDetails = (data: any) => {
     setTutorData(data);
     setTutorDetailsModalOpen(true);
@@ -145,20 +146,47 @@ const BrowseTutors: NextPageWithLayout = () => {
         <div className="lg:col-span-1">
           <div className="pt-2 px-2 ">
             <div className="text-2xl font-bold text-gray-900">
-              Tutor request filters
+              Filter tutor requests
             </div>
-            <div className="flex">
-              <div
-                className="text-sm text-gray-500 mr-2 underline cursor-pointer hover:text-gray-400"
-                onClick={() => {
-                  router.push({ pathname: "/browse" });
-                }}
-              >
-                Clear filters
-              </div>
+            <div
+              className="text-sm text-gray-500 mr-2 underline cursor-pointer hover:text-gray-400"
+              onClick={() => {
+                router.push({ pathname: "/browse" });
+              }}
+            >
+              Clear filters
             </div>
           </div>
           <div className="px-2">
+            <form
+              onSubmit={(e) => {
+                e.preventDefault();
+                router.push({
+                  pathname: "/browse",
+                  query: {
+                    filters: stringifyFilters({
+                      ...filters,
+                      search: searchRef.current?.value
+                        ? searchRef.current?.value
+                        : "",
+                    }),
+                  },
+                });
+              }}
+            >
+              <div className="my-2">
+                <label className="block font-medium text-gray-900">
+                  Search query
+                </label>
+                <input
+                  type="text"
+                  id="tutorName"
+                  className="border border-gray-300 text-gray-900 text-sm rounded-lg focus:indigo-blue-500 focus:border-indigo-500 focus:outline-none block w-full p-2.5"
+                  placeholder=""
+                  ref={searchRef}
+                />
+              </div>
+            </form>
             <div className="my-2">
               <label className="block font-medium text-gray-900">Region</label>
               <Select

@@ -15,13 +15,14 @@ export const getPublicProfiles = async (req: Request, res: Response) => {
   const filters: any[] = [{ isPublic: true }];
 
   // process search query
-  if (req.query.search) {
+  if (req.body.search) {
     filters.push({
       $or: [
-        { title: { $regex: req.query.search, $options: "i" } },
-        { subjects: { $regex: req.query.search, $options: "i" } },
-        { qualifications: { $regex: req.query.search, $options: "i" } },
-        { description: { $regex: req.query.search, $options: "i" } },
+        { tutorName: { $regex: req.body.search, $options: "i" } },
+        { title: { $regex: req.body.search, $options: "i" } },
+        { subjects: { $regex: req.body.search, $options: "i" } },
+        { qualifications: { $regex: req.body.search, $options: "i" } },
+        { description: { $regex: req.body.search, $options: "i" } },
       ],
     });
   }
