@@ -8,8 +8,8 @@ import TutorProfile, { Level } from "../models/Profile";
 require("express-async-errors");
 export const getPublicProfiles = async (req: Request, res: Response) => {
   // retrieve options
-  const page = req.query.page || 1;
-  const limit = req.query.limit || 5;
+  const page = req.body.page || 1;
+  const limit = req.body.limit || 5;
 
   // only process public profiles
   const filters: any[] = [{ isPublic: true }];
@@ -66,8 +66,8 @@ export const getPublicProfiles = async (req: Request, res: Response) => {
           path: "$ownerDetails",
         },
       },
+      { $sort: { _id: -1 } },
     ])
-    .sort({ _id: -1 })
     .skip((+page - 1) * +limit)
     .limit(+limit)
     .toArray();

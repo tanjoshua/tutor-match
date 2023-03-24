@@ -44,6 +44,7 @@ const sortOptions = [
 function classNames(...classes: any[]) {
   return classes.filter(Boolean).join(" ");
 }
+const pageLimit = 10;
 
 const stringifyFilters = ({
   regions,
@@ -52,6 +53,7 @@ const stringifyFilters = ({
   levelCategories,
   subjects,
   search,
+  page,
 }: {
   regions: string[];
   gender: string[];
@@ -59,6 +61,7 @@ const stringifyFilters = ({
   levelCategories: string[];
   subjects: any;
   search: string;
+  page: number;
 }) => {
   const newSubjects: any = {};
   for (const level of levelCategories) {
@@ -71,6 +74,7 @@ const stringifyFilters = ({
     levelCategories: levelCategories.length ? levelCategories : null,
     subjects: Object.keys(newSubjects).length ? newSubjects : null,
     search: search ? search : null,
+    page: page ? page : 1,
   };
   return JSON.stringify(output, (k, v) => {
     if (v !== null) return v;
@@ -83,6 +87,7 @@ const initialFilters = {
   levelCategories: [],
   subjects: {},
   search: "",
+  page: 1,
 };
 const BrowseTutors: NextPageWithLayout = () => {
   const router = useRouter();
@@ -93,6 +98,7 @@ const BrowseTutors: NextPageWithLayout = () => {
     levelCategories: string[];
     subjects: any;
     search: string;
+    page: number;
   }>(initialFilters);
   const searchRef = useRef<HTMLInputElement>(null);
   useEffect(() => {
@@ -105,21 +111,22 @@ const BrowseTutors: NextPageWithLayout = () => {
       setFilters(initialFilters);
     }
   }, [router]);
-  const [paginationQuery, setPaginationQuery] = useState({
-    page: 1,
-    limit: 5,
-  });
-  useEffect(() => {
-    setPaginationQuery({ ...paginationQuery, page: 1 });
-  }, [filters]);
   const [tutorDetailsModalOpen, setTutorDetailsModalOpen] = useState(false);
   const [tutorData, setTutorData] = useState<any>({});
   const { isLoading, error, data, refetch, isRefetching } = useQuery(
-    ["getTutorRequest", filters, paginationQuery],
-    () => getPublicTutorProfiles({ ...filters, ...paginationQuery })
+    ["getTutorRequest", filters],
+    () => getPublicTutorProfiles({ ...filters, limit: pageLimit })
   );
   const setPage = (page: number) => {
-    setPaginationQuery({ ...paginationQuery, page: page });
+    router.push({
+      pathname: "/browse",
+      query: {
+        filters: stringifyFilters({
+          ...filters,
+          page,
+        }),
+      },
+    });
   };
 
   const showTutorDetails = (data: any) => {
@@ -205,6 +212,7 @@ const BrowseTutors: NextPageWithLayout = () => {
                         search: searchRef.current?.value
                           ? searchRef.current?.value
                           : "",
+                        page: 1,
                       }),
                     },
                   });
@@ -218,7 +226,7 @@ const BrowseTutors: NextPageWithLayout = () => {
                     type="text"
                     id="tutorName"
                     className="border border-gray-300 text-gray-900 rounded-lg focus:indigo-blue-500 focus:border-indigo-500 focus:outline-none block w-full p-2.5"
-                    placeholder=""
+                    placeholder="Search for name or keywords"
                     ref={searchRef}
                   />
                 </div>
@@ -267,6 +275,7 @@ const BrowseTutors: NextPageWithLayout = () => {
                                   levelCategories: value.map(
                                     (x: any) => x.value
                                   ),
+                                  page: 1,
                                 }),
                               },
                             });
@@ -335,6 +344,7 @@ const BrowseTutors: NextPageWithLayout = () => {
                                         ...filters,
                                         subjects: newSubjects,
                                       }),
+                                      page: 1,
                                     },
                                   });
                                 }}
@@ -382,6 +392,7 @@ const BrowseTutors: NextPageWithLayout = () => {
                                 filters: stringifyFilters({
                                   ...filters,
                                   regions: value.map((x: any) => x.value),
+                                  page: 1,
                                 }),
                               },
                             });
@@ -430,6 +441,7 @@ const BrowseTutors: NextPageWithLayout = () => {
                                 filters: stringifyFilters({
                                   ...filters,
                                   gender: value.map((x: any) => x.value),
+                                  page: 1,
                                 }),
                               },
                             });
@@ -476,6 +488,7 @@ const BrowseTutors: NextPageWithLayout = () => {
                                 filters: stringifyFilters({
                                   ...filters,
                                   type: value.map((x: any) => x.value),
+                                  page: 1,
                                 }),
                               },
                             });
@@ -505,8 +518,8 @@ const BrowseTutors: NextPageWithLayout = () => {
                     </div>
                   ) : (
                     <PaginateFooter
-                      page={paginationQuery.page}
-                      limit={paginationQuery.limit}
+                      page={filters.page}
+                      limit={pageLimit}
                       total={data?.count}
                       setPage={setPage}
                     />
