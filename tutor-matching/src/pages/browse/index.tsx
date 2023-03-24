@@ -14,7 +14,7 @@ import { getTutorRequests } from "@/services/tutorRequest";
 import Head from "next/head";
 import { ArrowPathIcon } from "@heroicons/react/24/outline";
 import Select from "@/components/shared/Select";
-import { Region, TutorType } from "@/utils/enums";
+import { TutorType } from "@/utils/enums";
 import { LevelCategories, levelCategoryOptions } from "@/utils/options/levels";
 import Creatable from "@/components/shared/Creatable";
 import { levelCategoryToSubjectOptions } from "@/utils/options/subjects";
@@ -32,6 +32,7 @@ import {
   PlusIcon,
   Squares2X2Icon,
 } from "@heroicons/react/20/solid";
+import { regionOptions } from "@/utils/options/regions";
 
 const sortOptions = [
   { name: "Most Popular", href: "#", current: true },
@@ -405,10 +406,7 @@ const BrowseTutors: NextPageWithLayout = () => {
                               isMulti
                               isClearable
                               placeholder="Any region"
-                              options={Object.values(Region).map((value) => ({
-                                label: value,
-                                value: value,
-                              }))}
+                              options={regionOptions}
                               value={filters.regions.map((x) => ({
                                 value: x,
                                 label: x,

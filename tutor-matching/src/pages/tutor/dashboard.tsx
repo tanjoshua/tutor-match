@@ -15,12 +15,7 @@ import {
   getTutorApplications,
   getTutorRequests,
 } from "@/services/tutorRequest";
-import {
-  ApplicationState,
-  RateOptions,
-  Region,
-  TutorType,
-} from "@/utils/enums";
+import { ApplicationState, RateOptions, TutorType } from "@/utils/enums";
 import Spinner from "@/components/shared/Spinner";
 import Select from "@/components/shared/Select";
 import { LevelCategories, levelCategoryOptions } from "@/utils/options/levels";
@@ -31,6 +26,7 @@ import PaginateFooter from "@/components/shared/PaginateFooter";
 import TutorRequestModal from "@/components/tutor-request/TutorRequestModal";
 import { getUserTutorProfile } from "@/services/tutor";
 import { XMarkIcon } from "@heroicons/react/24/outline";
+import { regionOptions } from "@/utils/options/regions";
 
 const tabClasses =
   "inline-block p-4 border-b-2 border-transparent rounded-t-lg hover:text-gray-600 hover:border-gray-300 ";
@@ -211,10 +207,7 @@ const TutorProfile: NextPageWithLayout = () => {
                 isMulti
                 isClearable
                 placeholder="Any region"
-                options={Object.values(Region).map((value) => ({
-                  label: value,
-                  value: value,
-                }))}
+                options={regionOptions}
                 value={filters.region.map((x) => ({
                   value: x,
                   label: x,
