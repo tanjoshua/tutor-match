@@ -5,6 +5,13 @@ import { collections } from "../../services/database.service";
 import { ObjectId } from "mongodb";
 import TutorProfile, { Level } from "../models/Profile";
 
+enum ProfileSortBy {
+  Oldest = "Oldest",
+  Newest = "Newest",
+  LowestRate = "Lowest Rate",
+  HighestRate = "Highest Rate",
+}
+
 require("express-async-errors");
 export const getPublicProfiles = async (req: Request, res: Response) => {
   // retrieve options
@@ -44,6 +51,18 @@ export const getPublicProfiles = async (req: Request, res: Response) => {
     filters.push({ $or: levelFilters });
   }
 
+  // handle sort
+  let sort: any = { _id: 1 };
+  if (req.body.sortBy) {
+    if (req.body.sortBy === ProfileSortBy.Newest) {
+      sort = { _id: -1 };
+    } else if (req.body.sortBy === ProfileSortBy.HighestRate) {
+      sort = { "pricing.rate": -1 };
+    } else if (req.body.sortBy === ProfileSortBy.LowestRate) {
+      sort = { "pricing.rate": 1 };
+    }
+  }
+
   // consolidate filters
   const filter: { $and?: any } = {};
   if (filters.length > 0) filter.$and = filters;
@@ -66,7 +85,7 @@ export const getPublicProfiles = async (req: Request, res: Response) => {
           path: "$ownerDetails",
         },
       },
-      { $sort: { _id: -1 } },
+      { $sort: sort },
     ])
     .skip((+page - 1) * +limit)
     .limit(+limit)

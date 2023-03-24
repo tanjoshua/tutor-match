@@ -44,7 +44,10 @@ export const createTutorProfile = ({
     type,
     qualifications,
     description,
-    pricing,
+    pricing: {
+      ...pricing,
+      rate: +pricing.rate,
+    },
     contactInfo,
   });
 };
@@ -96,8 +99,11 @@ export const replaceTutorProfile = ({
     type,
     qualifications,
     description,
-    pricing,
     contactInfo,
+    pricing: {
+      ...pricing,
+      rate: +pricing.rate,
+    },
   });
 };
 
@@ -119,6 +125,7 @@ export const getPublicTutorProfiles = async ({
   type,
   page,
   limit,
+  sortBy,
 }: {
   search?: string;
   regions?: string[];
@@ -128,6 +135,7 @@ export const getPublicTutorProfiles = async ({
   type?: string[];
   page?: number;
   limit?: number;
+  sortBy?: string;
 }) => {
   const result = await instance.post(`/tutor/getPublicProfiles`, {
     search,
@@ -138,6 +146,7 @@ export const getPublicTutorProfiles = async ({
     type,
     page,
     limit,
+    sortBy,
   });
   return result.data;
 };

@@ -33,13 +33,7 @@ import {
   Squares2X2Icon,
 } from "@heroicons/react/20/solid";
 import { regionOptions } from "@/utils/options/regions";
-
-const sortOptions = [
-  { name: "Least recent", href: "#", current: true },
-  { name: "Newest", href: "#", current: false },
-  { name: "Rate: Low to High", href: "#", current: false },
-  { name: "Rate: High to Low", href: "#", current: false },
-];
+import { ProfileSortBy } from "@/utils/options/sort";
 
 function classNames(...classes: any[]) {
   return classes.filter(Boolean).join(" ");
@@ -54,6 +48,7 @@ const stringifyFilters = ({
   subjects,
   search,
   page,
+  sortBy,
 }: {
   regions: string[];
   gender: string[];
@@ -62,6 +57,7 @@ const stringifyFilters = ({
   subjects: any;
   search: string;
   page: number;
+  sortBy: string;
 }) => {
   const newSubjects: any = {};
   for (const level of levelCategories) {
@@ -75,6 +71,7 @@ const stringifyFilters = ({
     subjects: Object.keys(newSubjects).length ? newSubjects : null,
     search: search ? search : null,
     page: page ? page : 1,
+    sortBy: sortBy ? sortBy : ProfileSortBy.Oldest,
   };
   return JSON.stringify(output, (k, v) => {
     if (v !== null) return v;
@@ -88,6 +85,7 @@ const initialFilters = {
   subjects: {},
   search: "",
   page: 1,
+  sortBy: ProfileSortBy.Oldest,
 };
 const BrowseTutors: NextPageWithLayout = () => {
   const router = useRouter();
@@ -99,7 +97,12 @@ const BrowseTutors: NextPageWithLayout = () => {
     subjects: any;
     search: string;
     page: number;
+    sortBy: string;
   }>(initialFilters);
+  const sortOptions = Object.values(ProfileSortBy).map((value) => ({
+    name: value,
+    current: filters.sortBy === value,
+  }));
   const searchRef = useRef<HTMLInputElement>(null);
   useEffect(() => {
     if (router.query.filters && JSON.parse(router.query.filters as string)) {
@@ -176,13 +179,24 @@ const BrowseTutors: NextPageWithLayout = () => {
                       <Menu.Item key={option.name}>
                         {({ active }) => (
                           <a
-                            href={option.href}
+                            onClick={() => {
+                              router.push({
+                                pathname: "/browse",
+                                query: {
+                                  filters: stringifyFilters({
+                                    ...filters,
+                                    sortBy: option.name,
+                                    page: 1,
+                                  }),
+                                },
+                              });
+                            }}
                             className={classNames(
                               option.current
                                 ? "font-medium text-gray-900"
                                 : "text-gray-500",
                               active ? "bg-gray-100" : "",
-                              "block px-4 py-2 text-sm"
+                              "block px-4 py-2 text-sm cursor-pointer"
                             )}
                           >
                             {option.name}
