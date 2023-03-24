@@ -22,6 +22,7 @@ import {
 } from "@/utils/options/subjects";
 import { LevelCategories, levelCategoryOptions } from "@/utils/options/levels";
 import { regionOptions } from "@/utils/options/regions";
+import { redirectIfNotLoggedIn } from "@/utils/redirect";
 
 const tutorTypes = [
   "Part-Time Tutor",
@@ -58,6 +59,7 @@ const initialValues = {
 };
 
 const CreateProfile: NextPageWithLayout = () => {
+  redirectIfNotLoggedIn();
   const router = useRouter();
   const { isLoading, error, data, refetch } = useQuery(
     "userTutorProfile",

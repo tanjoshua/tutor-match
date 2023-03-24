@@ -15,8 +15,10 @@ import { useRouter } from "next/router";
 import Head from "next/head";
 import ShareModal from "@/components/tutor-profile/ShareModal";
 import { LevelCategories } from "@/utils/options/levels";
+import { redirectIfNotLoggedIn } from "@/utils/redirect";
 
 const YourProfile: NextPageWithLayout = () => {
+  redirectIfNotLoggedIn();
   const origin =
     typeof window !== "undefined" && window.location.origin
       ? window.location.origin

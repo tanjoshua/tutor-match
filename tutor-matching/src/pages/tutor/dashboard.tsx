@@ -32,6 +32,7 @@ import { getUserTutorProfile } from "@/services/tutor";
 import { XMarkIcon } from "@heroicons/react/24/outline";
 import { regionOptions } from "@/utils/options/regions";
 import { Disclosure, Menu, Transition } from "@headlessui/react";
+import { redirectIfNotLoggedIn } from "@/utils/redirect";
 
 const tabClasses =
   "inline-block px-4 pb-4 border-b-2 border-transparent rounded-t-lg hover:text-gray-600 hover:border-gray-300 ";
@@ -44,6 +45,7 @@ function classNames(...classes: any[]) {
 }
 
 const TutorProfile: NextPageWithLayout = () => {
+  redirectIfNotLoggedIn();
   const router = useRouter();
   const { token } = router.query;
   const [filters, setFilters] = useState<{

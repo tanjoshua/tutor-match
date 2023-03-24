@@ -6,8 +6,10 @@ import { useFormik } from "formik";
 import { register } from "@/services/auth";
 import { useRouter } from "next/router";
 import axios, { AxiosError } from "axios";
+import { redirectIfLoggedIn } from "@/utils/redirect";
 
 const Register: NextPageWithLayout = () => {
+  redirectIfLoggedIn();
   const router = useRouter();
   const formik = useFormik({
     initialValues: {
