@@ -1,5 +1,5 @@
 import { NextPageWithLayout } from "../_app";
-import { ReactElement, useEffect, useState } from "react";
+import { Fragment, ReactElement, useEffect, useState } from "react";
 import Layout from "../../components/Layout";
 import { useQuery } from "react-query";
 import {
@@ -7,7 +7,11 @@ import {
   ArrowPathIcon,
   XCircleIcon,
 } from "@heroicons/react/20/solid";
-import { ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/20/solid";
+import {
+  ChevronDownIcon,
+  MinusIcon,
+  PlusIcon,
+} from "@heroicons/react/20/solid";
 import { useRouter } from "next/router";
 import Head from "next/head";
 import {
@@ -27,11 +31,17 @@ import TutorRequestModal from "@/components/tutor-request/TutorRequestModal";
 import { getUserTutorProfile } from "@/services/tutor";
 import { XMarkIcon } from "@heroicons/react/24/outline";
 import { regionOptions } from "@/utils/options/regions";
+import { Disclosure, Menu, Transition } from "@headlessui/react";
 
 const tabClasses =
-  "inline-block p-4 border-b-2 border-transparent rounded-t-lg hover:text-gray-600 hover:border-gray-300 ";
+  "inline-block px-4 pb-4 border-b-2 border-transparent rounded-t-lg hover:text-gray-600 hover:border-gray-300 ";
 const tabClassesSelected =
-  "inline-block p-4 text-indigo-600 border-b-2 border-indigo-600 rounded-t-lg";
+  "inline-block px-4 pb-4 text-indigo-600 border-b-2 border-indigo-600 rounded-t-lg";
+const sortOptions = [{ name: "Newest", href: "#", current: true }];
+
+function classNames(...classes: any[]) {
+  return classes.filter(Boolean).join(" ");
+}
 
 const TutorProfile: NextPageWithLayout = () => {
   const router = useRouter();
@@ -124,303 +134,427 @@ const TutorProfile: NextPageWithLayout = () => {
           appliedRefetch();
         }}
       />
-      <div className="lg:flex lg:items-center lg:justify-between px-4 py-5 sm:px-6">
-        <div className="min-w-0 flex-1">
-          <h1 className="text-2xl font-bold leading-7 text-gray-900 sm:truncate sm:text-3xl sm:tracking-tight">
-            {`Find potential students here`}
-          </h1>
-          <div className="mt-1 flex flex-col sm:mt-0 sm:flex-row sm:flex-wrap sm:space-x-6">
-            <p className="text-sm text-gray-500">
-              Apply to requests from potential clients. This list will be
-              constantly updated so check back in regularly!
-            </p>
+      <div className="bg-white px-4 py-5 mx-auto">
+        <div className="flex items-baseline justify-between border-b border-gray-200 pb-6">
+          <div>
+            <h1 className="text-4xl font-bold tracking-tight text-gray-900">
+              Find potential students here
+            </h1>
+            <div className="mt-1 flex flex-col sm:mt-0 sm:flex-row sm:flex-wrap sm:space-x-6">
+              <p className="text-sm text-gray-500">
+                Apply to requests from potential clients. This list will be
+                constantly updated so check back in regularly!
+              </p>
+            </div>
           </div>
-        </div>
-        <div className="mt-5 flex lg:mt-0 lg:ml-4">
-          <span className="">
-            <button
-              type="button"
-              className="inline-flex items-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
-              onClick={() => {
-                refetch();
-                appliedRefetch();
-              }}
-            >
-              {isRefetching || appliedIsRefetching ? (
-                <>Loading...</>
-              ) : (
-                <>
-                  <ArrowPathIcon
-                    className="-ml-1 mr-2 h-5 w-5 text-gray-700"
+
+          <div className="flex items-center">
+            <Menu as="div" className="relative inline-block text-left">
+              <div>
+                <Menu.Button className="group inline-flex justify-center text-sm font-medium text-gray-700 hover:text-gray-900">
+                  Sort
+                  <ChevronDownIcon
+                    className="-mr-1 ml-1 h-5 w-5 flex-shrink-0 text-gray-400 group-hover:text-gray-500"
                     aria-hidden="true"
                   />
-                  Refresh
-                </>
-              )}
-            </button>
-          </span>
-        </div>
-      </div>
+                </Menu.Button>
+              </div>
 
-      <div className="border-t border-gray-200 lg:grid lg:grid-cols-3 lg:items-start lg:gap-x-3">
-        <div className="lg:col-span-1">
-          <div className="pt-2 px-2 ">
-            <div className="text-2xl font-bold text-gray-900">
-              Tutor request filters
-            </div>
-            <div className="flex">
-              <div
-                className="text-sm text-gray-500 mr-2 underline cursor-pointer hover:text-gray-400"
-                onClick={() => {
-                  setFilters({
-                    region: [],
-                    gender: "",
-                    type: [],
-                    levelCategories: [],
-                    subjects: {},
-                  });
-                }}
+              <Transition
+                as={Fragment}
+                enter="transition ease-out duration-100"
+                enterFrom="transform opacity-0 scale-95"
+                enterTo="transform opacity-100 scale-100"
+                leave="transition ease-in duration-75"
+                leaveFrom="transform opacity-100 scale-100"
+                leaveTo="transform opacity-0 scale-95"
               >
-                Clear filters
-              </div>
-              <div
-                className="text-sm text-gray-500 underline cursor-pointer hover:text-gray-400"
-                onClick={() => {
-                  setFilters({
-                    ...filters,
-                    region: tutorProfileData.profile.regions,
-                    gender: tutorProfileData.profile.gender,
-                    type: [tutorProfileData.profile.type],
-                    levelCategories: tutorProfileData.profile.levels,
-                    subjects: tutorProfileData.profile.subjects,
-                  });
-                }}
-              >
-                Autofill
-              </div>
-            </div>
-          </div>
-          <div className="px-2">
-            <div className="my-2">
-              <label className="block font-medium text-gray-900">Region</label>
-              <Select
-                isMulti
-                isClearable
-                placeholder="Any region"
-                options={regionOptions}
-                value={filters.region.map((x) => ({
-                  value: x,
-                  label: x,
-                }))}
-                onChange={(value: any) => {
-                  setFilters({
-                    ...filters,
-                    region: value.map((x: any) => x.value),
-                  });
-                }}
-              />
-            </div>
-            <div className="my-2">
-              <label className="block font-medium text-gray-900">Gender</label>
-              <Select
-                isClearable
-                placeholder="No gender filters"
-                options={["Male", "Female"].map((value) => ({
-                  label: value,
-                  value: value,
-                }))}
-                value={{
-                  label: filters.gender,
-                  value: filters.gender,
-                }}
-                onChange={(value: any) => {
-                  setFilters({
-                    ...filters,
-                    gender: value?.value,
-                  });
-                }}
-              />
-            </div>
-            <div className="my-2">
-              <label className="block font-medium text-gray-900">Type</label>
-              <Select
-                isMulti
-                isClearable
-                placeholder="No type filter"
-                options={Object.values(TutorType).map((value) => ({
-                  label: value,
-                  value: value,
-                }))}
-                value={filters.type.map((x) => ({
-                  value: x,
-                  label: x,
-                }))}
-                onChange={(value: any) => {
-                  setFilters({
-                    ...filters,
-                    type: value.map((x: any) => x.value),
-                  });
-                }}
-              />
-            </div>
-            <div className="my-2">
-              <label className="block font-medium text-gray-900">Levels</label>
-              <Select
-                isMulti
-                isClearable
-                placeholder="All levels"
-                options={levelCategoryOptions}
-                value={filters.levelCategories.map((x) => ({
-                  value: x,
-                  label: x,
-                }))}
-                onChange={(value: any) => {
-                  setFilters({
-                    ...filters,
-                    levelCategories: value.map((x: any) => x.value),
-                  });
-                }}
-              />
-            </div>
-            <div className="my-2">
-              <label className="block font-medium text-gray-900">
-                Subjects
-              </label>
-              {filters.levelCategories.length === 0 && (
-                <p className="mt-2 text-sm text-gray-500">
-                  Select a level to view options
-                </p>
-              )}
-              {Object.values(LevelCategories).map((level) => {
-                if (filters.levelCategories.includes(level)) {
-                  return (
-                    <div className="my-2" key={level}>
-                      <label className="block text-sm text-gray-900">
-                        {level}:
-                      </label>
-                      <Creatable
-                        className="text-sm"
-                        isMulti
-                        isClearable
-                        placeholder={`All ${level} subjects`}
-                        options={levelCategoryToSubjectOptions(level)}
-                        value={
-                          filters.subjects[level]
-                            ? filters.subjects[level].map((x: any) => ({
-                                value: x,
-                                label: x,
-                              }))
-                            : []
-                        }
-                        onChange={(value: any) => {
-                          const newSubjects = { ...filters.subjects };
-                          newSubjects[level] = value.map(
-                            (value: any) => value.value
-                          );
-                          setFilters({
-                            ...filters,
-                            subjects: newSubjects,
-                          });
-                        }}
-                      />
-                    </div>
-                  );
-                }
-              })}
-            </div>
-          </div>
-        </div>
-        <div className="lg:col-span-2">
-          <div className="text-sm font-medium text-center text-gray-500 border-b border-gray-200 mx-2 leading-6">
-            <ul className="flex flex-wrap -mb-px">
-              <li className="mr-2">
-                <button
-                  className={
-                    tabSelected === "Requests" ? tabClassesSelected : tabClasses
-                  }
-                  onClick={() => {
-                    refetch();
-                    setTabSelected("Requests");
-                  }}
-                >
-                  Tutor Requests
-                </button>
-              </li>
-              <li className="mr-2">
-                <button
-                  className={
-                    tabSelected === "Applied" ? tabClassesSelected : tabClasses
-                  }
-                  onClick={() => {
-                    appliedRefetch();
-                    setTabSelected("Applied");
-                  }}
-                >
-                  Applied
-                </button>
-              </li>
-            </ul>
-          </div>
-          <div className="p-2">
-            {tabSelected === "Requests" ? (
-              isLoading ? (
-                <Spinner />
-              ) : (
-                <div>
-                  <div className="divide-y-2">
-                    {data.tutorRequests.map((tutorRequest: any) => (
-                      <RequestCard
-                        key={tutorRequest._id}
-                        tutorRequest={tutorRequest}
-                        showDetails={showRequestDetails}
-                        refetch={refetch}
-                      />
+                <Menu.Items className="absolute right-0 z-10 mt-2 w-40 origin-top-right rounded-md bg-white shadow-2xl ring-1 ring-black ring-opacity-5 focus:outline-none">
+                  <div className="py-1">
+                    {sortOptions.map((option) => (
+                      <Menu.Item key={option.name}>
+                        {({ active }) => (
+                          <a
+                            href={option.href}
+                            className={classNames(
+                              option.current
+                                ? "font-medium text-gray-900"
+                                : "text-gray-500",
+                              active ? "bg-gray-100" : "",
+                              "block px-4 py-2 text-sm"
+                            )}
+                          >
+                            {option.name}
+                          </a>
+                        )}
+                      </Menu.Item>
                     ))}
                   </div>
-                  {data.tutorRequests.length === 0 ? (
-                    <div className="text-sm text-gray-500">
-                      No matching requests
-                    </div>
-                  ) : (
-                    <PaginateFooter
-                      page={paginationQuery.page}
-                      limit={paginationQuery.limit}
-                      total={data?.count}
-                      setPage={setPage}
-                    />
-                  )}
-                </div>
-              )
-            ) : appliedIsLoading ? (
-              <Spinner />
-            ) : (
-              <div>
-                <div className="divide-y-2">
-                  {appliedData.applications.map((application: any) => (
-                    <RequestCard
-                      key={application._id}
-                      tutorRequest={application.tutorRequestDetails}
-                      showDetails={showRequestDetails}
-                      refetch={appliedRefetch}
-                    />
-                  ))}
-                </div>
-                {appliedData.applications.length === 0 ? (
-                  <div className="text-sm text-gray-500">
-                    No applied requests
-                  </div>
-                ) : (
-                  <PaginateFooter
-                    page={appliedPaginationQuery.page}
-                    limit={appliedPaginationQuery.limit}
-                    total={appliedData?.count}
-                    setPage={setPage}
-                  />
-                )}
-              </div>
-            )}
+                </Menu.Items>
+              </Transition>
+            </Menu>
           </div>
         </div>
+
+        <section aria-labelledby="products-heading" className="pt-6 pb-24">
+          <div className="grid grid-cols-1 gap-x-8 gap-y-10 lg:grid-cols-4">
+            {/* Filters */}
+            <div className="lg:block">
+              <div className="flex">
+                <div
+                  className="text-sm text-gray-500 mr-2 underline cursor-pointer hover:text-gray-400"
+                  onClick={() => {
+                    setFilters({
+                      region: [],
+                      gender: "",
+                      type: [],
+                      levelCategories: [],
+                      subjects: {},
+                    });
+                  }}
+                >
+                  Clear filters
+                </div>
+                <div
+                  className="text-sm text-gray-500 underline cursor-pointer hover:text-gray-400"
+                  onClick={() => {
+                    setFilters({
+                      ...filters,
+                      region: tutorProfileData.profile.regions,
+                      gender: tutorProfileData.profile.gender,
+                      type: [tutorProfileData.profile.type],
+                      levelCategories: tutorProfileData.profile.levels,
+                      subjects: tutorProfileData.profile.subjects,
+                    });
+                  }}
+                >
+                  Autofill
+                </div>
+              </div>
+
+              <Disclosure as="div" className="border-b border-gray-200 py-4">
+                {({ open }) => (
+                  <>
+                    <h3 className="-my-3 flow-root">
+                      <Disclosure.Button className="flex w-full items-center justify-between bg-white py-3 text-sm text-gray-400 hover:text-gray-500">
+                        <span className="font-medium text-gray-900">Level</span>
+                        <span className="ml-6 flex items-center">
+                          {open ? (
+                            <MinusIcon className="h-5 w-5" aria-hidden="true" />
+                          ) : (
+                            <PlusIcon className="h-5 w-5" aria-hidden="true" />
+                          )}
+                        </span>
+                      </Disclosure.Button>
+                    </h3>
+                    <Disclosure.Panel className="pt-4">
+                      <div className="text-sm">
+                        <Select
+                          isMulti
+                          isClearable
+                          placeholder="All levels"
+                          options={levelCategoryOptions}
+                          value={filters.levelCategories.map((x) => ({
+                            value: x,
+                            label: x,
+                          }))}
+                          onChange={(value: any) => {
+                            setFilters({
+                              ...filters,
+                              levelCategories: value.map((x: any) => x.value),
+                            });
+                          }}
+                        />
+                      </div>
+                    </Disclosure.Panel>
+                  </>
+                )}
+              </Disclosure>
+              <Disclosure as="div" className="border-b border-gray-200 py-4">
+                {({ open }) => (
+                  <>
+                    <h3 className="-my-3 flow-root">
+                      <Disclosure.Button className="flex w-full items-center justify-between bg-white py-3 text-sm text-gray-400 hover:text-gray-500">
+                        <span className="font-medium text-gray-900">
+                          Subjects
+                        </span>
+                        <span className="ml-6 flex items-center">
+                          {open ? (
+                            <MinusIcon className="h-5 w-5" aria-hidden="true" />
+                          ) : (
+                            <PlusIcon className="h-5 w-5" aria-hidden="true" />
+                          )}
+                        </span>
+                      </Disclosure.Button>
+                    </h3>
+                    <Disclosure.Panel className="pt-4">
+                      {filters.levelCategories.length === 0 && (
+                        <p className="mt-2 text-sm text-gray-500">
+                          Select a level to view subject filters
+                        </p>
+                      )}
+                      {Object.values(LevelCategories).map((level) => {
+                        if (filters.levelCategories.includes(level)) {
+                          return (
+                            <div className="my-2" key={level}>
+                              <label className="block text-sm text-gray-900">
+                                {level}:
+                              </label>
+                              <Creatable
+                                className="text-sm"
+                                isMulti
+                                isClearable
+                                placeholder={`All ${level} subjects`}
+                                options={levelCategoryToSubjectOptions(level)}
+                                value={
+                                  filters.subjects[level]
+                                    ? filters.subjects[level].map((x: any) => ({
+                                        value: x,
+                                        label: x,
+                                      }))
+                                    : []
+                                }
+                                onChange={(value: any) => {
+                                  const newSubjects = { ...filters.subjects };
+                                  newSubjects[level] = value.map(
+                                    (value: any) => value.value
+                                  );
+                                  setFilters({
+                                    ...filters,
+                                    subjects: newSubjects,
+                                  });
+                                }}
+                              />
+                            </div>
+                          );
+                        }
+                      })}
+                    </Disclosure.Panel>
+                  </>
+                )}
+              </Disclosure>
+              <Disclosure as="div" className="border-b border-gray-200 py-4">
+                {({ open }) => (
+                  <>
+                    <h3 className="-my-3 flow-root">
+                      <Disclosure.Button className="flex w-full items-center justify-between bg-white py-3 text-sm text-gray-400 hover:text-gray-500">
+                        <span className="font-medium text-gray-900">Type</span>
+                        <span className="ml-6 flex items-center">
+                          {open ? (
+                            <MinusIcon className="h-5 w-5" aria-hidden="true" />
+                          ) : (
+                            <PlusIcon className="h-5 w-5" aria-hidden="true" />
+                          )}
+                        </span>
+                      </Disclosure.Button>
+                    </h3>
+                    <Disclosure.Panel className="pt-4">
+                      <div className="text-sm">
+                        <Select
+                          isMulti
+                          isClearable
+                          placeholder="No type filter"
+                          options={Object.values(TutorType).map((value) => ({
+                            label: value,
+                            value: value,
+                          }))}
+                          value={filters.type.map((x) => ({
+                            value: x,
+                            label: x,
+                          }))}
+                          onChange={(value: any) => {
+                            setFilters({
+                              ...filters,
+                              type: value.map((x: any) => x.value),
+                            });
+                          }}
+                        />
+                      </div>
+                    </Disclosure.Panel>
+                  </>
+                )}
+              </Disclosure>
+              <Disclosure as="div" className="border-b border-gray-200 py-4">
+                {({ open }) => (
+                  <>
+                    <h3 className="-my-3 flow-root">
+                      <Disclosure.Button className="flex w-full items-center justify-between bg-white py-3 text-sm text-gray-400 hover:text-gray-500">
+                        <span className="font-medium text-gray-900">
+                          Gender
+                        </span>
+                        <span className="ml-6 flex items-center">
+                          {open ? (
+                            <MinusIcon className="h-5 w-5" aria-hidden="true" />
+                          ) : (
+                            <PlusIcon className="h-5 w-5" aria-hidden="true" />
+                          )}
+                        </span>
+                      </Disclosure.Button>
+                    </h3>
+                    <Disclosure.Panel className="pt-4">
+                      <div className="text-sm">
+                        <Select
+                          isClearable
+                          placeholder="No gender filters"
+                          options={["Male", "Female"].map((value) => ({
+                            label: value,
+                            value: value,
+                          }))}
+                          value={{
+                            label: filters.gender,
+                            value: filters.gender,
+                          }}
+                          onChange={(value: any) => {
+                            setFilters({
+                              ...filters,
+                              gender: value?.value,
+                            });
+                          }}
+                        />
+                      </div>
+                    </Disclosure.Panel>
+                  </>
+                )}
+              </Disclosure>
+              <Disclosure as="div" className="border-b border-gray-200 py-4">
+                {({ open }) => (
+                  <>
+                    <h3 className="-my-3 flow-root">
+                      <Disclosure.Button className="flex w-full items-center justify-between bg-white py-3 text-sm text-gray-400 hover:text-gray-500">
+                        <span className="font-medium text-gray-900">
+                          Regions
+                        </span>
+                        <span className="ml-6 flex items-center">
+                          {open ? (
+                            <MinusIcon className="h-5 w-5" aria-hidden="true" />
+                          ) : (
+                            <PlusIcon className="h-5 w-5" aria-hidden="true" />
+                          )}
+                        </span>
+                      </Disclosure.Button>
+                    </h3>
+                    <Disclosure.Panel className="pt-4">
+                      <div className="text-sm">
+                        <Select
+                          isMulti
+                          isClearable
+                          placeholder="Any region"
+                          options={regionOptions}
+                          value={filters.region.map((x) => ({
+                            value: x,
+                            label: x,
+                          }))}
+                          onChange={(value: any) => {
+                            setFilters({
+                              ...filters,
+                              region: value.map((x: any) => x.value),
+                            });
+                          }}
+                        />
+                      </div>
+                    </Disclosure.Panel>
+                  </>
+                )}
+              </Disclosure>
+            </div>
+
+            <div className="lg:col-span-3">
+              <div className="text-sm font-medium text-center text-gray-500 border-b border-gray-200 mx-2 leading-6">
+                <ul className="flex flex-wrap -mb-px">
+                  <li className="mr-2">
+                    <button
+                      className={
+                        tabSelected === "Requests"
+                          ? tabClassesSelected
+                          : tabClasses
+                      }
+                      onClick={() => {
+                        refetch();
+                        setTabSelected("Requests");
+                      }}
+                    >
+                      Tutor Requests
+                    </button>
+                  </li>
+                  <li className="mr-2">
+                    <button
+                      className={
+                        tabSelected === "Applied"
+                          ? tabClassesSelected
+                          : tabClasses
+                      }
+                      onClick={() => {
+                        appliedRefetch();
+                        setTabSelected("Applied");
+                      }}
+                    >
+                      Applied
+                    </button>
+                  </li>
+                </ul>
+              </div>
+              <div className="p-2">
+                {tabSelected === "Requests" ? (
+                  isLoading ? (
+                    <Spinner />
+                  ) : (
+                    <div>
+                      <div className="divide-y-2">
+                        {data.tutorRequests.map((tutorRequest: any) => (
+                          <RequestCard
+                            key={tutorRequest._id}
+                            tutorRequest={tutorRequest}
+                            showDetails={showRequestDetails}
+                            refetch={refetch}
+                          />
+                        ))}
+                      </div>
+                      {data.tutorRequests.length === 0 ? (
+                        <div className="text-sm text-gray-500">
+                          No matching requests
+                        </div>
+                      ) : (
+                        <PaginateFooter
+                          page={paginationQuery.page}
+                          limit={paginationQuery.limit}
+                          total={data?.count}
+                          setPage={setPage}
+                        />
+                      )}
+                    </div>
+                  )
+                ) : appliedIsLoading ? (
+                  <Spinner />
+                ) : (
+                  <div>
+                    <div className="divide-y-2">
+                      {appliedData.applications.map((application: any) => (
+                        <RequestCard
+                          key={application._id}
+                          tutorRequest={application.tutorRequestDetails}
+                          showDetails={showRequestDetails}
+                          refetch={appliedRefetch}
+                        />
+                      ))}
+                    </div>
+                    {appliedData.applications.length === 0 ? (
+                      <div className="text-sm text-gray-500">
+                        No applied requests
+                      </div>
+                    ) : (
+                      <PaginateFooter
+                        page={appliedPaginationQuery.page}
+                        limit={appliedPaginationQuery.limit}
+                        total={appliedData?.count}
+                        setPage={setPage}
+                      />
+                    )}
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
+        </section>
       </div>
     </div>
   );
