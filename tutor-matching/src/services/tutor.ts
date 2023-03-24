@@ -114,7 +114,7 @@ export const getPublicTutorProfiles = async ({
   search,
   regions,
   gender,
-  levels,
+  levelCategories,
   subjects,
   type,
   page,
@@ -123,7 +123,7 @@ export const getPublicTutorProfiles = async ({
   search?: string;
   regions?: string[];
   gender?: string[];
-  levels?: string[];
+  levelCategories?: string[];
   subjects?: any;
   type?: string[];
   page?: number;
@@ -133,7 +133,7 @@ export const getPublicTutorProfiles = async ({
     search,
     regions,
     gender,
-    levels,
+    levelCategories,
     subjects,
     type,
     page,

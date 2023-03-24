@@ -1,5 +1,12 @@
 import { NextPageWithLayout } from "../_app";
-import { ReactElement, use, useEffect, useRef, useState } from "react";
+import {
+  ReactElement,
+  use,
+  useEffect,
+  useRef,
+  useState,
+  Fragment,
+} from "react";
 import Layout from "../../components/Layout";
 import { useRouter } from "next/router";
 import { useQuery } from "react-query";
@@ -16,6 +23,27 @@ import RequestCard from "@/components/tutor-request/RequestCard";
 import PaginateFooter from "@/components/shared/PaginateFooter";
 import { getPublicTutorProfiles } from "@/services/tutor";
 import ProfileCard from "@/components/tutor-profile/ProfileCard";
+import { Dialog, Disclosure, Menu, Transition } from "@headlessui/react";
+import { XMarkIcon } from "@heroicons/react/24/outline";
+import {
+  ChevronDownIcon,
+  FunnelIcon,
+  MinusIcon,
+  PlusIcon,
+  Squares2X2Icon,
+} from "@heroicons/react/20/solid";
+
+const sortOptions = [
+  { name: "Most Popular", href: "#", current: true },
+  { name: "Best Rating", href: "#", current: false },
+  { name: "Newest", href: "#", current: false },
+  { name: "Price: Low to High", href: "#", current: false },
+  { name: "Price: High to Low", href: "#", current: false },
+];
+
+function classNames(...classes: any[]) {
+  return classes.filter(Boolean).join(" ");
+}
 
 const stringifyFilters = ({
   regions,
@@ -32,12 +60,16 @@ const stringifyFilters = ({
   subjects: any;
   search: string;
 }) => {
+  const newSubjects: any = {};
+  for (const level of levelCategories) {
+    newSubjects[level] = subjects[level];
+  }
   const output = {
     regions: regions.length ? regions : null,
     gender: gender.length ? gender : null,
     type: type.length ? type : null,
     levelCategories: levelCategories.length ? levelCategories : null,
-    subjects: Object.keys(subjects).length ? subjects : null,
+    subjects: Object.keys(newSubjects).length ? newSubjects : null,
     search: search ? search : null,
   };
   return JSON.stringify(output, (k, v) => {
@@ -54,7 +86,6 @@ const initialFilters = {
 };
 const BrowseTutors: NextPageWithLayout = () => {
   const router = useRouter();
-  const { token } = router.query;
   const [filters, setFilters] = useState<{
     regions: string[];
     gender: string[];
@@ -101,279 +132,454 @@ const BrowseTutors: NextPageWithLayout = () => {
   }
 
   return (
-    <div>
+    <>
       <Head>
-        <title>{`Tutor Dashboard`}</title>
+        <title>{`Browse tutors`}</title>
       </Head>
-      {/* Modal here */}
-      <div className="lg:flex lg:items-center lg:justify-between px-4 py-5 sm:px-6">
-        <div className="min-w-0 flex-1">
-          <h1 className="text-2xl font-bold leading-7 text-gray-900 sm:truncate sm:text-3xl sm:tracking-tight">
-            Find tutors here
-          </h1>
-          <div className="mt-1 flex flex-col sm:mt-0 sm:flex-row sm:flex-wrap sm:space-x-6">
-            <p className="text-sm text-gray-500">
-              Only displaying public profiles
-            </p>
-          </div>
-        </div>
-        <div className="mt-5 flex lg:mt-0 lg:ml-4">
-          <span className="">
-            <button
-              type="button"
-              className="inline-flex items-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
-              onClick={() => {
-                refetch();
-              }}
-            >
-              {isRefetching ? (
-                <>Loading...</>
-              ) : (
-                <>
-                  <ArrowPathIcon
-                    className="-ml-1 mr-2 h-5 w-5 text-gray-700"
-                    aria-hidden="true"
-                  />
-                  Refresh
-                </>
-              )}
-            </button>
-          </span>
-        </div>
-      </div>
+      <div className="bg-white px-4 py-5">
+        <div>
+          <div className="mx-auto">
+            <div className="flex items-baseline justify-between border-b border-gray-200 pb-6">
+              <h1 className="text-4xl font-bold tracking-tight text-gray-900">
+                Browse tutors
+              </h1>
 
-      <div className="border-t border-gray-200 lg:grid lg:grid-cols-3 lg:items-start lg:gap-x-3">
-        <div className="lg:col-span-1">
-          <div className="pt-2 px-2 ">
-            <div className="text-2xl font-bold text-gray-900">
-              Filter tutor requests
-            </div>
-            <div
-              className="text-sm text-gray-500 mr-2 underline cursor-pointer hover:text-gray-400"
-              onClick={() => {
-                router.push({ pathname: "/browse" });
-              }}
-            >
-              Clear filters
-            </div>
-          </div>
-          <div className="px-2">
-            <form
-              onSubmit={(e) => {
-                e.preventDefault();
-                router.push({
-                  pathname: "/browse",
-                  query: {
-                    filters: stringifyFilters({
-                      ...filters,
-                      search: searchRef.current?.value
-                        ? searchRef.current?.value
-                        : "",
-                    }),
-                  },
-                });
-              }}
-            >
-              <div className="my-2">
-                <label className="block font-medium text-gray-900">
-                  Search query
-                </label>
-                <input
-                  type="text"
-                  id="tutorName"
-                  className="border border-gray-300 text-gray-900 text-sm rounded-lg focus:indigo-blue-500 focus:border-indigo-500 focus:outline-none block w-full p-2.5"
-                  placeholder=""
-                  ref={searchRef}
-                />
+              <div className="flex items-center">
+                <Menu as="div" className="relative inline-block text-left">
+                  <div>
+                    <Menu.Button className="group inline-flex justify-center text-sm font-medium text-gray-700 hover:text-gray-900">
+                      Sort
+                      <ChevronDownIcon
+                        className="-mr-1 ml-1 h-5 w-5 flex-shrink-0 text-gray-400 group-hover:text-gray-500"
+                        aria-hidden="true"
+                      />
+                    </Menu.Button>
+                  </div>
+
+                  <Transition
+                    as={Fragment}
+                    enter="transition ease-out duration-100"
+                    enterFrom="transform opacity-0 scale-95"
+                    enterTo="transform opacity-100 scale-100"
+                    leave="transition ease-in duration-75"
+                    leaveFrom="transform opacity-100 scale-100"
+                    leaveTo="transform opacity-0 scale-95"
+                  >
+                    <Menu.Items className="absolute right-0 z-10 mt-2 w-40 origin-top-right rounded-md bg-white shadow-2xl ring-1 ring-black ring-opacity-5 focus:outline-none">
+                      <div className="py-1">
+                        {sortOptions.map((option) => (
+                          <Menu.Item key={option.name}>
+                            {({ active }) => (
+                              <a
+                                href={option.href}
+                                className={classNames(
+                                  option.current
+                                    ? "font-medium text-gray-900"
+                                    : "text-gray-500",
+                                  active ? "bg-gray-100" : "",
+                                  "block px-4 py-2 text-sm"
+                                )}
+                              >
+                                {option.name}
+                              </a>
+                            )}
+                          </Menu.Item>
+                        ))}
+                      </div>
+                    </Menu.Items>
+                  </Transition>
+                </Menu>
               </div>
-            </form>
-            <div className="my-2">
-              <label className="block font-medium text-gray-900">Region</label>
-              <Select
-                isMulti
-                isClearable
-                placeholder="Any region"
-                options={Object.values(Region).map((value) => ({
-                  label: value,
-                  value: value,
-                }))}
-                value={filters.regions.map((x) => ({
-                  value: x,
-                  label: x,
-                }))}
-                onChange={(value: any) => {
-                  router.push({
-                    pathname: "/browse",
-                    query: {
-                      filters: stringifyFilters({
-                        ...filters,
-                        regions: value.map((x: any) => x.value),
-                      }),
-                    },
-                  });
-                }}
-              />
             </div>
-            <div className="my-2">
-              <label className="block font-medium text-gray-900">Gender</label>
-              <Select
-                isClearable
-                isMulti
-                placeholder="Any gender"
-                options={["Male", "Female"].map((value) => ({
-                  label: value,
-                  value: value,
-                }))}
-                value={filters.gender.map((x) => ({
-                  value: x,
-                  label: x,
-                }))}
-                onChange={(value: any) => {
-                  router.push({
-                    pathname: "/browse",
-                    query: {
-                      filters: stringifyFilters({
-                        ...filters,
-                        gender: value.map((x: any) => x.value),
-                      }),
-                    },
-                  });
-                }}
-              />
-            </div>
-            <div className="my-2">
-              <label className="block font-medium text-gray-900">Type</label>
-              <Select
-                isMulti
-                isClearable
-                placeholder="Any type"
-                options={Object.values(TutorType).map((value) => ({
-                  label: value,
-                  value: value,
-                }))}
-                value={filters.type.map((x) => ({
-                  value: x,
-                  label: x,
-                }))}
-                onChange={(value: any) => {
-                  router.push({
-                    pathname: "/browse",
-                    query: {
-                      filters: stringifyFilters({
-                        ...filters,
-                        type: value.map((x: any) => x.value),
-                      }),
-                    },
-                  });
-                }}
-              />
-            </div>
-            <div className="my-2">
-              <label className="block font-medium text-gray-900">Levels</label>
-              <Select
-                isMulti
-                isClearable
-                placeholder="Any level"
-                options={levelCategoryOptions}
-                value={filters.levelCategories.map((x) => ({
-                  value: x,
-                  label: x,
-                }))}
-                onChange={(value: any) => {
-                  router.push({
-                    pathname: "/browse",
-                    query: {
-                      filters: stringifyFilters({
-                        ...filters,
-                        levelCategories: value.map((x: any) => x.value),
-                      }),
-                    },
-                  });
-                }}
-              />
-            </div>
-            <div className="my-2">
-              <label className="block font-medium text-gray-900">
-                Subjects
-              </label>
-              {filters.levelCategories.length === 0 && (
-                <p className="mt-2 text-sm text-gray-500">
-                  Select a level to view options
-                </p>
-              )}
-              {Object.values(LevelCategories).map((level) => {
-                if (filters.levelCategories.includes(level)) {
-                  return (
-                    <div className="my-2" key={level}>
-                      <label className="block text-sm text-gray-900">
-                        {level}:
+
+            <section aria-labelledby="products-heading" className="pt-6 pb-24">
+              <div className="grid grid-cols-1 gap-x-8 gap-y-10 lg:grid-cols-4">
+                {/* Filters */}
+                <div className="lg:block">
+                  <form
+                    onSubmit={(e) => {
+                      e.preventDefault();
+                      router.push({
+                        pathname: "/browse",
+                        query: {
+                          filters: stringifyFilters({
+                            ...filters,
+                            search: searchRef.current?.value
+                              ? searchRef.current?.value
+                              : "",
+                          }),
+                        },
+                      });
+                    }}
+                  >
+                    <div className="my-2 text-sm">
+                      <label className="block font-medium text-gray-900 mb-1">
+                        Search query
                       </label>
-                      <Creatable
-                        className="text-sm"
-                        isMulti
-                        isClearable
-                        placeholder={`Any ${level.toLowerCase()} subject`}
-                        options={levelCategoryToSubjectOptions(level)}
-                        value={
-                          filters.subjects[level]
-                            ? filters.subjects[level].map((x: any) => ({
-                                value: x,
-                                label: x,
-                              }))
-                            : []
-                        }
-                        onChange={(value: any) => {
-                          const newSubjects = { ...filters.subjects };
-                          newSubjects[level] = value.map(
-                            (value: any) => value.value
-                          );
-                          router.push({
-                            pathname: "/browse",
-                            query: {
-                              filters: stringifyFilters({
-                                ...filters,
-                                subjects: newSubjects,
-                              }),
-                            },
-                          });
-                        }}
+                      <input
+                        type="text"
+                        id="tutorName"
+                        className="border border-gray-300 text-gray-900 rounded-lg focus:indigo-blue-500 focus:border-indigo-500 focus:outline-none block w-full p-2.5"
+                        placeholder=""
+                        ref={searchRef}
                       />
                     </div>
-                  );
-                }
-              })}
-            </div>
-          </div>
-        </div>
-        <div className="lg:col-span-2">
-          <div className="p-2">
-            {isLoading ? (
-              <Spinner />
-            ) : (
-              <div>
-                <div className="divide-y-2">
-                  {data.profiles?.map((tutor: any) => (
-                    <ProfileCard tutorProfile={tutor} key={tutor.id} />
-                  ))}
-                </div>
-                {data?.profiles?.length === 0 ? (
-                  <div className="text-sm text-gray-500">
-                    No matching tutors
+                  </form>
+                  <div
+                    className="text-sm text-gray-500 mr-2 underline cursor-pointer hover:text-gray-400"
+                    onClick={() => {
+                      router.push({ pathname: "/browse" });
+                    }}
+                  >
+                    Clear filters
                   </div>
-                ) : (
-                  <PaginateFooter
-                    page={paginationQuery.page}
-                    limit={paginationQuery.limit}
-                    total={data?.count}
-                    setPage={setPage}
-                  />
-                )}
+
+                  <Disclosure
+                    as="div"
+                    className="border-b border-gray-200 py-4"
+                  >
+                    {({ open }) => (
+                      <>
+                        <h3 className="-my-3 flow-root">
+                          <Disclosure.Button className="flex w-full items-center justify-between bg-white py-3 text-sm text-gray-400 hover:text-gray-500">
+                            <span className="font-medium text-gray-900">
+                              Level
+                            </span>
+                            <span className="ml-6 flex items-center">
+                              {open ? (
+                                <MinusIcon
+                                  className="h-5 w-5"
+                                  aria-hidden="true"
+                                />
+                              ) : (
+                                <PlusIcon
+                                  className="h-5 w-5"
+                                  aria-hidden="true"
+                                />
+                              )}
+                            </span>
+                          </Disclosure.Button>
+                        </h3>
+                        <Disclosure.Panel className="pt-4">
+                          <div className="text-sm">
+                            <Select
+                              isMulti
+                              isClearable
+                              placeholder="Any level"
+                              options={levelCategoryOptions}
+                              value={filters.levelCategories.map((x) => ({
+                                value: x,
+                                label: x,
+                              }))}
+                              onChange={(value: any) => {
+                                router.push({
+                                  pathname: "/browse",
+                                  query: {
+                                    filters: stringifyFilters({
+                                      ...filters,
+                                      levelCategories: value.map(
+                                        (x: any) => x.value
+                                      ),
+                                    }),
+                                  },
+                                });
+                              }}
+                            />
+                          </div>
+                        </Disclosure.Panel>
+                      </>
+                    )}
+                  </Disclosure>
+                  <Disclosure
+                    as="div"
+                    className="border-b border-gray-200 py-4"
+                  >
+                    {({ open }) => (
+                      <>
+                        <h3 className="-my-3 flow-root">
+                          <Disclosure.Button className="flex w-full items-center justify-between bg-white py-3 text-sm text-gray-400 hover:text-gray-500">
+                            <span className="font-medium text-gray-900">
+                              Subjects
+                            </span>
+                            <span className="ml-6 flex items-center">
+                              {open ? (
+                                <MinusIcon
+                                  className="h-5 w-5"
+                                  aria-hidden="true"
+                                />
+                              ) : (
+                                <PlusIcon
+                                  className="h-5 w-5"
+                                  aria-hidden="true"
+                                />
+                              )}
+                            </span>
+                          </Disclosure.Button>
+                        </h3>
+                        <Disclosure.Panel className="pt-4">
+                          {filters.levelCategories.length === 0 && (
+                            <p className="mt-2 text-sm text-gray-500">
+                              Select a level to view subject filters
+                            </p>
+                          )}
+                          {Object.values(LevelCategories).map((level) => {
+                            if (filters.levelCategories.includes(level)) {
+                              return (
+                                <div className="my-2" key={level}>
+                                  <label className="block text-sm text-gray-900">
+                                    {level} subjects:
+                                  </label>
+                                  <Creatable
+                                    className="text-sm"
+                                    isMulti
+                                    isClearable
+                                    placeholder={`Any ${level.toLowerCase()} subject`}
+                                    options={levelCategoryToSubjectOptions(
+                                      level
+                                    )}
+                                    value={
+                                      filters.subjects[level]
+                                        ? filters.subjects[level].map(
+                                            (x: any) => ({
+                                              value: x,
+                                              label: x,
+                                            })
+                                          )
+                                        : []
+                                    }
+                                    onChange={(value: any) => {
+                                      const newSubjects = {
+                                        ...filters.subjects,
+                                      };
+                                      newSubjects[level] = value.map(
+                                        (value: any) => value.value
+                                      );
+                                      router.push({
+                                        pathname: "/browse",
+                                        query: {
+                                          filters: stringifyFilters({
+                                            ...filters,
+                                            subjects: newSubjects,
+                                          }),
+                                        },
+                                      });
+                                    }}
+                                  />
+                                </div>
+                              );
+                            }
+                          })}
+                        </Disclosure.Panel>
+                      </>
+                    )}
+                  </Disclosure>
+                  <Disclosure
+                    as="div"
+                    className="border-b border-gray-200 py-4"
+                  >
+                    {({ open }) => (
+                      <>
+                        <h3 className="-my-3 flow-root">
+                          <Disclosure.Button className="flex w-full items-center justify-between bg-white py-3 text-sm text-gray-400 hover:text-gray-500">
+                            <span className="font-medium text-gray-900">
+                              Regions
+                            </span>
+                            <span className="ml-6 flex items-center">
+                              {open ? (
+                                <MinusIcon
+                                  className="h-5 w-5"
+                                  aria-hidden="true"
+                                />
+                              ) : (
+                                <PlusIcon
+                                  className="h-5 w-5"
+                                  aria-hidden="true"
+                                />
+                              )}
+                            </span>
+                          </Disclosure.Button>
+                        </h3>
+                        <Disclosure.Panel className="pt-4">
+                          <div className="text-sm">
+                            <Select
+                              isMulti
+                              isClearable
+                              placeholder="Any region"
+                              options={Object.values(Region).map((value) => ({
+                                label: value,
+                                value: value,
+                              }))}
+                              value={filters.regions.map((x) => ({
+                                value: x,
+                                label: x,
+                              }))}
+                              onChange={(value: any) => {
+                                router.push({
+                                  pathname: "/browse",
+                                  query: {
+                                    filters: stringifyFilters({
+                                      ...filters,
+                                      regions: value.map((x: any) => x.value),
+                                    }),
+                                  },
+                                });
+                              }}
+                            />
+                          </div>
+                        </Disclosure.Panel>
+                      </>
+                    )}
+                  </Disclosure>
+                  <Disclosure
+                    as="div"
+                    className="border-b border-gray-200 py-4"
+                  >
+                    {({ open }) => (
+                      <>
+                        <h3 className="-my-3 flow-root">
+                          <Disclosure.Button className="flex w-full items-center justify-between bg-white py-3 text-sm text-gray-400 hover:text-gray-500">
+                            <span className="font-medium text-gray-900">
+                              Gender
+                            </span>
+                            <span className="ml-6 flex items-center">
+                              {open ? (
+                                <MinusIcon
+                                  className="h-5 w-5"
+                                  aria-hidden="true"
+                                />
+                              ) : (
+                                <PlusIcon
+                                  className="h-5 w-5"
+                                  aria-hidden="true"
+                                />
+                              )}
+                            </span>
+                          </Disclosure.Button>
+                        </h3>
+                        <Disclosure.Panel className="pt-4">
+                          <div className="text-sm">
+                            <Select
+                              isClearable
+                              isMulti
+                              placeholder="Any gender"
+                              options={["Male", "Female"].map((value) => ({
+                                label: value,
+                                value: value,
+                              }))}
+                              value={filters.gender.map((x) => ({
+                                value: x,
+                                label: x,
+                              }))}
+                              onChange={(value: any) => {
+                                router.push({
+                                  pathname: "/browse",
+                                  query: {
+                                    filters: stringifyFilters({
+                                      ...filters,
+                                      gender: value.map((x: any) => x.value),
+                                    }),
+                                  },
+                                });
+                              }}
+                            />
+                          </div>
+                        </Disclosure.Panel>
+                      </>
+                    )}
+                  </Disclosure>
+                  <Disclosure
+                    as="div"
+                    className="border-b border-gray-200 py-4"
+                  >
+                    {({ open }) => (
+                      <>
+                        <h3 className="-my-3 flow-root">
+                          <Disclosure.Button className="flex w-full items-center justify-between bg-white py-3 text-sm text-gray-400 hover:text-gray-500">
+                            <span className="font-medium text-gray-900">
+                              Type
+                            </span>
+                            <span className="ml-6 flex items-center">
+                              {open ? (
+                                <MinusIcon
+                                  className="h-5 w-5"
+                                  aria-hidden="true"
+                                />
+                              ) : (
+                                <PlusIcon
+                                  className="h-5 w-5"
+                                  aria-hidden="true"
+                                />
+                              )}
+                            </span>
+                          </Disclosure.Button>
+                        </h3>
+                        <Disclosure.Panel className="pt-4">
+                          <div className="text-sm">
+                            <Select
+                              isMulti
+                              isClearable
+                              placeholder="Any type"
+                              options={Object.values(TutorType).map(
+                                (value) => ({
+                                  label: value,
+                                  value: value,
+                                })
+                              )}
+                              value={filters.type.map((x) => ({
+                                value: x,
+                                label: x,
+                              }))}
+                              onChange={(value: any) => {
+                                router.push({
+                                  pathname: "/browse",
+                                  query: {
+                                    filters: stringifyFilters({
+                                      ...filters,
+                                      type: value.map((x: any) => x.value),
+                                    }),
+                                  },
+                                });
+                              }}
+                            />
+                          </div>
+                        </Disclosure.Panel>
+                      </>
+                    )}
+                  </Disclosure>
+                </div>
+
+                {/* Product grid */}
+                <div className="lg:col-span-3">
+                  {isLoading ? (
+                    <Spinner />
+                  ) : (
+                    <div>
+                      <div className="divide-y-2">
+                        {data.profiles?.map((tutor: any) => (
+                          <ProfileCard tutorProfile={tutor} key={tutor.id} />
+                        ))}
+                      </div>
+                      {data?.profiles?.length === 0 ? (
+                        <div className="text-sm text-gray-500">
+                          No matching tutors
+                        </div>
+                      ) : (
+                        <PaginateFooter
+                          page={paginationQuery.page}
+                          limit={paginationQuery.limit}
+                          total={data?.count}
+                          setPage={setPage}
+                        />
+                      )}
+                    </div>
+                  )}
+                </div>
               </div>
-            )}
+            </section>
           </div>
         </div>
       </div>
-    </div>
+    </>
   );
 };
 
