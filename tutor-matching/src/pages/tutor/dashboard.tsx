@@ -15,12 +15,7 @@ import {
   getTutorApplications,
   getTutorRequests,
 } from "@/services/tutorRequest";
-import {
-  ApplicationState,
-  RateOptions,
-  Region,
-  TutorType,
-} from "@/utils/enums";
+import { ApplicationState, RateOptions, TutorType } from "@/utils/enums";
 import Spinner from "@/components/shared/Spinner";
 import Select from "@/components/shared/Select";
 import { LevelCategories, levelCategoryOptions } from "@/utils/options/levels";
@@ -31,6 +26,7 @@ import PaginateFooter from "@/components/shared/PaginateFooter";
 import TutorRequestModal from "@/components/tutor-request/TutorRequestModal";
 import { getUserTutorProfile } from "@/services/tutor";
 import { XMarkIcon } from "@heroicons/react/24/outline";
+import { regionOptions } from "@/utils/options/regions";
 
 const tabClasses =
   "inline-block p-4 border-b-2 border-transparent rounded-t-lg hover:text-gray-600 hover:border-gray-300 ";
@@ -174,7 +170,7 @@ const TutorProfile: NextPageWithLayout = () => {
             </div>
             <div className="flex">
               <div
-                className="text-sm text-gray-500 mr-2 hover:underline cursor-pointer"
+                className="text-sm text-gray-500 mr-2 underline cursor-pointer hover:text-gray-400"
                 onClick={() => {
                   setFilters({
                     region: [],
@@ -188,7 +184,7 @@ const TutorProfile: NextPageWithLayout = () => {
                 Clear filters
               </div>
               <div
-                className="text-sm text-gray-500 hover:underline cursor-pointer"
+                className="text-sm text-gray-500 underline cursor-pointer hover:text-gray-400"
                 onClick={() => {
                   setFilters({
                     ...filters,
@@ -210,10 +206,8 @@ const TutorProfile: NextPageWithLayout = () => {
               <Select
                 isMulti
                 isClearable
-                options={Object.values(Region).map((value) => ({
-                  label: value,
-                  value: value,
-                }))}
+                placeholder="Any region"
+                options={regionOptions}
                 value={filters.region.map((x) => ({
                   value: x,
                   label: x,
@@ -230,6 +224,7 @@ const TutorProfile: NextPageWithLayout = () => {
               <label className="block font-medium text-gray-900">Gender</label>
               <Select
                 isClearable
+                placeholder="No gender filters"
                 options={["Male", "Female"].map((value) => ({
                   label: value,
                   value: value,
@@ -251,6 +246,7 @@ const TutorProfile: NextPageWithLayout = () => {
               <Select
                 isMulti
                 isClearable
+                placeholder="No type filter"
                 options={Object.values(TutorType).map((value) => ({
                   label: value,
                   value: value,
@@ -272,6 +268,7 @@ const TutorProfile: NextPageWithLayout = () => {
               <Select
                 isMulti
                 isClearable
+                placeholder="All levels"
                 options={levelCategoryOptions}
                 value={filters.levelCategories.map((x) => ({
                   value: x,
@@ -305,6 +302,7 @@ const TutorProfile: NextPageWithLayout = () => {
                         className="text-sm"
                         isMulti
                         isClearable
+                        placeholder={`All ${level} subjects`}
                         options={levelCategoryToSubjectOptions(level)}
                         value={
                           filters.subjects[level]

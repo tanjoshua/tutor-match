@@ -20,13 +20,13 @@ import {
   levelCategoryToSubjectOptions,
 } from "@/utils/options/subjects";
 import { LevelCategories, levelCategoryOptions } from "@/utils/options/levels";
+import { regionOptions } from "@/utils/options/regions";
 
 const tutorTypes = [
   "Part-Time Tutor",
   "Full-Time Tutor",
   "Ex/Current MOE Tutor",
 ];
-const regionOptions = ["Central", "East", "North", "North-East", "West"];
 type InitialValue = {
   isPublic: boolean;
   title: string;
@@ -158,10 +158,7 @@ const EditProfile: NextPageWithLayout = () => {
               required
               isMulti
               isClearable
-              options={regionOptions.map((value: string) => ({
-                label: value,
-                value: value,
-              }))}
+              options={regionOptions}
               name="regions"
               onChange={(value: any) => {
                 formik.setFieldValue(

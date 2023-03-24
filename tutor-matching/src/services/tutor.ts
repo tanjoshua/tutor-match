@@ -110,16 +110,36 @@ export const getTutorProfile = async ({ id }: { id: string }) => {
   return result.data;
 };
 
-export const getPublicTutorProfiles = ({
-  searchQuery,
-  levelFilter,
+export const getPublicTutorProfiles = async ({
+  search,
+  regions,
+  gender,
+  levelCategories,
+  subjects,
+  type,
+  page,
+  limit,
 }: {
-  searchQuery?: string;
-  levelFilter?: string[];
+  search?: string;
+  regions?: string[];
+  gender?: string[];
+  levelCategories?: string[];
+  subjects?: any;
+  type?: string[];
+  page?: number;
+  limit?: number;
 }) => {
-  return instance.get(`/tutor`, {
-    params: { search: searchQuery, level: levelFilter },
+  const result = await instance.post(`/tutor/getPublicProfiles`, {
+    search,
+    regions,
+    gender,
+    levelCategories,
+    subjects,
+    type,
+    page,
+    limit,
   });
+  return result.data;
 };
 
 export const getUserTutorProfile = async () => {
