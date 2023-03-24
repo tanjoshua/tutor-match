@@ -8,8 +8,10 @@ import { login } from "@/services/auth";
 import axios from "axios";
 import { useRouter } from "next/router";
 import { useQueryClient } from "react-query";
+import { redirectIfLoggedIn } from "@/utils/redirect";
 
 const Login: NextPageWithLayout = () => {
+  redirectIfLoggedIn();
   const router = useRouter();
   const queryClient = useQueryClient();
   const formik = useFormik({

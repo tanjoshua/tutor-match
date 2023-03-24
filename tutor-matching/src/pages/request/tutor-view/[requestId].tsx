@@ -21,8 +21,10 @@ import {
   withdrawApplication,
 } from "@/services/tutorRequest";
 import { RateOptions } from "@/utils/enums";
+import { redirectIfNotLoggedIn } from "@/utils/redirect";
 
 const TutorProfile: NextPageWithLayout = () => {
+  redirectIfNotLoggedIn();
   const router = useRouter();
   const { requestId } = router.query;
   const { isLoading, error, data, refetch } = useQuery(

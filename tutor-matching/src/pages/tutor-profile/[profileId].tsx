@@ -8,6 +8,7 @@ import {
   LockClosedIcon,
   MapPinIcon,
   PencilIcon,
+  PhoneIcon,
   UserGroupIcon,
   UserIcon,
 } from "@heroicons/react/20/solid";
@@ -90,7 +91,18 @@ const TutorProfile: NextPageWithLayout = () => {
             </div>
           </div>
           <div className="mt-5 flex lg:mt-0 lg:ml-4">
-            <span className="sm:ml-3">
+            <span className="sm:ml-3 space-x-1">
+              <button
+                type="button"
+                className="inline-flex items-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+                onClick={() => setShareModalIsOpen(true)}
+              >
+                <PhoneIcon
+                  className="-ml-1 mr-2 h-5 w-5 text-gray-700"
+                  aria-hidden="true"
+                />
+                Contact
+              </button>
               <button
                 type="button"
                 className="inline-flex items-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
