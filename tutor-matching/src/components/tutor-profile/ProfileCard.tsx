@@ -5,15 +5,11 @@ import {
   EyeSlashIcon,
   XCircleIcon,
   PhoneIcon,
+  CurrencyDollarIcon,
 } from "@heroicons/react/24/outline";
 import { updateTutorApplicationState } from "@/services/tutorRequest";
 import { ApplicationState } from "@/utils/enums";
-import {
-  CurrencyDollarIcon,
-  MapPinIcon,
-  TagIcon,
-  UserIcon,
-} from "@heroicons/react/20/solid";
+import { MapPinIcon, TagIcon, UserIcon } from "@heroicons/react/20/solid";
 import ContactModal from "./ContactModal";
 import { useState } from "react";
 
@@ -41,37 +37,19 @@ export default ({
 
       <div className="ml-4 flex flex-1 flex-col">
         <div>
-          <div className="flex justify-between text-base font-medium text-gray-900">
-            <h3>{tutorProfile.tutorName}</h3>
+          <div className="flex justify-between text-base text-gray-900 items-start">
+            <div>
+              <div className="text-sm">{tutorProfile.tutorName}</div>
+              <h1 className="text-lg font-medium">{tutorProfile.title}</h1>
+            </div>
             <div className="flex">
-              <button
-                type="button"
-                className="font-medium text-indigo-600 hover:text-indigo-500 flex content-center"
-                onClick={() => {
-                  setContactModalIsOpen(true);
-                }}
-                data-te-toggle="tooltip"
-                title="Shortlist"
-              >
-                <PhoneIcon className="h-6 w-6" />
-                Contact
-              </button>
-              <ContactModal
-                contactInfo={tutorProfile.contactInfo}
-                setOpen={setContactModalIsOpen}
-                open={contactModalIsOpen}
-              />
+              <div className="flex items-center font-medium">
+                ${tutorProfile.pricing.rate}/hr
+              </div>
             </div>
           </div>
           <p className="mt-1 text-sm text-gray-500 line-clamp-4 mb-1">
-            <div className="lg:flex lg:items-center lg:space-x-1">
-              <div className="flex items-center text-sm text-gray-500">
-                <UserIcon
-                  className="h-5 w-5 flex-shrink-0 text-gray-400"
-                  aria-hidden="true"
-                />
-                {tutorProfile.gender}
-              </div>
+            <div className="sm:flex sm:items-center sm:space-x-1">
               <div className="flex items-center text-sm text-gray-500">
                 <TagIcon
                   className="h-5 w-5 flex-shrink-0 text-gray-400"
@@ -89,15 +67,6 @@ export default ({
                   : tutorProfile.regions.join(", ")}
               </div>
             </div>
-            <div className="flex items-center text-sm text-gray-500">
-              <CurrencyDollarIcon
-                className="h-5 w-5 flex-shrink-0 text-gray-400"
-                aria-hidden="true"
-              />
-              {tutorProfile.pricing.rate}/hr
-            </div>
-            {tutorProfile.title}
-            <br />
             {tutorProfile.qualifications}
           </p>
         </div>
