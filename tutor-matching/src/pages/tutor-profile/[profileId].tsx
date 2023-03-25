@@ -188,13 +188,13 @@ const TutorProfile: NextPageWithLayout = () => {
               <dt className="text-sm font-medium text-gray-700">
                 Contact Info
               </dt>
-              <dd className="mt-1 text-sm text-gray-900 sm:col-span-2 sm:mt-0">
+              <dd className="mt-1 text-sm text-gray-900 sm:col-span-2 sm:mt-0 whitespace-pre-wrap">
                 {profile.contactInfo.phoneNumber &&
-                  `Phone Number: +65 ${profile.contactInfo.phoneNumber}`}
-                {profile.contactInfo.phoneNumber &&
-                  profile.contactInfo.email && <br />}
+                  `Phone Number: +65 ${profile.contactInfo.phoneNumber}\n`}
                 {profile.contactInfo.email &&
-                  `Email: ${profile.contactInfo.email}`}
+                  `Email: ${profile.contactInfo.email}\n`}
+                {profile.contactInfo.telegram &&
+                  `Telegram: @${profile.contactInfo.telegram}\n`}
               </dd>
             </div>
           </dl>

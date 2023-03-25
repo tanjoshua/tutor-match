@@ -23,14 +23,15 @@ export const getPublicProfiles = async (req: Request, res: Response) => {
 
   // process search query
   if (req.body.search) {
+    const searchFilters: any = [
+      { tutorName: { $regex: req.body.search, $options: "i" } },
+      { title: { $regex: req.body.search, $options: "i" } },
+      { subjects: { $regex: req.body.search, $options: "i" } },
+      { qualifications: { $regex: req.body.search, $options: "i" } },
+      { description: { $regex: req.body.search, $options: "i" } },
+    ];
     filters.push({
-      $or: [
-        { tutorName: { $regex: req.body.search, $options: "i" } },
-        { title: { $regex: req.body.search, $options: "i" } },
-        { subjects: { $regex: req.body.search, $options: "i" } },
-        { qualifications: { $regex: req.body.search, $options: "i" } },
-        { description: { $regex: req.body.search, $options: "i" } },
-      ],
+      $or: searchFilters,
     });
   }
   if (req.body.regions?.length > 0)

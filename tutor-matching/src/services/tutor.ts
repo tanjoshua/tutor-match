@@ -31,7 +31,7 @@ export const createTutorProfile = ({
   qualifications: string;
   description: string;
   pricing: { rate: string; details: string };
-  contactInfo: { phoneNumber?: string; email?: string };
+  contactInfo: { phoneNumber?: string; email?: string; telegram?: string };
 }) => {
   return instance.post("/tutor", {
     isPublic,
@@ -85,7 +85,7 @@ export const replaceTutorProfile = ({
   qualifications: string;
   description: string;
   pricing: { rate: string; details: string };
-  contactInfo: { phoneNumber?: string; email?: string };
+  contactInfo: { phoneNumber?: string; email?: string; telegram?: string };
 }) => {
   return instance.put("/tutor", {
     id,

@@ -83,8 +83,9 @@ export default class TutorProfile {
     details: string; // offer more clarity on pricing
   };
   public contactInfo: {
-    phoneNumber: number;
-    email: string;
+    phoneNumber?: number;
+    email?: string;
+    telegram?: string;
   };
 
   // populated fields
