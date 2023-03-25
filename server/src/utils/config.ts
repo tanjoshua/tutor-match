@@ -22,5 +22,9 @@ export const GOOGLE_OAUTH_REFRESH_TOKEN =
 export const GOOGLE_CLIENT_SECRET = process.env.GOOGLE_CLIENT_SECRET!;
 export const GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID!;
 
+// godaddy email sending
+export const GODADDY_EMAIL = process.env.GODADDY_EMAIL;
+export const GODADDY_PASSWORD = process.env.GODADDY_PASSWORD;
+
 // domain
 export const BASE_URL = "http://localhost:3000";

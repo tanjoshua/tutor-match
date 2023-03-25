@@ -1,16 +1,20 @@
+// @ts-nocheck
 import {
   EMAIL,
+  GODADDY_EMAIL,
+  GODADDY_PASSWORD,
   GOOGLE_CLIENT_ID,
   GOOGLE_CLIENT_SECRET,
   GOOGLE_OAUTH_REFRESH_TOKEN,
 } from "../utils/config";
+import { generateNewTutorRequestEmail } from "../utils/emailFactory";
 
 require("dotenv").config();
 const nodemailer = require("nodemailer");
 const { google } = require("googleapis");
 const OAuth2 = google.auth.OAuth2;
 
-const createTransporter = async () => {
+const createGmailTransporter = async () => {
   const oauth2Client = new OAuth2(
     GOOGLE_CLIENT_ID,
     GOOGLE_CLIENT_SECRET,
@@ -45,8 +49,27 @@ const createTransporter = async () => {
   return transporter;
 };
 
+const createGoDaddyTransporter = () => {
+  const transporter = nodemailer.createTransport({
+    host: "smtpout.secureserver.net",
+    secure: true,
+    secureConnection: false, // TLS requires secureConnection to be false
+    tls: {
+      ciphers: "SSLv3",
+    },
+    requireTLS: true,
+    port: 465,
+    debug: true,
+    auth: {
+      user: GODADDY_EMAIL,
+      pass: GODADDY_PASSWORD,
+    },
+  });
+  return transporter;
+};
+
 export const sendEmail = async (emailOptions: any) => {
-  let emailTransporter = await createTransporter();
+  let emailTransporter = createGoDaddyTransporter();
   await emailTransporter.sendMail(emailOptions, (err: any, info: any) => {
     if (err) {
       console.log(err);
@@ -57,12 +80,11 @@ export const sendEmail = async (emailOptions: any) => {
 };
 
 // sample email
-/*
-sendEmail(
-  generateNewTutorRequestEmail(
-    "Josh",
-    "jtanjoshua@gmail.com",
-    "https://google.com"
-  )
-);
-*/
+
+// sendEmail(
+//   generateNewTutorRequestEmail(
+//     "Josh",
+//     "jtanjoshua@gmail.com",
+//     "https://google.com"
+//   )
+// );

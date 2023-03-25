@@ -8,7 +8,7 @@ export const generateNewTutorRequestEmail = (
   const link = `${BASE_URL}/request/client-view/${clientAccessToken}`;
   const htmlBody = `
     <p>
-        Hi ${name}, thanks for using tutor match to find your next tutor!
+        Hi ${name}, thanks for using tutoring.sg to find your next tutor!
         <br>
         <br>
         View your tutor applications <a href="${link}" target="_blank">here</a>.
@@ -23,7 +23,10 @@ export const generateNewTutorRequestEmail = (
     subject: "New Tutor Request",
     html: htmlBody,
     to: recipientEmail,
-    from: EMAIL,
+    from: {
+      address: EMAIL,
+      name: "tutoring.sg",
+    },
   };
 };
 
