@@ -4,6 +4,7 @@ import { ExclamationTriangleIcon } from "@heroicons/react/24/outline";
 import { useQuery } from "react-query";
 import { getTutorApplication } from "@/services/tutorRequest";
 import { ApplicationState } from "@/utils/enums";
+import { XMarkIcon } from "@heroicons/react/20/solid";
 
 export default function TutorDetailsModal({
   id,
@@ -56,13 +57,24 @@ export default function TutorDetailsModal({
             >
               <Dialog.Panel className="relative transform overflow-hidden rounded-lg bg-white text-left shadow-xl transition-all md:m-8 max-w-6xl">
                 <div className="overflow-hidden bg-white shadow sm:rounded-lg">
-                  <div className="px-4 py-5 sm:px-6">
-                    <h3 className="text-base font-semibold leading-6 text-gray-900">
-                      {data?.tutorApplication?.tutorProfile?.title}
-                    </h3>
-                    <p className="mt-1 max-w-2xl text-sm text-gray-500">
-                      {data?.tutorApplication?.tutorProfile?.tutorName}
-                    </p>
+                  <div className="flex px-4 py-5 sm:px-6">
+                    <div className="flex-1">
+                      <h3 className="text-base font-semibold leading-6 text-gray-900">
+                        {data?.tutorApplication?.tutorProfile?.title}
+                      </h3>
+                      <p className="mt-1 text-sm text-gray-500">
+                        {data?.tutorApplication?.tutorProfile?.tutorName}
+                      </p>
+                    </div>
+                    <div>
+                      <button
+                        onClick={() => {
+                          setOpen(false);
+                        }}
+                      >
+                        <XMarkIcon className="h-6 w-6 text-gray-600 hover:text-gray-500" />
+                      </button>
+                    </div>
                   </div>
                   <div className="border-t border-gray-200">
                     <dl>
