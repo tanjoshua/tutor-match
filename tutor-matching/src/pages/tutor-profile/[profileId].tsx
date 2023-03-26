@@ -78,6 +78,7 @@ const TutorProfile: NextPageWithLayout = () => {
           open={contactModalIsOpen}
           setOpen={setContactModalIsOpen}
           contactInfo={profile.contactInfo}
+          profileId={profile.id}
         />
         <div className="lg:flex lg:items-center lg:justify-between px-4 py-5 sm:px-6">
           <div className="min-w-0 flex-1">

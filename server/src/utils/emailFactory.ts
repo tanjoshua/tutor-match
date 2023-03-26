@@ -30,6 +30,51 @@ export const generateNewTutorRequestEmail = (
   };
 };
 
+export const generateContactRequestEmail = ({
+  tutorName,
+  recipientEmail,
+  clientName,
+  clientEmail,
+  clientPhoneNumber,
+  message,
+}: {
+  tutorName: string;
+  recipientEmail: string;
+  clientName: string;
+  clientEmail: string;
+  clientPhoneNumber: string;
+  message: string;
+}) => {
+  const htmlBody = `
+    <p>
+        Hi ${tutorName}, ${clientName} is interested in engaging your tutoring services!
+        <br>
+        <br>
+        Please reach out to them via:
+        <br>
+        ${clientEmail && `Email: ${clientEmail} <br>`}
+        ${clientPhoneNumber && `Phone number: ${clientPhoneNumber} <br>`}
+        <br>
+        ${
+          message &&
+          `They have also attached the following message: <br> ${message}`
+        }
+        <br>
+        <br>
+        Thank you for using tutoring.sg
+    </p>
+  `;
+  return {
+    subject: `Tutoring.sg - New contact request from ${clientName}`,
+    html: htmlBody,
+    to: recipientEmail,
+    from: {
+      address: EMAIL,
+      name: "tutoring.sg",
+    },
+  };
+};
+
 export const generatePasswordResetEmail = (
   recipientEmail: string,
   token: string

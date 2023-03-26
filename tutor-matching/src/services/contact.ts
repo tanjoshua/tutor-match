@@ -5,17 +5,20 @@ export const contactTutorFromBrowse = ({
   email,
   phoneNumber,
   message,
+  profileId,
 }: {
   name: string;
   email: string;
   phoneNumber: string;
   message: string;
+  profileId: string;
 }) => {
   return instance.post("/tutor/contact/browse", {
     name,
     email,
     phoneNumber,
     message,
+    profileId,
   });
 };
 

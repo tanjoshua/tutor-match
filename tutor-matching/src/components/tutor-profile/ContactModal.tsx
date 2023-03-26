@@ -13,10 +13,12 @@ import { contactTutorFromBrowse } from "@/services/contact";
 export default function ContactModal({
   open,
   contactInfo,
+  profileId,
   setOpen,
 }: {
   open: boolean;
   contactInfo: any;
+  profileId: string;
   setOpen: Dispatch<SetStateAction<boolean>>;
 }) {
   const cancelButtonRef = useRef(null);
@@ -29,7 +31,7 @@ export default function ContactModal({
     },
     onSubmit: async (values) => {
       try {
-        await contactTutorFromBrowse(values);
+        await contactTutorFromBrowse({ ...values, profileId });
         setOpen(false);
         toast.success("Message sent");
       } catch (e) {
