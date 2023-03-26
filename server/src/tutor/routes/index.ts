@@ -1,6 +1,10 @@
 import { Router } from "express";
 import auth from "../../middleware/auth";
 import {
+  contactTutorFromBrowse,
+  contactTutorFromRequest,
+} from "../controllers/contact";
+import {
   getProfile,
   getPublicProfiles,
   createProfile,
@@ -43,6 +47,9 @@ router.post("/requestClient/updateAppState", updateTutorApplicationState);
 router.post("/applyRequest", auth, applyToTutorRequest);
 router.post("/withdrawRequest", auth, withdrawApplication);
 router.get("/applied", auth, tutorHasApplied);
+
+router.post("/contact/browse", contactTutorFromBrowse);
+router.post("/contact/tutorRequest", contactTutorFromRequest);
 
 // tutor profile routes
 router.post("/getPublicProfiles", getPublicProfiles);

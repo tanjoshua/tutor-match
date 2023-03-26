@@ -40,7 +40,7 @@ type InitialValue = {
   qualifications: string;
   description: string;
   pricing: { rate: string; details: string };
-  contactInfo: { phoneNumber: string; email: string };
+  contactInfo: { phoneNumber: string; email: string; telegram: string };
 };
 const initialValues = {
   isPublic: false,
@@ -54,7 +54,7 @@ const initialValues = {
   qualifications: "",
   description: "",
   pricing: { rate: "", details: "" },
-  contactInfo: { phoneNumber: "", email: "" },
+  contactInfo: { phoneNumber: "", email: "", telegram: "" },
 };
 
 const EditProfile: NextPageWithLayout = () => {
@@ -342,7 +342,7 @@ const EditProfile: NextPageWithLayout = () => {
 
         <div className="mb-4">
           <label className="block mb-2 font-medium text-gray-900">
-            Contact Information (Fill in at least one)
+            Displayed contact information
           </label>
           <div className="flex flex-row items-center mb-2">
             <div className="text-sm text-gray-900 mr-2">Email:</div>
@@ -366,6 +366,21 @@ const EditProfile: NextPageWithLayout = () => {
                 className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-indigo-500 focus:border-indigo-500 focus:outline-none block p-2.5"
                 onChange={formik.handleChange}
                 value={formik.values.contactInfo.phoneNumber}
+              />
+            </div>
+          </div>
+          <div className="flex flex-row items-center mb-2">
+            <div className="text-sm text-gray-900">Telegram:</div>
+            <div className="relative rounded-md border-gray-300 pl-10 mr-2">
+              <div className="absolute inset-y-0 left-0 flex items-center pl-2">
+                <span className="text-gray-900 sm:text-sm">@</span>
+              </div>
+              <input
+                type="text"
+                id="contactInfo.telegram"
+                className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-indigo-500 focus:border-indigo-500 focus:outline-none block p-2.5"
+                onChange={formik.handleChange}
+                value={formik.values.contactInfo.telegram}
               />
             </div>
           </div>

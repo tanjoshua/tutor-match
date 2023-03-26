@@ -4,7 +4,7 @@ import Layout from "../../components/Layout";
 import Select from "@/components/shared/Select";
 import { useFormik } from "formik";
 import Creatable from "@/components/shared/Creatable";
-import { RateOptions, Region, TutorType } from "@/utils/enums";
+import { RateOptions, TutorType } from "@/utils/enums";
 import Head from "next/head";
 import { postalCodeToRegion } from "@/utils/postalCode";
 import { createTutorRequest } from "@/services/tutorRequest";
@@ -15,6 +15,7 @@ import {
   getSubjectOptions,
   levelToLevelCategory,
 } from "@/utils/options/subjects";
+import { regionOptions } from "@/utils/options/regions";
 
 const MakeTutorRequest: NextPageWithLayout = () => {
   const router = useRouter();
@@ -399,7 +400,7 @@ const MakeTutorRequest: NextPageWithLayout = () => {
                       required
                     />
                   </div>
-                  <div>
+                  {/* <div>
                     <label className="block mb-2 font-medium text-gray-900">
                       Postal code
                     </label>
@@ -416,8 +417,8 @@ const MakeTutorRequest: NextPageWithLayout = () => {
                       }}
                       value={formik.values.postalCode}
                       required
-                    />
-                  </div>
+                    /> 
+                  </div>*/}
                   <div>
                     <label className="block mb-2 font-medium text-gray-900">
                       Region
@@ -425,18 +426,14 @@ const MakeTutorRequest: NextPageWithLayout = () => {
                     <Select
                       isClearable
                       name="region"
-                      options={Object.values(Region).map((value) => ({
-                        label: value,
-                        value: value,
-                      }))}
+                      options={regionOptions}
                       value={{
                         label: formik.values.region,
                         value: formik.values.region,
                       }}
                     />
                     <p className="mt-2 text-sm text-gray-500">
-                      Auto selected from postal code. Change the selection if
-                      you think it is wrong.
+                      Online tuition only (for now)
                     </p>
                   </div>
                 </div>

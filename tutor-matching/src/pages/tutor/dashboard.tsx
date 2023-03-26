@@ -33,16 +33,13 @@ import { XMarkIcon } from "@heroicons/react/24/outline";
 import { regionOptions } from "@/utils/options/regions";
 import { Disclosure, Menu, Transition } from "@headlessui/react";
 import { redirectIfNotLoggedIn } from "@/utils/redirect";
+import { classNames } from "@/utils/helpers";
 
 const tabClasses =
   "inline-block px-4 pb-4 border-b-2 border-transparent rounded-t-lg hover:text-gray-600 hover:border-gray-300 ";
 const tabClassesSelected =
   "inline-block px-4 pb-4 text-indigo-600 border-b-2 border-indigo-600 rounded-t-lg";
 const sortOptions = [{ name: "Newest", href: "#", current: true }];
-
-function classNames(...classes: any[]) {
-  return classes.filter(Boolean).join(" ");
-}
 
 const TutorProfile: NextPageWithLayout = () => {
   redirectIfNotLoggedIn();

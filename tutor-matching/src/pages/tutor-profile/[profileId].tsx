@@ -16,6 +16,7 @@ import { useRouter } from "next/router";
 import Head from "next/head";
 import ShareModal from "@/components/tutor-profile/ShareModal";
 import { LevelCategories } from "@/utils/options/levels";
+import ContactModal from "@/components/tutor-profile/ContactModal";
 
 const TutorProfile: NextPageWithLayout = () => {
   const router = useRouter();
@@ -26,6 +27,7 @@ const TutorProfile: NextPageWithLayout = () => {
     { enabled: !!profileId }
   );
   const [shareModalIsOpen, setShareModalIsOpen] = useState(false);
+  const [contactModalIsOpen, setContactModalIsOpen] = useState(false);
 
   if (isLoading) {
     return <></>;
@@ -66,6 +68,18 @@ const TutorProfile: NextPageWithLayout = () => {
         <Head>
           <title>Tutor Profile</title>
         </Head>
+
+        <ShareModal
+          link={`${origin}/tutor-profile/${profile.id}`}
+          open={shareModalIsOpen}
+          setOpen={setShareModalIsOpen}
+        />
+        <ContactModal
+          open={contactModalIsOpen}
+          setOpen={setContactModalIsOpen}
+          contactInfo={profile.contactInfo}
+          profileId={profile.id}
+        />
         <div className="lg:flex lg:items-center lg:justify-between px-4 py-5 sm:px-6">
           <div className="min-w-0 flex-1">
             <h2 className="text-2xl font-bold leading-7 text-gray-900 sm:truncate sm:text-3xl sm:tracking-tight">
@@ -95,7 +109,7 @@ const TutorProfile: NextPageWithLayout = () => {
               <button
                 type="button"
                 className="inline-flex items-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
-                onClick={() => setShareModalIsOpen(true)}
+                onClick={() => setContactModalIsOpen(true)}
               >
                 <PhoneIcon
                   className="-ml-1 mr-2 h-5 w-5 text-gray-700"
@@ -114,11 +128,6 @@ const TutorProfile: NextPageWithLayout = () => {
                 />
                 Share
               </button>
-              <ShareModal
-                link={`${origin}/tutor-profile/${profile.id}`}
-                open={shareModalIsOpen}
-                setOpen={setShareModalIsOpen}
-              />
             </span>
           </div>
         </div>
@@ -188,13 +197,13 @@ const TutorProfile: NextPageWithLayout = () => {
               <dt className="text-sm font-medium text-gray-700">
                 Contact Info
               </dt>
-              <dd className="mt-1 text-sm text-gray-900 sm:col-span-2 sm:mt-0">
+              <dd className="mt-1 text-sm text-gray-900 sm:col-span-2 sm:mt-0 whitespace-pre-wrap">
                 {profile.contactInfo.phoneNumber &&
-                  `Phone Number: +65 ${profile.contactInfo.phoneNumber}`}
-                {profile.contactInfo.phoneNumber &&
-                  profile.contactInfo.email && <br />}
+                  `Phone Number: +65 ${profile.contactInfo.phoneNumber}\n`}
                 {profile.contactInfo.email &&
-                  `Email: ${profile.contactInfo.email}`}
+                  `Email: ${profile.contactInfo.email}\n`}
+                {profile.contactInfo.telegram &&
+                  `Telegram: @${profile.contactInfo.telegram}\n`}
               </dd>
             </div>
           </dl>

@@ -13,6 +13,7 @@ import {
   MapPinIcon,
   TagIcon,
   UserIcon,
+  XMarkIcon,
 } from "@heroicons/react/20/solid";
 
 export default function TutorRequestModal({
@@ -61,13 +62,26 @@ export default function TutorRequestModal({
             >
               <Dialog.Panel className="relative transform overflow-hidden rounded-lg bg-white text-left shadow-xl transition-all sm:m-8 max-w-6xl">
                 <div className="overflow-hidden bg-white shadow sm:rounded-lg">
-                  <div className="sm:flex sm:items-center sm:justify-between px-4 py-5 sm:px-6">
+                  <div className="flex px-4 py-5 sm:px-6">
                     <div className="min-w-0 flex-1">
-                      <h2 className="text-2xl font-bold leading-7 text-gray-900 sm:truncate sm:text-3xl sm:tracking-tight">
-                        {`${tutorRequest.level}: ${tutorRequest.subjects?.join(
-                          ", "
-                        )} Tutor Request`}
-                      </h2>
+                      <div className="flex">
+                        <h2 className="flex-1 text-xl font-bold leading-6 text-gray-900 ">
+                          {`${
+                            tutorRequest.level
+                          }: ${tutorRequest.subjects?.join(
+                            ", "
+                          )} Tutor Request`}
+                        </h2>
+                        <div>
+                          <button
+                            onClick={() => {
+                              setOpen(false);
+                            }}
+                          >
+                            <XMarkIcon className="h-6 w-6 text-gray-600 hover:text-gray-500" />
+                          </button>
+                        </div>
+                      </div>
                       <div className="mt-1 flex flex-col sm:flex-row sm:flex-wrap sm:space-x-2 ">
                         <div className="flex items-center text-sm text-gray-500">
                           <UserIcon
@@ -106,70 +120,70 @@ export default function TutorRequestModal({
                       </div>
                     </div>
                   </div>
-                </div>
-                <div className="border-t border-gray-200">
-                  <dl>
-                    <div className="bg-gray-50 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-                      <dt className="text-sm font-medium text-gray-700">
-                        Level
-                      </dt>
-                      <dd className="mt-1 text-sm text-gray-900 sm:col-span-2 sm:mt-0">
-                        {tutorRequest.level}
-                      </dd>
-                    </div>
-                    <div className="bg-white px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-                      <dt className="text-sm font-medium text-gray-700">
-                        Subject(s)
-                      </dt>
-                      <dd className="mt-1 text-sm text-gray-900 sm:col-span-2 sm:mt-0">
-                        {tutorRequest.subjects?.join(", ")}
-                      </dd>
-                    </div>
-                    <div className="bg-gray-50 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-                      <dt className="text-sm font-medium text-gray-700">
-                        Tutor Type
-                      </dt>
-                      <dd className="mt-1 text-sm text-gray-900 sm:col-span-2 sm:mt-0">
-                        {tutorRequest.type?.length === 3
-                          ? "All tutors welcome"
-                          : tutorRequest.type?.join(", ")}
-                      </dd>
-                    </div>
-                    <div className="bg-white px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-                      <dt className="text-sm font-medium text-gray-700">
-                        Pricing
-                      </dt>
-                      <dd className="mt-1 text-sm text-gray-900 sm:col-span-2 sm:mt-0">
-                        {tutorRequest.pricing?.rateOption === RateOptions.Max
-                          ? `$${tutorRequest.pricing?.rate}/hr or lower`
-                          : tutorRequest.pricing?.rateOption}
-                      </dd>
-                    </div>
-                    <div className="bg-gray-50 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-                      <dt className="text-sm font-medium text-gray-700">
-                        Student availability
-                      </dt>
-                      <dd className="mt-1 text-sm text-gray-900 sm:col-span-2 sm:mt-0 whitespace-pre-wrap">
-                        {tutorRequest.availability}
-                      </dd>
-                    </div>
-                    <div className="bg-white px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-                      <dt className="text-sm font-medium text-gray-700">
-                        Student location
-                      </dt>
-                      <dd className="mt-1 text-sm text-gray-900 sm:col-span-2 sm:mt-0">
-                        {tutorRequest.region} region
-                      </dd>
-                    </div>
-                    <div className="bg-white px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-                      <dt className="text-sm font-medium text-gray-700">
-                        Additional information
-                      </dt>
-                      <dd className="mt-1 text-sm text-gray-900 sm:col-span-2 sm:mt-0">
-                        {tutorRequest.description}
-                      </dd>
-                    </div>
-                  </dl>
+                  <div className="border-t border-gray-200">
+                    <dl>
+                      <div className="bg-gray-50 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                        <dt className="text-sm font-medium text-gray-700">
+                          Level
+                        </dt>
+                        <dd className="mt-1 text-sm text-gray-900 sm:col-span-2 sm:mt-0">
+                          {tutorRequest.level}
+                        </dd>
+                      </div>
+                      <div className="bg-white px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                        <dt className="text-sm font-medium text-gray-700">
+                          Subject(s)
+                        </dt>
+                        <dd className="mt-1 text-sm text-gray-900 sm:col-span-2 sm:mt-0">
+                          {tutorRequest.subjects?.join(", ")}
+                        </dd>
+                      </div>
+                      <div className="bg-gray-50 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                        <dt className="text-sm font-medium text-gray-700">
+                          Tutor Type
+                        </dt>
+                        <dd className="mt-1 text-sm text-gray-900 sm:col-span-2 sm:mt-0">
+                          {tutorRequest.type?.length === 3
+                            ? "All tutors welcome"
+                            : tutorRequest.type?.join(", ")}
+                        </dd>
+                      </div>
+                      <div className="bg-white px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                        <dt className="text-sm font-medium text-gray-700">
+                          Pricing
+                        </dt>
+                        <dd className="mt-1 text-sm text-gray-900 sm:col-span-2 sm:mt-0">
+                          {tutorRequest.pricing?.rateOption === RateOptions.Max
+                            ? `$${tutorRequest.pricing?.rate}/hr or lower`
+                            : tutorRequest.pricing?.rateOption}
+                        </dd>
+                      </div>
+                      <div className="bg-gray-50 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                        <dt className="text-sm font-medium text-gray-700">
+                          Student availability
+                        </dt>
+                        <dd className="mt-1 text-sm text-gray-900 sm:col-span-2 sm:mt-0 whitespace-pre-wrap">
+                          {tutorRequest.availability}
+                        </dd>
+                      </div>
+                      <div className="bg-white px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                        <dt className="text-sm font-medium text-gray-700">
+                          Student location
+                        </dt>
+                        <dd className="mt-1 text-sm text-gray-900 sm:col-span-2 sm:mt-0">
+                          {tutorRequest.region} region
+                        </dd>
+                      </div>
+                      <div className="bg-white px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                        <dt className="text-sm font-medium text-gray-700">
+                          Additional information
+                        </dt>
+                        <dd className="mt-1 text-sm text-gray-900 sm:col-span-2 sm:mt-0">
+                          {tutorRequest.description}
+                        </dd>
+                      </div>
+                    </dl>
+                  </div>
                 </div>
 
                 <div className="bg-gray-50 px-4 py-3 sm:flex sm:flex-row-reverse sm:px-6">

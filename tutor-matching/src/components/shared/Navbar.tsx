@@ -7,10 +7,7 @@ import { useQuery } from "react-query";
 import { getMe } from "@/services/user";
 import { logout } from "@/services/auth";
 import { useRouter } from "next/router";
-
-function classNames(...classes: any) {
-  return classes.filter(Boolean).join(" ");
-}
+import { classNames } from "@/utils/helpers";
 
 const Navbar = () => {
   const router = useRouter();
