@@ -7,13 +7,16 @@ import {
 } from "@heroicons/react/24/outline";
 import { updateTutorApplicationState } from "@/services/tutorRequest";
 import { ApplicationState } from "@/utils/enums";
+import { PhoneIcon } from "@heroicons/react/20/solid";
 
 interface TutorProfile {
+  id: string;
   title: string;
   tutorName: string;
   qualifications: string;
   description: string;
   image: string;
+  contactInfo: any;
 }
 
 export default ({
@@ -24,6 +27,7 @@ export default ({
   hidden,
   showDetails,
   updateState,
+  showContact,
 }: {
   tutorProfile: TutorProfile;
   id: string;
@@ -32,6 +36,7 @@ export default ({
   hidden?: boolean; // hidden card type
   showDetails: Function;
   updateState: (applicationId: string, state: string) => void;
+  showContact: Function;
 }) => {
   // normal version
   return (
@@ -84,7 +89,7 @@ export default ({
             {tutorProfile.qualifications}
           </p>
         </div>
-        <div className="flex flex-1 items-end justify-between text-sm">
+        <div className="flex flex-1 items-end justify-between text-sm mt-2">
           <a
             className="flex-1 text-indigo-600 hover:text-indigo-500 cursor-pointer"
             onClick={() => {
@@ -94,38 +99,51 @@ export default ({
             Read more
           </a>
 
-          {normal && (
-            <div className="flex">
+          <div className="flex space-x-4">
+            <button
+              type="button"
+              className="font-medium text-indigo-600 hover:text-indigo-500 flex items-center"
+              onClick={() => {
+                showContact({
+                  ...tutorProfile.contactInfo,
+                  profileId: tutorProfile.id,
+                });
+              }}
+              data-te-toggle="tooltip"
+              title="Contact"
+            >
+              <PhoneIcon className="h-6 w-6" />
+              <div className="hidden sm:block">Contact</div>
+            </button>
+            {!shortlist && (
               <button
                 type="button"
-                className="font-medium text-indigo-600 hover:text-indigo-500 flex content-center"
+                className="font-medium text-indigo-600 hover:text-indigo-500 flex items-center"
                 onClick={() => {
                   updateState(id, ApplicationState.Shortlisted);
                 }}
                 data-te-toggle="tooltip"
                 title="Shortlist"
               >
-                <BookmarkIcon className="h-6 w-6 mr-1" />
-                Shortlist
+                <BookmarkIcon className="h-6 w-6" />
+                <div className="hidden sm:block">Shortlist</div>
               </button>
-            </div>
-          )}
-          {shortlist && (
-            <div className="flex">
+            )}
+            {shortlist && (
               <button
                 type="button"
-                className="font-medium text-indigo-600 hover:text-indigo-500 flex content-center "
+                className="font-medium text-indigo-600 hover:text-indigo-500 flex items-center "
                 data-te-toggle="tooltip"
                 title="Remove from shortlist"
                 onClick={() => {
                   updateState(id, ApplicationState.Pending);
                 }}
               >
-                <BookmarkSlashIcon className="h-6 w-6 mr-1" />
-                Remove
+                <BookmarkSlashIcon className="h-6 w-6 " />
+                <div className="hidden sm:block">Remove</div>
               </button>
-            </div>
-          )}
+            )}
+          </div>
         </div>
       </div>
     </li>

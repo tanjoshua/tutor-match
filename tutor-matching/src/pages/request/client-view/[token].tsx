@@ -27,11 +27,19 @@ import Spinner from "@/components/shared/Spinner";
 import AppCard from "@/components/tutor-request/AppCard";
 import { ClipboardDocumentCheckIcon } from "@heroicons/react/24/outline";
 import TutorDetailsModal from "@/components/tutor-request/TutorDetailsModal";
+import ContactModal from "@/components/tutor-profile/ContactModal";
 
 const tabClasses =
   "inline-block p-4 border-b-2 border-transparent rounded-t-lg hover:text-gray-600 hover:border-gray-300 ";
 const tabClassesSelected =
   "inline-block p-4 text-indigo-600 border-b-2 border-indigo-600 rounded-t-lg";
+
+const generatePrefilledMessage = (availability: string) => {
+  if (!availability) {
+    return "";
+  }
+  return `Thanks for applying to my tutor request. I am interested in scheduling a lesson with you. Here is my availability: \n${availability}`;
+};
 
 const TutorProfile: NextPageWithLayout = () => {
   const router = useRouter();
@@ -45,17 +53,25 @@ const TutorProfile: NextPageWithLayout = () => {
   const [tabSelected, setTabSelected] = useState(ApplicationState.Pending);
   const [tutorDetailsModalOpen, setTutorDetailsModalOpen] = useState(false);
   const [appId, setAppId] = useState("");
-
   const showTutorDetails = (id: string) => {
     setAppId(id);
     setTutorDetailsModalOpen(true);
   };
+
   const updateState = async (applicationId: string, state: string) => {
     await updateTutorApplicationState({ applicationId, newState: state });
     refetch();
     queryClient.refetchQueries({
       queryKey: ["getTutorApplication", applicationId],
     });
+  };
+
+  const [contactModalOpen, setContactModalIsOpen] = useState(false);
+  const [contactInfo, setContactModalInfo] = useState<any>({});
+  const showContactDetails = (info: any) => {
+    setTutorDetailsModalOpen(false);
+    setContactModalInfo(info);
+    setContactModalIsOpen(true);
   };
 
   if (isLoading) {
@@ -101,11 +117,24 @@ const TutorProfile: NextPageWithLayout = () => {
         <Head>
           <title>{`Tutor Applications`}</title>
         </Head>
+        <ContactModal
+          open={contactModalOpen}
+          setOpen={setContactModalIsOpen}
+          contactInfo={contactInfo}
+          profileId={contactInfo.profileId}
+          prefill={{
+            name: tutorRequest.name,
+            email: tutorRequest.contactInfo.email,
+            phoneNumber: tutorRequest.contactInfo.phoneNumber,
+            message: generatePrefilledMessage(tutorRequest.availability),
+          }}
+        />
         <TutorDetailsModal
           id={appId}
           open={tutorDetailsModalOpen}
           setOpen={setTutorDetailsModalOpen}
           updateState={updateState}
+          showContact={showContactDetails}
         />
         <div className="lg:flex lg:items-center lg:justify-between px-4 py-5 sm:px-6">
           <div className="min-w-0 flex-1">
@@ -211,6 +240,7 @@ const TutorProfile: NextPageWithLayout = () => {
                         normal
                         showDetails={showTutorDetails}
                         updateState={updateState}
+                        showContact={showContactDetails}
                       />
                     ))}
                   </ul>
@@ -225,6 +255,7 @@ const TutorProfile: NextPageWithLayout = () => {
                         hidden
                         showDetails={showTutorDetails}
                         updateState={updateState}
+                        showContact={showContactDetails}
                       />
                     ))}
                   </ul>
@@ -240,6 +271,7 @@ const TutorProfile: NextPageWithLayout = () => {
                           shortlist
                           showDetails={showTutorDetails}
                           updateState={updateState}
+                          showContact={showContactDetails}
                         />
                       ))}
                     </ul>
@@ -265,6 +297,7 @@ const TutorProfile: NextPageWithLayout = () => {
                       shortlist
                       showDetails={showTutorDetails}
                       updateState={updateState}
+                      showContact={showContactDetails}
                     />
                   ))}
                 </ul>
