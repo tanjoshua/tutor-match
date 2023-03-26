@@ -34,10 +34,8 @@ import {
 } from "@heroicons/react/20/solid";
 import { regionOptions } from "@/utils/options/regions";
 import { ProfileSortBy } from "@/utils/options/sort";
+import { classNames } from "@/utils/helpers";
 
-function classNames(...classes: any[]) {
-  return classes.filter(Boolean).join(" ");
-}
 const pageLimit = 10;
 
 const stringifyFilters = ({
