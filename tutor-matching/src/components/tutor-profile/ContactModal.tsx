@@ -41,8 +41,8 @@ export default function ContactModal({
     onSubmit: async (values) => {
       try {
         await contactTutorFromBrowse({ ...values, profileId });
-        setOpen(false);
         toast.success("Message sent");
+        setOpen(false);
       } catch (e) {
         toast.error("Could not send contact form");
       }
