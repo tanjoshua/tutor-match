@@ -120,6 +120,7 @@ export const changeEmail = async (req: Request, res: Response) => {
   }
 
   // replace email
+  // TODO: UPDATEONE NO LONGER WORKS LIKE THIS, NEED TO USE $SET
   await collections.users?.updateOne(
     { _id: req.user!._id },
     { email: newEmail }
@@ -141,7 +142,11 @@ export const changePassword = async (req: Request, res: Response) => {
   const hashedPassword = await bcrypt.hash(newPassword, 12);
   await collections.users?.updateOne(
     { _id: req.user!._id },
-    { email: hashedPassword }
+    {
+      $set: {
+        password: hashedPassword,
+      },
+    }
   );
 
   res.json({ message: "success" });
