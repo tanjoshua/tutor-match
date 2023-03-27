@@ -12,25 +12,41 @@ import { UserIcon } from "@heroicons/react/20/solid";
 
 const Navbar = () => {
   const router = useRouter();
-  const atLoginPage = router.route === "/login";
+  const atLoginPage = router.pathname === "/login";
+
   const { isLoading, error, data, refetch } = useQuery("me", getMe);
   const isLoggedIn = !isLoading && !!data.user;
   const navigation = isLoading
     ? []
     : isLoggedIn
     ? [
-        { name: "Dashboard", href: "/tutor/dashboard", current: false },
+        {
+          name: "Dashboard",
+          href: "/tutor/dashboard",
+          current: router.pathname === "/tutor/dashboard",
+        },
         {
           name: "My Tutor Profile",
           href: "/tutor/your-profile",
-          current: false,
+          current: router.pathname === "/tutor/your-profile",
         },
       ]
     : [
-        { name: "Request a Tutor", href: "/request/make", current: false },
-        { name: "Browse Tutors", href: "/browse", current: false },
-        { name: "About", href: "/about", current: false },
-        { name: "For Tutors", href: "/for-tutors", current: false },
+        {
+          name: "Request a Tutor",
+          href: "/request/make",
+          current: router.pathname === "/request/make",
+        },
+        {
+          name: "Browse Tutors",
+          href: "/browse",
+          current: router.pathname === "/browse",
+        },
+        {
+          name: "For Tutors",
+          href: "/for-tutors",
+          current: router.pathname === "/for-tutors",
+        },
       ];
 
   return (
@@ -78,7 +94,7 @@ const Navbar = () => {
                   </div>
                 </div>
               </div>
-              <div className="absolute inset-y-0 right-0 flex items-center pr-2 sm:static sm:inset-auto sm:ml-6 sm:pr-0">
+              <div className="absolute inset-y-0 right-0 flex items-center sm:static sm:inset-auto sm:ml-6 sm:pr-0">
                 {/* Profile dropdown */}
                 {!isLoading &&
                   !atLoginPage &&
@@ -138,7 +154,7 @@ const Navbar = () => {
                       className="text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm"
                       href="/login"
                     >
-                      Log in <span aria-hidden="true">&rarr;</span>
+                      Tutor log in <span aria-hidden="true">&rarr;</span>
                     </a>
                   ))}
               </div>
