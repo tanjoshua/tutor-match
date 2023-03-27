@@ -4,18 +4,20 @@ import { ExclamationTriangleIcon } from "@heroicons/react/24/outline";
 import { useQuery } from "react-query";
 import { getTutorApplication } from "@/services/tutorRequest";
 import { ApplicationState } from "@/utils/enums";
-import { XMarkIcon } from "@heroicons/react/20/solid";
+import { PhoneIcon, XMarkIcon } from "@heroicons/react/20/solid";
 
 export default function TutorDetailsModal({
   id,
   open,
   setOpen,
   updateState,
+  showContact,
 }: {
   id: string;
   open: boolean;
   setOpen: Dispatch<SetStateAction<boolean>>;
   updateState: (applicationId: string, state: string) => void;
+  showContact: Function;
 }) {
   const cancelButtonRef = useRef(null);
   const { isLoading, error, data, refetch, isRefetching } = useQuery(
@@ -66,7 +68,7 @@ export default function TutorDetailsModal({
                         {data?.tutorApplication?.tutorProfile?.tutorName}
                       </p>
                     </div>
-                    <div>
+                    <div className="">
                       <button
                         onClick={() => {
                           setOpen(false);
@@ -76,6 +78,22 @@ export default function TutorDetailsModal({
                       </button>
                     </div>
                   </div>
+                  <button
+                    type="button"
+                    className="ml-4 mb-4 inline-flex items-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 "
+                    onClick={() => {
+                      showContact({
+                        ...data?.tutorApplication?.tutorProfile?.contactInfo,
+                        profileId: data?.tutorApplication?.tutorProfile?.id,
+                      });
+                    }}
+                  >
+                    <PhoneIcon
+                      className="-ml-1 mr-2 h-5 w-5 text-gray-700"
+                      aria-hidden="true"
+                    />
+                    Contact
+                  </button>
                   <div className="border-t border-gray-200">
                     <dl>
                       <div className="bg-gray-50 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">

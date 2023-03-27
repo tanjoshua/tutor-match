@@ -112,8 +112,6 @@ const BrowseTutors: NextPageWithLayout = () => {
       setFilters(initialFilters);
     }
   }, [router]);
-  const [tutorDetailsModalOpen, setTutorDetailsModalOpen] = useState(false);
-  const [tutorData, setTutorData] = useState<any>({});
   const { isLoading, error, data, refetch, isRefetching } = useQuery(
     ["getTutorRequest", filters],
     () => getPublicTutorProfiles({ ...filters, limit: pageLimit })
@@ -128,11 +126,6 @@ const BrowseTutors: NextPageWithLayout = () => {
         }),
       },
     });
-  };
-
-  const showTutorDetails = (data: any) => {
-    setTutorData(data);
-    setTutorDetailsModalOpen(true);
   };
 
   if (error) {

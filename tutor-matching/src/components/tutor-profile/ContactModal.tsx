@@ -1,4 +1,11 @@
-import { Dispatch, Fragment, SetStateAction, useRef, useState } from "react";
+import {
+  Dispatch,
+  Fragment,
+  SetStateAction,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 import { Dialog, Transition } from "@headlessui/react";
 import { EnvelopeIcon, PhoneIcon } from "@heroicons/react/24/outline";
 import { classNames } from "@/utils/helpers";
@@ -13,11 +20,13 @@ import { contactTutorFromBrowse } from "@/services/contact";
 export default function ContactModal({
   open,
   contactInfo,
+  prefill,
   profileId,
   setOpen,
 }: {
   open: boolean;
   contactInfo: any;
+  prefill?: any;
   profileId: string;
   setOpen: Dispatch<SetStateAction<boolean>>;
 }) {
@@ -39,6 +48,15 @@ export default function ContactModal({
       }
     },
   });
+
+  useEffect(() => {
+    formik.setValues({
+      name: prefill?.name ? prefill.name : "",
+      email: prefill?.email ? prefill.email : "",
+      phoneNumber: prefill?.phoneNumber ? prefill.phoneNumber : "",
+      message: prefill?.message ? prefill.message : "",
+    });
+  }, [contactInfo]);
 
   return (
     <Transition.Root show={open} as={Fragment}>
@@ -173,6 +191,7 @@ export default function ContactModal({
                               name="name"
                               className="border border-gray-300 text-gray-900 text-sm rounded-lg focus:indigo-blue-500 focus:border-indigo-500 focus:outline-none block w-full p-2.5"
                               onChange={formik.handleChange}
+                              value={formik.values.name}
                               required
                             />
                           </div>
@@ -182,7 +201,7 @@ export default function ContactModal({
                             htmlFor="email"
                             className="block text-sm font-semibold leading-6 text-gray-900"
                           >
-                            Email
+                            Your Email
                           </label>
                           <div className="mt-2.5">
                             <input
@@ -191,6 +210,7 @@ export default function ContactModal({
                               autoComplete="email"
                               className="border border-gray-300 text-gray-900 text-sm rounded-lg focus:indigo-blue-500 focus:border-indigo-500 focus:outline-none block w-full p-2.5"
                               onChange={formik.handleChange}
+                              value={formik.values.email}
                               required
                             />
                           </div>
@@ -200,7 +220,7 @@ export default function ContactModal({
                             htmlFor="email"
                             className="block text-sm font-semibold leading-6 text-gray-900"
                           >
-                            Phone
+                            Your Phone (optional)
                           </label>
                           <div className="mt-2.5">
                             <input
@@ -208,6 +228,7 @@ export default function ContactModal({
                               name="phoneNumber"
                               className="border border-gray-300 text-gray-900 text-sm rounded-lg focus:indigo-blue-500 focus:border-indigo-500 focus:outline-none block w-full p-2.5"
                               onChange={formik.handleChange}
+                              value={formik.values.phoneNumber}
                             />
                           </div>
                         </div>
@@ -228,6 +249,7 @@ export default function ContactModal({
                               className="border border-gray-300 text-gray-900 text-sm rounded-lg focus:indigo-blue-500 focus:border-indigo-500 focus:outline-none block w-full p-2.5"
                               onChange={formik.handleChange}
                               placeholder="eg. Indicate your availability for the first lesson"
+                              value={formik.values.message}
                             />
                           </div>
                         </div>
