@@ -8,6 +8,7 @@ import { getMe } from "@/services/user";
 import { logout } from "@/services/auth";
 import { useRouter } from "next/router";
 import { classNames } from "@/utils/helpers";
+import { UserIcon } from "@heroicons/react/20/solid";
 
 const Navbar = () => {
   const router = useRouter();
@@ -52,16 +53,9 @@ const Navbar = () => {
               <div className="flex flex-1 items-center justify-center sm:items-stretch sm:justify-start">
                 <div className="flex flex-shrink-0 items-center">
                   <Link href="/">
-                    <img
-                      className="block h-8 w-auto lg:hidden"
-                      src="https://tailwindui.com/img/logos/mark.svg?color=indigo&shade=500"
-                      alt="Your Company"
-                    />
-                    <img
-                      className="hidden h-8 w-auto lg:block"
-                      src="https://tailwindui.com/img/logos/mark.svg?color=indigo&shade=500"
-                      alt="Your Company"
-                    />
+                    <div className="block text-xl w-auto text-white font-sans font-medium tracking-wide border border-white rounded-lg px-2 py-1">
+                      Tutoring.sg
+                    </div>
                   </Link>
                 </div>
                 <div className="hidden sm:ml-6 sm:block">
@@ -88,24 +82,20 @@ const Navbar = () => {
                 !atLoginPage &&
                 (isLoggedIn ? (
                   <div className="absolute inset-y-0 right-0 flex items-center pr-2 sm:static sm:inset-auto sm:ml-6 sm:pr-0">
-                    <button
+                    {/* <button
                       type="button"
                       className="rounded-full bg-gray-800 p-1 text-gray-400 hover:text-white focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800"
                     >
                       <span className="sr-only">View notifications</span>
                       <BellIcon className="h-6 w-6" aria-hidden="true" />
-                    </button>
+                    </button> */}
 
                     {/* Profile dropdown */}
                     <Menu as="div" className="relative ml-3">
                       <div>
-                        <Menu.Button className="flex rounded-full bg-gray-800 text-sm focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800">
+                        <Menu.Button className="flex rounded-full p-1 bg-gray-800 text-gray-400 hover:text-white text-sm focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800">
                           <span className="sr-only">Open user menu</span>
-                          <img
-                            className="h-8 w-8 rounded-full"
-                            src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
-                            alt=""
-                          />
+                          <UserIcon className="h-8 w-8" aria-hidden="true" />
                         </Menu.Button>
                       </div>
                       <Transition
@@ -121,26 +111,13 @@ const Navbar = () => {
                           <Menu.Item>
                             {({ active }) => (
                               <a
-                                href="#"
+                                href="/user/account"
                                 className={classNames(
                                   active ? "bg-gray-100" : "",
                                   "block px-4 py-2 text-sm text-gray-700"
                                 )}
                               >
-                                Your Profile
-                              </a>
-                            )}
-                          </Menu.Item>
-                          <Menu.Item>
-                            {({ active }) => (
-                              <a
-                                href="#"
-                                className={classNames(
-                                  active ? "bg-gray-100" : "",
-                                  "block px-4 py-2 text-sm text-gray-700"
-                                )}
-                              >
-                                Settings
+                                Your account
                               </a>
                             )}
                           </Menu.Item>
