@@ -1,6 +1,6 @@
 import Head from "next/head";
 import { NextPageWithLayout } from "./_app";
-import { ReactElement } from "react";
+import { ReactElement, useState } from "react";
 import { LockClosedIcon } from "@heroicons/react/20/solid";
 import Layout from "../components/Layout";
 import { useFormik } from "formik";
@@ -9,6 +9,7 @@ import axios from "axios";
 import { useRouter } from "next/router";
 import { useQueryClient } from "react-query";
 import { redirectIfLoggedIn } from "@/utils/redirect";
+import ForgetPasswordModal from "@/components/auth/ForgetPasswordModal";
 
 const Login: NextPageWithLayout = () => {
   redirectIfLoggedIn();
@@ -35,21 +36,19 @@ const Login: NextPageWithLayout = () => {
       }
     },
   });
+  const [forgetPasswordModalIsOpen, setForgetPasswordModalIsOpen] =
+    useState(false);
   return (
     <>
       <Head>
         <title>Login</title>
         <link rel="icon" href="/favicon.ico" />
       </Head>
+      <ForgetPasswordModal
+        open={forgetPasswordModalIsOpen}
+        setOpen={setForgetPasswordModalIsOpen}
+      />
       <>
-        {/*
-        This example requires updating your template:
-
-        ```
-        <html class="h-full bg-gray-50">
-        <body class="h-full">
-        ```
-      */}
         <div className="flex min-h-full items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
           <div className="w-full max-w-md space-y-8">
             <div>
@@ -102,8 +101,8 @@ const Login: NextPageWithLayout = () => {
               <div className="flex items-center justify-end">
                 <div className="text-sm">
                   <a
-                    href="#"
-                    className="font-medium text-indigo-600 hover:text-indigo-500"
+                    className="font-medium text-indigo-600 hover:text-indigo-500 cursor-pointer"
+                    onClick={() => setForgetPasswordModalIsOpen(true)}
                   >
                     Forgot your password?
                   </a>
