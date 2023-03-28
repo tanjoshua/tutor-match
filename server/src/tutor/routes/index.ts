@@ -1,5 +1,6 @@
 import { Router } from "express";
 import auth from "../../middleware/auth";
+import profilePicUpload from "../../middleware/profilePicUpload";
 import {
   contactTutorFromBrowse,
   contactTutorFromRequest,
@@ -12,6 +13,7 @@ import {
   deleteProfile,
   getUserTutorProfile,
   getTutorLevels,
+  uploadProfilePicture,
 } from "../controllers/profile";
 import {
   applyToTutorRequest,
@@ -50,6 +52,14 @@ router.get("/applied", auth, tutorHasApplied);
 
 router.post("/contact/browse", contactTutorFromBrowse);
 router.post("/contact/tutorRequest", contactTutorFromRequest);
+
+// tutor profile image routes
+router.post(
+  "/uploadProfilePicture",
+  auth,
+  profilePicUpload.single("profilePicture"),
+  uploadProfilePicture
+);
 
 // tutor profile routes
 router.post("/getPublicProfiles", getPublicProfiles);

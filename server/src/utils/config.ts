@@ -17,14 +17,16 @@ export const DB_NAME = process.env.DB_NAME;
 
 // email sending
 export const EMAIL = process.env.EMAIL!;
-export const GOOGLE_OAUTH_REFRESH_TOKEN =
-  process.env.GOOGLE_OAUTH_REFRESH_TOKEN!;
-export const GOOGLE_CLIENT_SECRET = process.env.GOOGLE_CLIENT_SECRET!;
-export const GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID!;
 
 // godaddy email sending
 export const GODADDY_EMAIL = process.env.GODADDY_EMAIL;
 export const GODADDY_PASSWORD = process.env.GODADDY_PASSWORD;
 
+// s3 bucket
+export const S3_PP_BUCKET_NAME = process.env.S3_BUCKET_NAME!;
+export const S3_ACCESS_KEY = process.env.S3_ACCESS_KEY!;
+export const S3_SECRET_ACCESS_KEY = process.env.S3_SECRET_ACCESS_KEY!;
+export const S3_BUCKET_REGION = process.env.S3_BUCKET_REGION!;
+
 // domain
-export const BASE_URL = "http://localhost:3000";
+export const WEB_URL = "http://localhost:3000";

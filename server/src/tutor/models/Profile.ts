@@ -66,6 +66,12 @@ export default class TutorProfile {
   public isPublic: boolean; // whether the profile shows up on the marketplace
   public owner: ObjectId;
 
+  // picture
+  public profilePic?: {
+    key: string;
+    location: string;
+  };
+
   // listing fields
   public title: string;
   public gender: Gender;
@@ -108,6 +114,8 @@ export default class TutorProfile {
     return {
       id: this._id,
       ownerDetails: this.ownerDetails,
+
+      profilePic: this.profilePic,
 
       title: this.title,
       regions: this.regions,

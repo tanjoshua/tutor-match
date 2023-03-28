@@ -1,11 +1,11 @@
-import { BASE_URL, EMAIL } from "./config";
+import { WEB_URL, EMAIL } from "./config";
 
 export const generateNewTutorRequestEmail = (
   name: string,
   recipientEmail: string,
   clientAccessToken: string
 ) => {
-  const link = `${BASE_URL}/request/client-view/${clientAccessToken}`;
+  const link = `${WEB_URL}/request/client-view/${clientAccessToken}`;
   const htmlBody = `
     <p>
         Hi ${name}, thanks for using tutoring.sg to find your next tutor!
@@ -79,7 +79,7 @@ export const generatePasswordResetEmail = (
   recipientEmail: string,
   token: string
 ) => {
-  const link = `${BASE_URL}/reset-password/${token}`;
+  const link = `${WEB_URL}/reset-password/${token}`;
   const htmlBody = `
     <p>
         Reset your password <a href="${link}" target="_blank">here</a>.
