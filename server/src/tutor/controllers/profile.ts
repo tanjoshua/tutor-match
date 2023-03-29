@@ -4,6 +4,7 @@ import HttpError from "../../errors/HttpError";
 import { collections } from "../../services/database.service";
 import { ObjectId } from "mongodb";
 import TutorProfile, { Level } from "../models/Profile";
+import { removeProfilePic } from "../../services/s3.service";
 
 enum ProfileSortBy {
   Oldest = "Oldest",
@@ -190,4 +191,40 @@ export const getTutorLevels = async (_req: Request, res: Response) => {
   res.json({
     levels: Object.values(Level),
   });
+};
+
+export const uploadProfilePicture = async (req: Request, res: Response) => {
+  const owner = req.user!;
+  const profileDocument = await collections.tutorProfiles!.findOne({
+    owner: new ObjectId(owner._id),
+  });
+  const file = req.file as any;
+
+  if (!profileDocument) {
+    /// delete image
+    if (file) removeProfilePic(file);
+    throw new HttpError(404, "Profile not found");
+  }
+
+  if (!file) {
+    throw new HttpError(500, "Upload failed");
+  }
+
+  const oldKey = profileDocument.profilePic?.key;
+  await collections.tutorProfiles?.updateOne(
+    { owner: new ObjectId(owner._id) },
+    {
+      $set: {
+        profilePic: {
+          key: file.key,
+          location: file.location,
+        },
+      },
+    }
+  );
+
+  // remove old profile pic if necessary
+  if (oldKey) removeProfilePic(oldKey);
+
+  res.json({ key: file.key, location: file.location });
 };

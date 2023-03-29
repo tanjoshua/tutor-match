@@ -24,12 +24,11 @@ export default ({
   // normal version
   return (
     <li className="flex py-6">
-      <div className="h-16 w-16 md:h-24 md:w-24 flex-shrink-0 overflow-hidden rounded-md border border-gray-200">
+      <div className="h-24 w-24 md:h-32 md:w-32 flex-shrink-0 overflow-hidden rounded-md border border-gray-200">
         <img
           src={
-            tutorProfile.image
-              ? tutorProfile.image
-              : "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png"
+            tutorProfile.profilePic?.location ||
+            "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png"
           }
           className="h-full w-full object-cover object-center"
         />
