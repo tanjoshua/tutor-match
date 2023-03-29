@@ -4,7 +4,7 @@ export default class User {
   public _id?: ObjectId;
   public name: string;
   public email: string;
-  public password: string;
+  public password?: string;
   public nextInvoiceNumber: number = 0;
 
   public static assign(obj: User): User {

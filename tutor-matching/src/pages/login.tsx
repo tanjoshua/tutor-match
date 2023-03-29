@@ -4,12 +4,14 @@ import { ReactElement, useState } from "react";
 import { LockClosedIcon } from "@heroicons/react/20/solid";
 import Layout from "../components/Layout";
 import { useFormik } from "formik";
-import { login } from "@/services/auth";
+import { googleLogin, login } from "@/services/auth";
 import axios from "axios";
 import { useRouter } from "next/router";
 import { useQueryClient } from "react-query";
 import { redirectIfLoggedIn } from "@/utils/redirect";
 import ForgetPasswordModal from "@/components/auth/ForgetPasswordModal";
+import { CredentialResponse, GoogleLogin } from "@react-oauth/google";
+import { toast } from "react-hot-toast";
 
 const Login: NextPageWithLayout = () => {
   redirectIfLoggedIn();
@@ -24,13 +26,12 @@ const Login: NextPageWithLayout = () => {
       try {
         await login(values);
         queryClient.refetchQueries("me");
-        router.push("/tutor/your-profile");
       } catch (error) {
         if (axios.isAxiosError(error)) {
           if (error.response?.status === 401) {
-            console.log("Invalid credentials");
+            toast.error("Invalid credentials");
           } else {
-            console.log("Error");
+            toast.error("Couldn't log in");
           }
         }
       }
@@ -38,6 +39,21 @@ const Login: NextPageWithLayout = () => {
   });
   const [forgetPasswordModalIsOpen, setForgetPasswordModalIsOpen] =
     useState(false);
+
+  const onGoogleLoginSuccess = async (response: CredentialResponse) => {
+    const credential = response.credential;
+    if (credential) {
+      try {
+        await googleLogin({ credential });
+        queryClient.refetchQueries("me");
+      } catch {
+        toast.error("Couldn't log in");
+      }
+    } else {
+      toast.error("Could not get credentials");
+    }
+  };
+
   return (
     <>
       <Head>
@@ -50,16 +66,29 @@ const Login: NextPageWithLayout = () => {
       />
       <>
         <div className="flex min-h-full items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
-          <div className="w-full max-w-md space-y-8">
+          <div className="w-full max-w-md space-y-6">
             <div>
-              <img
-                className="mx-auto h-12 w-auto"
-                src="https://tailwindui.com/img/logos/mark.svg?color=indigo&shade=600"
-                alt="Your Company"
-              />
+              <div className="mx-auto w-min text-4xl text-gray-800 font-sans font-medium tracking-wide rounded-md px-2 py-1">
+                tutoring.<span className="text-red-500">sg</span>
+              </div>
               <h2 className="mt-6 text-center text-3xl font-bold tracking-tight text-gray-900">
                 Sign in to your account
               </h2>
+            </div>
+            <div className="flex justify-center">
+              <GoogleLogin
+                size={"large"}
+                useOneTap
+                onSuccess={onGoogleLoginSuccess}
+                onError={() => toast.error("Couldn't log in")}
+              />
+            </div>
+            <div>
+              <div className="flex items-center">
+                <div className="flex-grow border-t border-1 flex-1"></div>
+                <div className="-mt-1 mx-2 text-gray-400 text-sm">or</div>
+                <div className="flex-grow border-t border-1 flex-1"></div>
+              </div>
             </div>
             <form className="mt-8 space-y-6" onSubmit={formik.handleSubmit}>
               <input type="hidden" name="remember" defaultValue="true" />
@@ -125,12 +154,12 @@ const Login: NextPageWithLayout = () => {
               </div>
 
               <div className="text-center text-sm">
-                Or{" "}
+                No account?{" "}
                 <a
-                  href="register"
+                  href="/register"
                   className="font-medium text-indigo-600 hover:text-indigo-500"
                 >
-                  create an account
+                  Create one
                 </a>
               </div>
             </form>

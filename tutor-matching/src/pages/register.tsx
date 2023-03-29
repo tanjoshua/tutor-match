@@ -3,14 +3,18 @@ import { NextPageWithLayout } from "./_app";
 import { ReactElement } from "react";
 import Layout from "../components/Layout";
 import { useFormik } from "formik";
-import { register } from "@/services/auth";
+import { googleRegister, register } from "@/services/auth";
 import { useRouter } from "next/router";
 import axios, { AxiosError } from "axios";
 import { redirectIfLoggedIn } from "@/utils/redirect";
+import toast from "react-hot-toast";
+import { CredentialResponse, GoogleLogin } from "@react-oauth/google";
+import { useQueryClient } from "react-query";
 
 const Register: NextPageWithLayout = () => {
   redirectIfLoggedIn();
   const router = useRouter();
+  const queryClient = useQueryClient();
   const formik = useFormik({
     initialValues: {
       name: "",
@@ -20,19 +24,37 @@ const Register: NextPageWithLayout = () => {
     onSubmit: async (values) => {
       try {
         await register(values);
-        router.push("/");
+        toast.success("Account created");
       } catch (error) {
         if (axios.isAxiosError(error)) {
-          if (error.response?.status === 401) {
-            // TODO: change when duplicate emails not allowed
-            console.log("invalid credentials");
+          if (error.response?.status === 403) {
+            toast.error("Account with email already exists");
           } else {
-            console.log("Error");
+            toast.error("Error creating account");
           }
         }
       }
     },
   });
+  const onGoogleLoginSuccess = async (response: CredentialResponse) => {
+    const credential = response.credential;
+    if (credential) {
+      try {
+        await googleRegister({ credential });
+        queryClient.refetchQueries("me");
+      } catch (error) {
+        if (axios.isAxiosError(error)) {
+          if (error.response?.status === 403) {
+            toast.error("Account with email already exists");
+          } else {
+            toast.error("Error creating account");
+          }
+        }
+      }
+    } else {
+      toast.error("Could not get credentials");
+    }
+  };
   return (
     <>
       <Head>
@@ -46,6 +68,22 @@ const Register: NextPageWithLayout = () => {
               Create a tutor account
             </h2>
           </div>
+          <div className="flex justify-center">
+            <GoogleLogin
+              size={"large"}
+              useOneTap
+              onSuccess={onGoogleLoginSuccess}
+              onError={() => toast.error("Couldn't log in")}
+              text="signup_with"
+            />
+          </div>
+          <div>
+            <div className="flex items-center">
+              <div className="flex-grow border-t border-1 flex-1"></div>
+              <div className="-mt-1 mx-2 text-gray-400 text-sm">or</div>
+              <div className="flex-grow border-t border-1 flex-1"></div>
+            </div>
+          </div>
           <form
             className="mt-8 space-y-6"
             autoComplete="off"
@@ -57,10 +95,11 @@ const Register: NextPageWithLayout = () => {
                 type="text"
                 id="name"
                 name="name"
-                className="py-3 px-4 block w-full shadow-sm rounded-md text-sm focus:z-10 focus:border-indigo-500 focus:ring-indigo-500"
+                className="border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-indigo-500 focus:border-indigo-500 focus:outline-none block w-full p-2.5"
                 placeholder="Name"
                 onChange={formik.handleChange}
                 value={formik.values.name}
+                required
               />
             </div>
 
@@ -72,10 +111,11 @@ const Register: NextPageWithLayout = () => {
                 type="email"
                 id="email"
                 name="email"
-                className="py-3 px-4 block w-full shadow-sm rounded-md text-sm focus:z-10 focus:border-indigo-500 focus:ring-indigo-500"
+                className="border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-indigo-500 focus:border-indigo-500 focus:outline-none block w-full p-2.5"
                 placeholder="Email address"
                 onChange={formik.handleChange}
                 value={formik.values.email}
+                required
               />
             </div>
 
@@ -88,10 +128,11 @@ const Register: NextPageWithLayout = () => {
                 type="password"
                 id="password"
                 name="password"
-                className="py-3 px-4 block w-full shadow-sm rounded-md text-sm focus:z-10 focus:border-indigo-500 focus:ring-indigo-500"
+                className="border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-indigo-500 focus:border-indigo-500 focus:outline-none block w-full p-2.5"
                 placeholder="Password"
                 onChange={formik.handleChange}
                 value={formik.values.password}
+                required
               />
             </div>
 
@@ -102,6 +143,16 @@ const Register: NextPageWithLayout = () => {
               >
                 Create
               </button>
+            </div>
+
+            <div className="text-center text-sm">
+              Already have an account?{" "}
+              <a
+                href="/login"
+                className="font-medium text-indigo-600 hover:text-indigo-500"
+              >
+                Login
+              </a>
             </div>
           </form>
         </div>
