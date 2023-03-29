@@ -161,7 +161,7 @@ export const getTutorLevels = async () => {
   return result.data;
 };
 
-export const uploadProfilePicture = async (image: File) => {
+export const uploadProfilePicture = async (image: Blob) => {
   const formData = new FormData();
   formData.append("profilePicture", image);
   const result = await instance.post("tutor/uploadProfilePicture", formData);

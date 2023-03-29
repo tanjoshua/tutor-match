@@ -60,13 +60,43 @@ export default function TutorDetailsModal({
               <Dialog.Panel className="relative transform overflow-hidden rounded-lg bg-white text-left shadow-xl transition-all md:m-8 max-w-6xl">
                 <div className="overflow-hidden bg-white shadow sm:rounded-lg">
                   <div className="flex px-4 py-5 sm:px-6">
-                    <div className="flex-1">
-                      <h3 className="text-base font-semibold leading-6 text-gray-900">
-                        {data?.tutorApplication?.tutorProfile?.title}
-                      </h3>
-                      <p className="mt-1 text-sm text-gray-500">
-                        {data?.tutorApplication?.tutorProfile?.tutorName}
-                      </p>
+                    <div className="flex-1 sm:flex space-y-4 sm:space-x-6">
+                      <div className="flex-shrink-0 overflow-hidden rounded-md">
+                        <img
+                          src={
+                            data?.tutorApplication?.tutorProfile?.profilePic
+                              ?.location ||
+                            "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png"
+                          }
+                          className="h-40 w-40 lg:h-52 lg:w-52"
+                        />
+                      </div>
+                      <div>
+                        <div className="text-lg text-gray-500">
+                          {data?.tutorApplication?.tutorProfile?.tutorName}
+                        </div>
+                        <h3 className="text-xl font-semibold leading-6 text-gray-900">
+                          {data?.tutorApplication?.tutorProfile?.title}
+                        </h3>
+                        <button
+                          type="button"
+                          className="mt-4 inline-flex items-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 "
+                          onClick={() => {
+                            showContact({
+                              ...data?.tutorApplication?.tutorProfile
+                                ?.contactInfo,
+                              profileId:
+                                data?.tutorApplication?.tutorProfile?.id,
+                            });
+                          }}
+                        >
+                          <PhoneIcon
+                            className="-ml-1 mr-2 h-5 w-5 text-gray-700"
+                            aria-hidden="true"
+                          />
+                          Contact
+                        </button>
+                      </div>
                     </div>
                     <div className="">
                       <button
@@ -78,22 +108,6 @@ export default function TutorDetailsModal({
                       </button>
                     </div>
                   </div>
-                  <button
-                    type="button"
-                    className="ml-4 mb-4 inline-flex items-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 "
-                    onClick={() => {
-                      showContact({
-                        ...data?.tutorApplication?.tutorProfile?.contactInfo,
-                        profileId: data?.tutorApplication?.tutorProfile?.id,
-                      });
-                    }}
-                  >
-                    <PhoneIcon
-                      className="-ml-1 mr-2 h-5 w-5 text-gray-700"
-                      aria-hidden="true"
-                    />
-                    Contact
-                  </button>
                   <div className="border-t border-gray-200">
                     <dl>
                       <div className="bg-gray-50 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
