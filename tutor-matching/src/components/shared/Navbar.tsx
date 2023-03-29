@@ -70,7 +70,7 @@ const Navbar = () => {
                 <div className="flex flex-shrink-0 items-center">
                   <Link href="/">
                     <div className="text-xl text-white font-sans font-medium tracking-wide border border-white rounded-md px-2 py-1">
-                      Tutoring.sg
+                      tutoring.<span className="text-red-500">sg</span>
                     </div>
                   </Link>
                 </div>

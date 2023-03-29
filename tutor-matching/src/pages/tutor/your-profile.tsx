@@ -10,12 +10,14 @@ import {
   UserGroupIcon,
   MapPinIcon,
   UserIcon,
+  ArrowUpTrayIcon,
 } from "@heroicons/react/20/solid";
 import { useRouter } from "next/router";
 import Head from "next/head";
 import ShareModal from "@/components/tutor-profile/ShareModal";
 import { LevelCategories } from "@/utils/options/levels";
 import { redirectIfNotLoggedIn } from "@/utils/redirect";
+import UploadProfilePicModal from "@/components/tutor-profile/UploadProfilePicModal";
 
 const YourProfile: NextPageWithLayout = () => {
   redirectIfNotLoggedIn();
@@ -29,6 +31,7 @@ const YourProfile: NextPageWithLayout = () => {
     getUserTutorProfile
   );
   const [shareModalIsOpen, setShareModalIsOpen] = useState(false);
+  const [uploadModalIsOpen, setUploadModalIsOpen] = useState(false);
 
   if (isLoading) {
     return <></>;
@@ -42,51 +45,76 @@ const YourProfile: NextPageWithLayout = () => {
         <Head>
           <title>Tutor Profile</title>
         </Head>
+        <UploadProfilePicModal
+          open={uploadModalIsOpen}
+          setOpen={setUploadModalIsOpen}
+        />
         <div className="lg:flex lg:items-center lg:justify-between px-4 py-5 sm:px-6">
-          <div className="min-w-0 flex-1">
-            <h2 className="text-2xl font-bold leading-7 text-gray-900 sm:truncate sm:text-3xl sm:tracking-tight">
-              Your Tutor Profile
-            </h2>
-            <div className="mt-1 flex flex-col sm:mt-0 sm:flex-row sm:flex-wrap sm:space-x-6">
-              <div className="mt-2 flex items-center text-sm text-gray-700">
-                {profile.isPublic ? (
-                  <>
-                    <UserGroupIcon
-                      className="mr-1.5 h-5 w-5 flex-shrink-0 text-gray-400"
-                      aria-hidden="true"
-                    />
-                    Public profile
-                  </>
-                ) : (
-                  <>
-                    <LockClosedIcon
-                      className="mr-1.5 h-5 w-5 flex-shrink-0 text-gray-400"
-                      aria-hidden="true"
-                    />
-                    Private profile
-                  </>
-                )}
-              </div>
-              <div className="mt-2 flex items-center text-sm text-gray-500">
-                <UserIcon
-                  className="mr-1.5 h-5 w-5 flex-shrink-0 text-gray-400"
+          <div className="min-w-0 flex-1 lg:flex lg:items-center space-y-4 lg:space-x-4">
+            <div
+              className="group relative h-28 w-28 lg:h-36 lg:w-36 flex-shrink-0 overflow-hidden rounded-md border border-gray-200 cursor-pointer"
+              onClick={() => {
+                setUploadModalIsOpen(true);
+              }}
+            >
+              <img
+                src={
+                  "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png"
+                }
+                className="h-full w-full object-cover object-center group-hover:opacity-80"
+              />
+              <div className="hidden absolute top-2 right-2 group-hover:block">
+                <PencilIcon
+                  className="h-6 w-6 text-gray-400"
                   aria-hidden="true"
                 />
-                {profile.gender}
               </div>
-              <div className="mt-2 flex items-center text-sm text-gray-500">
-                <MapPinIcon
-                  className="mr-1.5 h-5 w-5 flex-shrink-0 text-gray-400"
-                  aria-hidden="true"
-                />
-                {profile.regions.length == 5
-                  ? "All regions"
-                  : profile.regions.join(", ")}
+            </div>
+            <div>
+              <h2 className="text-2xl font-bold leading-7 text-gray-900 sm:truncate sm:text-3xl sm:tracking-tight">
+                Your Tutor Profile
+              </h2>
+              <div className="mt-1 flex flex-col sm:mt-0 sm:flex-row sm:flex-wrap sm:space-x-6">
+                <div className="mt-2 flex items-center text-sm text-gray-700">
+                  {profile.isPublic ? (
+                    <>
+                      <UserGroupIcon
+                        className="mr-1.5 h-5 w-5 flex-shrink-0 text-gray-400"
+                        aria-hidden="true"
+                      />
+                      Public profile
+                    </>
+                  ) : (
+                    <>
+                      <LockClosedIcon
+                        className="mr-1.5 h-5 w-5 flex-shrink-0 text-gray-400"
+                        aria-hidden="true"
+                      />
+                      Private profile
+                    </>
+                  )}
+                </div>
+                <div className="mt-2 flex items-center text-sm text-gray-500">
+                  <UserIcon
+                    className="mr-1.5 h-5 w-5 flex-shrink-0 text-gray-400"
+                    aria-hidden="true"
+                  />
+                  {profile.gender}
+                </div>
+                <div className="mt-2 flex items-center text-sm text-gray-500">
+                  <MapPinIcon
+                    className="mr-1.5 h-5 w-5 flex-shrink-0 text-gray-400"
+                    aria-hidden="true"
+                  />
+                  {profile.regions.length == 5
+                    ? "All regions"
+                    : profile.regions.join(", ")}
+                </div>
               </div>
             </div>
           </div>
-          <div className="mt-5 flex lg:mt-0 lg:ml-4">
-            <span className="sm:ml-3">
+          <div className="mt-5 lg:mt-0 flex space-x-2">
+            <span className="">
               <button
                 className="inline-flex items-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
                 onClick={() => router.push("/tutor/edit-profile")}
@@ -99,7 +127,7 @@ const YourProfile: NextPageWithLayout = () => {
               </button>
             </span>
 
-            <span className="sm:ml-3">
+            <span className="">
               <button
                 type="button"
                 className="inline-flex items-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"

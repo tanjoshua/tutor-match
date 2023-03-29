@@ -49,10 +49,10 @@ const ForTutors: NextPageWithLayout = () => {
         <div className="mx-auto max-w-7xl px-6 lg:px-8">
           <div className="mx-auto max-w-2xl lg:text-center">
             <h2 className="text-lg font-semibold leading-8 tracking-tight text-indigo-600">
-              100% free
+              100% commission free
             </h2>
             <p className="mt-2 text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">
-              Join Our Commission-Free Tutoring Marketplace and Matching Service
+              Join Our Free Tutoring Marketplace and Matching Service
             </p>
             <p className="mt-6 text-lg leading-8 text-gray-600">
               Welcome to tutoring.sg, where we make it easy for tutors like you
@@ -68,7 +68,7 @@ const ForTutors: NextPageWithLayout = () => {
             <div className="mt-10">
               <a
                 href="/register"
-                className="text-lg font-semibold leading-7 text-indigo-600 hover:text-indigo-400"
+                className="text-lg font-semibold leading-7 text-white p-2 bg-indigo-700 hover:bg-indigo-600 rounded-lg"
               >
                 Join today <span aria-hidden="true">→</span>
               </a>
