@@ -15,6 +15,7 @@ import Dropzone from "react-dropzone";
 import Cropper, { Area } from "react-easy-crop";
 import { toast } from "react-hot-toast";
 import { uploadProfilePicture } from "@/services/tutor";
+import { generateBlob } from "@/utils/cropImage";
 
 export default function UploadProfilePicModal({
   open,
@@ -26,22 +27,23 @@ export default function UploadProfilePicModal({
   refetch: Function;
 }) {
   const [image, setImage] = useState<File>();
+  const [croppedArea, setCroppedArea] = useState<Area>();
   const [crop, setCrop] = useState({ x: 0, y: 0 });
   const [zoom, setZoom] = useState(1);
 
   const onCropComplete = useCallback(
     (croppedArea: Area, croppedAreaPixels: Area) => {
-      console.log(croppedArea, croppedAreaPixels);
+      setCroppedArea(croppedAreaPixels);
     },
     []
   );
 
   const uploadImage = async () => {
     // upload image
-    if (image) {
-      const result = await uploadProfilePicture(image);
+    if (image && croppedArea) {
+      const blob = await generateBlob(URL.createObjectURL(image), croppedArea);
+      await uploadProfilePicture(blob as Blob);
       refetch();
-      return result;
     }
     return null;
   };
