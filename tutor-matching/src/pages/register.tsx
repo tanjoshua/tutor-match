@@ -57,7 +57,7 @@ const Register: NextPageWithLayout = () => {
                 type="text"
                 id="name"
                 name="name"
-                className="py-3 px-4 block w-full shadow-sm rounded-md text-sm focus:z-10 focus:border-indigo-500 focus:ring-indigo-500"
+                className="border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-indigo-500 focus:border-indigo-500 focus:outline-none block w-full p-2.5"
                 placeholder="Name"
                 onChange={formik.handleChange}
                 value={formik.values.name}
@@ -72,7 +72,7 @@ const Register: NextPageWithLayout = () => {
                 type="email"
                 id="email"
                 name="email"
-                className="py-3 px-4 block w-full shadow-sm rounded-md text-sm focus:z-10 focus:border-indigo-500 focus:ring-indigo-500"
+                className="border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-indigo-500 focus:border-indigo-500 focus:outline-none block w-full p-2.5"
                 placeholder="Email address"
                 onChange={formik.handleChange}
                 value={formik.values.email}
@@ -88,7 +88,7 @@ const Register: NextPageWithLayout = () => {
                 type="password"
                 id="password"
                 name="password"
-                className="py-3 px-4 block w-full shadow-sm rounded-md text-sm focus:z-10 focus:border-indigo-500 focus:ring-indigo-500"
+                className="border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-indigo-500 focus:border-indigo-500 focus:outline-none block w-full p-2.5"
                 placeholder="Password"
                 onChange={formik.handleChange}
                 value={formik.values.password}
@@ -102,6 +102,16 @@ const Register: NextPageWithLayout = () => {
               >
                 Create
               </button>
+            </div>
+
+            <div className="text-center text-sm">
+              Already have an account?{" "}
+              <a
+                href="/login"
+                className="font-medium text-indigo-600 hover:text-indigo-500"
+              >
+                Login
+              </a>
             </div>
           </form>
         </div>

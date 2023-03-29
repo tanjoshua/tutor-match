@@ -52,11 +52,9 @@ const Login: NextPageWithLayout = () => {
         <div className="flex min-h-full items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
           <div className="w-full max-w-md space-y-8">
             <div>
-              <img
-                className="mx-auto h-12 w-auto"
-                src="https://tailwindui.com/img/logos/mark.svg?color=indigo&shade=600"
-                alt="Your Company"
-              />
+              <div className="mx-auto w-min text-4xl text-gray-800 font-sans font-medium tracking-wide rounded-md px-2 py-1">
+                tutoring.<span className="text-red-500">sg</span>
+              </div>
               <h2 className="mt-6 text-center text-3xl font-bold tracking-tight text-gray-900">
                 Sign in to your account
               </h2>
@@ -125,12 +123,12 @@ const Login: NextPageWithLayout = () => {
               </div>
 
               <div className="text-center text-sm">
-                Or{" "}
+                No account?{" "}
                 <a
-                  href="register"
+                  href="/register"
                   className="font-medium text-indigo-600 hover:text-indigo-500"
                 >
-                  create an account
+                  Create one
                 </a>
               </div>
             </form>
