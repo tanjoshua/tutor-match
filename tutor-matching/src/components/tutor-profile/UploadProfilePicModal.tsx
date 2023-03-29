@@ -1,9 +1,19 @@
-import { Dispatch, Fragment, SetStateAction, useRef } from "react";
+import {
+  Dispatch,
+  Fragment,
+  SetStateAction,
+  useCallback,
+  useRef,
+  useState,
+} from "react";
 import { Dialog, Transition } from "@headlessui/react";
 import { useQuery } from "react-query";
 import { getTutorApplication } from "@/services/tutorRequest";
 import { ApplicationState } from "@/utils/enums";
 import { PhoneIcon, XMarkIcon } from "@heroicons/react/20/solid";
+import Dropzone from "react-dropzone";
+import Cropper, { Area } from "react-easy-crop";
+import { toast } from "react-hot-toast";
 
 export default function UploadProfilePicModal({
   open,
@@ -12,6 +22,23 @@ export default function UploadProfilePicModal({
   open: boolean;
   setOpen: Dispatch<SetStateAction<boolean>>;
 }) {
+  const [image, setImage] = useState<File>();
+  const [crop, setCrop] = useState({ x: 0, y: 0 });
+  const [zoom, setZoom] = useState(1);
+
+  const onCropComplete = useCallback(
+    (croppedArea: Area, croppedAreaPixels: Area) => {
+      console.log(croppedArea, croppedAreaPixels);
+    },
+    []
+  );
+
+  const uploadImage = async () => {
+    // upload image
+    await new Promise((r) => setTimeout(r, 2000));
+    return "";
+  };
+
   return (
     <Transition.Root show={open} as={Fragment}>
       <Dialog as="div" className="relative z-10" onClose={setOpen}>
@@ -40,7 +67,69 @@ export default function UploadProfilePicModal({
             >
               <Dialog.Panel className="relative transform overflow-hidden rounded-lg bg-white text-left shadow-xl transition-all md:m-8 max-w-6xl">
                 <div className="relative px-4 py-3">
-                  <div>upload</div>
+                  <Dropzone
+                    onDrop={(acceptedFiles) => {
+                      if (acceptedFiles.length > 0) {
+                        setImage(acceptedFiles[0]);
+                      }
+                    }}
+                    accept={{
+                      "image/jpeg": [],
+                      "image/png": [],
+                    }}
+                    maxFiles={1}
+                    maxSize={2000000}
+                    multiple={false}
+                  >
+                    {({
+                      getRootProps,
+                      getInputProps,
+                      acceptedFiles,
+                      fileRejections,
+                    }) => (
+                      <div className="px-5 py-6 cursor-pointer">
+                        {acceptedFiles.length > 0 ? (
+                          <div className="w-96 h-96">
+                            <Cropper
+                              image={image && URL.createObjectURL(image)}
+                              crop={crop}
+                              zoom={zoom}
+                              aspect={1 / 1}
+                              onCropChange={setCrop}
+                              onCropComplete={onCropComplete}
+                              onZoomChange={setZoom}
+                              classes={{
+                                containerClassName: "mt-10",
+                                mediaClassName: "",
+                              }}
+                            />
+                          </div>
+                        ) : (
+                          <div
+                            {...getRootProps({
+                              className:
+                                "py-6 px-4 border-2 border-dotted bg-gray-100 text-gray-400 focus:outline-none",
+                            })}
+                          >
+                            <input
+                              {...getInputProps({
+                                className: "",
+                              })}
+                            />
+                            <p>
+                              Drag 'n' drop your image here, or click to select
+                              file
+                            </p>
+                          </div>
+                        )}
+                        {fileRejections.length > 0 && (
+                          <div className="mt-1 text-red-400">
+                            {fileRejections[0].errors[0].message}
+                          </div>
+                        )}
+                      </div>
+                    )}
+                  </Dropzone>
                   <div className="absolute right-2 top-2">
                     <button
                       onClick={() => {
@@ -57,9 +146,14 @@ export default function UploadProfilePicModal({
                     className="inline-flex w-full justify-center rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 sm:ml-3 sm:w-auto"
                     onClick={() => {
                       setOpen(false);
+                      toast.promise(uploadImage(), {
+                        loading: "Uploading",
+                        success: "Image uploaded",
+                        error: "Error uploading",
+                      });
                     }}
                   >
-                    Shortlist
+                    Upload
                   </button>
                   <button
                     type="button"
