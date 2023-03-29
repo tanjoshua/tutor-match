@@ -66,7 +66,7 @@ const TutorProfile: NextPageWithLayout = () => {
     return (
       <div>
         <Head>
-          <title>Tutor Profile</title>
+          <title>{profile.tutorName} - Tutor Profile</title>
         </Head>
 
         <ShareModal
@@ -80,11 +80,23 @@ const TutorProfile: NextPageWithLayout = () => {
           contactInfo={profile.contactInfo}
           profileId={profile.id}
         />
-        <div className="lg:flex lg:items-center lg:justify-between px-4 py-5 sm:px-6">
+        <div className="lg:flex lg:items-center lg:justify-between px-4 py-5 sm:px-6 space-y-4 lg:space-x-6">
+          <div className="flex-shrink-0 overflow-hidden rounded-md">
+            <img
+              src={
+                profile.profilePic?.location ||
+                "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png"
+              }
+              className="h-40 w-40 lg:h-52 lg:w-52"
+            />
+          </div>
           <div className="min-w-0 flex-1">
-            <h2 className="text-2xl font-bold leading-7 text-gray-900 sm:truncate sm:text-3xl sm:tracking-tight">
-              {profile.title}
+            <h2 className="font-normal text-xl text-gray-900">
+              {profile.tutorName}
             </h2>
+            <h1 className="text-2xl font-bold text-gray-900 sm:text-3xl tracking-tight">
+              {profile.title}
+            </h1>
             <div className="mt-1 flex flex-col sm:mt-0 sm:flex-row sm:flex-wrap sm:space-x-6">
               <div className="mt-2 flex items-center text-sm text-gray-500">
                 <UserIcon
@@ -104,7 +116,7 @@ const TutorProfile: NextPageWithLayout = () => {
               </div>
             </div>
           </div>
-          <div className="mt-5 flex lg:mt-0 lg:ml-4">
+          <div className="mt-5 flex lg:mt-0 space-x-2">
             <span className="sm:ml-3 space-x-1">
               <button
                 type="button"

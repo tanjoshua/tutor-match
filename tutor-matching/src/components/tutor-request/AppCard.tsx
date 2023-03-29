@@ -42,7 +42,7 @@ export default ({
   // normal version
   return (
     <li className="flex py-6">
-      <div className="h-24 w-24 md:h-32 md:w-32 flex-shrink-0 overflow-hidden rounded-md border border-gray-200">
+      <div className="h-24 w-24 md:h-32 md:w-32 flex-shrink-0 overflow-hidden rounded-md ">
         <img
           src={
             tutorProfile.profilePic?.location ||
