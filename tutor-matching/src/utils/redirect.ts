@@ -22,7 +22,7 @@ export const redirectIfLoggedIn = () => {
 
   useEffect(() => {
     if (!isLoading && isLoggedIn) {
-      router.replace("/tutor/dashboard");
+      router.replace("/tutor/your-profile");
     }
   }, [isLoading, data, router]);
 };

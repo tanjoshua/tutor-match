@@ -81,6 +81,12 @@ export const googleRegister = async (req: Request, res: Response) => {
   const email = userObject.email;
   const name = userObject.name;
 
+  // check for duplicate
+  const existingUser = await collections.users?.findOne({ email });
+  if (existingUser) {
+    throw new HttpError(403, "User already exists");
+  }
+
   // create user
   const user = new User();
   user.name = name;

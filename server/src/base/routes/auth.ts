@@ -9,6 +9,7 @@ import {
   changeEmail,
   changePassword,
   googleLogin,
+  googleRegister,
 } from "../controllers/auth";
 import handleValidatorErrors from "../../middleware/handleValidatorErrors";
 import auth from "../../middleware/auth";
@@ -40,6 +41,8 @@ router.post(
 );
 
 router.post("/googleLogin", googleLogin);
+
+router.post("/googleRegister", googleRegister);
 
 router.post("/logout", logout);
 
