@@ -39,6 +39,7 @@ const YourProfile: NextPageWithLayout = () => {
 
   if (data.profile) {
     const profile = data.profile;
+
     // profile exists
     return (
       <div>
@@ -48,17 +49,19 @@ const YourProfile: NextPageWithLayout = () => {
         <UploadProfilePicModal
           open={uploadModalIsOpen}
           setOpen={setUploadModalIsOpen}
+          refetch={refetch}
         />
         <div className="lg:flex lg:items-center lg:justify-between px-4 py-5 sm:px-6">
           <div className="min-w-0 flex-1 lg:flex lg:items-center space-y-4 lg:space-x-4">
             <div
-              className="group relative h-28 w-28 lg:h-36 lg:w-36 flex-shrink-0 overflow-hidden rounded-md border border-gray-200 cursor-pointer"
+              className="group relative h-40 w-40 lg:h-52 lg:w-52 flex-shrink-0 overflow-hidden rounded-md border border-gray-200 cursor-pointer"
               onClick={() => {
                 setUploadModalIsOpen(true);
               }}
             >
               <img
                 src={
+                  profile.profilePic?.location ||
                   "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png"
                 }
                 className="h-full w-full object-cover object-center group-hover:opacity-80"

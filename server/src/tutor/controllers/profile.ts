@@ -194,9 +194,9 @@ export const getTutorLevels = async (_req: Request, res: Response) => {
 };
 
 export const uploadProfilePicture = async (req: Request, res: Response) => {
-  const { id } = req.body;
-  const profileDocument = await collections.tutorProfiles?.findOne({
-    _id: new ObjectId(id),
+  const owner = req.user!;
+  const profileDocument = await collections.tutorProfiles!.findOne({
+    owner: new ObjectId(owner._id),
   });
   const file = req.file as any;
 
@@ -212,7 +212,7 @@ export const uploadProfilePicture = async (req: Request, res: Response) => {
 
   const oldKey = profileDocument.profilePic?.key;
   await collections.tutorProfiles?.updateOne(
-    { _id: new ObjectId(id) },
+    { owner: new ObjectId(owner._id) },
     {
       $set: {
         profilePic: {

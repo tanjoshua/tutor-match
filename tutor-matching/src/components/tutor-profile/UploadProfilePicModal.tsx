@@ -14,13 +14,16 @@ import { PhoneIcon, XMarkIcon } from "@heroicons/react/20/solid";
 import Dropzone from "react-dropzone";
 import Cropper, { Area } from "react-easy-crop";
 import { toast } from "react-hot-toast";
+import { uploadProfilePicture } from "@/services/tutor";
 
 export default function UploadProfilePicModal({
   open,
   setOpen,
+  refetch,
 }: {
   open: boolean;
   setOpen: Dispatch<SetStateAction<boolean>>;
+  refetch: Function;
 }) {
   const [image, setImage] = useState<File>();
   const [crop, setCrop] = useState({ x: 0, y: 0 });
@@ -35,8 +38,12 @@ export default function UploadProfilePicModal({
 
   const uploadImage = async () => {
     // upload image
-    await new Promise((r) => setTimeout(r, 2000));
-    return "";
+    if (image) {
+      const result = await uploadProfilePicture(image);
+      refetch();
+      return result;
+    }
+    return null;
   };
 
   return (
