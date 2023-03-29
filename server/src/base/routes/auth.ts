@@ -8,6 +8,7 @@ import {
   resetPassword,
   changeEmail,
   changePassword,
+  googleLogin,
 } from "../controllers/auth";
 import handleValidatorErrors from "../../middleware/handleValidatorErrors";
 import auth from "../../middleware/auth";
@@ -38,6 +39,8 @@ router.post(
   login
 );
 
+router.post("/googleLogin", googleLogin);
+
 router.post("/logout", logout);
 
 router.post(
@@ -63,7 +66,7 @@ router.post(
 router.post(
   "/changeEmail",
   auth,
-  [body("newEmail").notEmpty().isEmail(), body("password").notEmpty()],
+  [body("newEmail").notEmpty().isEmail()],
   handleValidatorErrors,
   changeEmail
 );
