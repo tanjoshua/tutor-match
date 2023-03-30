@@ -2,6 +2,14 @@ import Head from "next/head";
 import { NextPageWithLayout } from "./_app";
 import { ReactElement } from "react";
 import Layout from "../components/Layout";
+import { CalendarDaysIcon } from "@heroicons/react/24/outline";
+import {
+  MagnifyingGlassIcon,
+  PencilSquareIcon,
+  UserGroupIcon,
+  PhoneIcon,
+  ClockIcon,
+} from "@heroicons/react/20/solid";
 
 const Home: NextPageWithLayout = () => {
   return (
@@ -43,7 +51,7 @@ const Home: NextPageWithLayout = () => {
           </svg>
         </div>
         <div className="relative px-6 lg:px-8">
-          <div className="mx-auto max-w-2xl py-32 md:py-52">
+          <div className="mx-auto max-w-2xl py-16 md:pt-32 ">
             <div className="hidden sm:mb-8 sm:flex sm:justify-center">
               <div className="relative rounded-full py-1 px-3 text-sm leading-6 text-gray-600 ring-1 ring-gray-400 hover:ring-gray-300">
                 If you're a tutor, join our platform!{" "}
@@ -76,6 +84,103 @@ const Home: NextPageWithLayout = () => {
                   Browse <span aria-hidden="true">→</span>
                 </a>
               </div>
+            </div>
+          </div>
+          <div className="py-16 space-y-10 border-t border-1">
+            <div className="text-center text-3xl font-bold tracking-tight text-gray-900">
+              If you're looking for a tutor, here's how it works
+            </div>
+            <div className="mx-auto max-w-7xl px-6 lg:px-8">
+              <dl className="grid grid-cols-1 gap-x-8 gap-y-16 lg:grid-cols-3">
+                <div className="flex flex-col items-start">
+                  <div className="">
+                    <UserGroupIcon className="h-6 w-6 " aria-hidden="true" />
+                  </div>
+                  <dt className="mt-4 font-semibold">1. Browse tutors</dt>
+                  <dd className="mt-2 leading-7">
+                    Visit the{" "}
+                    <a
+                      className="text-indigo-600 font-bold hover:underline hover:text-indigo-500 cursor-pointer"
+                      href="/browse"
+                    >
+                      browse page
+                    </a>{" "}
+                    to view the public profiles of tutors.
+                  </dd>
+                </div>
+                <div className="flex flex-col items-start">
+                  <div className="">
+                    <MagnifyingGlassIcon
+                      className="h-6 w-6 "
+                      aria-hidden="true"
+                    />
+                  </div>
+                  <dt className="mt-4 font-semibold ">2. Search and filter</dt>
+                  <dd className="mt-2 leading-7 ">
+                    Search and filter tutors according to your preference.
+                  </dd>
+                </div>
+                <div className="flex flex-col items-start">
+                  <div className="">
+                    <PhoneIcon className="h-6 w-6 " aria-hidden="true" />
+                  </div>
+                  <dt className="mt-4 font-semibold ">3. Contact</dt>
+                  <dd className="mt-2 leading-7 ">
+                    Contact potential tutors directly via their public tutor
+                    profile.
+                  </dd>
+                </div>
+              </dl>
+              <div className="flex items-center my-10">
+                <div className="flex-grow border-t border-1 flex-1"></div>
+                <div className="-mt-1 mx-2 text-gray-400 ">or</div>
+                <div className="flex-grow border-t border-1 flex-1"></div>
+              </div>
+              <dl className="grid grid-cols-1 gap-x-8 gap-y-16 lg:grid-cols-3">
+                <div className="flex flex-col items-start">
+                  <div className="">
+                    <PencilSquareIcon className="h-6 w-6" aria-hidden="true" />
+                  </div>
+                  <dt className="mt-4 font-semibold ">
+                    1. Fill in a tutor request
+                  </dt>
+                  <dd className="mt-2 leading-7">
+                    Visit the{" "}
+                    <a
+                      className="text-indigo-600 font-bold hover:underline hover:text-indigo-500 cursor-pointer"
+                      href="/request/make"
+                    >
+                      request page
+                    </a>{" "}
+                    to fill in a tutor request.
+                  </dd>
+                </div>
+                <div className="flex flex-col items-start">
+                  <div className="">
+                    <ClockIcon className="h-6 w-6 " aria-hidden="true" />
+                  </div>
+                  <dt className="mt-4 font-semibold ">
+                    2. Wait for applications
+                  </dt>
+                  <dd className="mt-2 leading-7 ">
+                    Tutors on the platform will apply to your request. Details
+                    of these tutors will be made available to you via a unique
+                    link.
+                  </dd>
+                </div>
+                <div className="flex flex-col items-start">
+                  <div className="">
+                    <CalendarDaysIcon className="h-6 w-6 " aria-hidden="true" />
+                  </div>
+                  <dt className="mt-4 font-semibold ">
+                    3. View applications and decide
+                  </dt>
+                  <dd className="mt-2 leading-7 ">
+                    Look through the applications to your tutor request. Select
+                    your favorite tutor and contact them directly.
+                  </dd>
+                </div>
+              </dl>
             </div>
           </div>
           <div className="absolute inset-x-0 top-[calc(100%-13rem)] -z-10 transform-gpu overflow-hidden blur-3xl sm:top-[calc(100%-30rem)]">
