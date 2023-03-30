@@ -16,6 +16,7 @@ import {
   levelToLevelCategory,
 } from "@/utils/options/subjects";
 import { regionOptions } from "@/utils/options/regions";
+import { toast } from "react-hot-toast";
 
 const MakeTutorRequest: NextPageWithLayout = () => {
   const router = useRouter();
@@ -62,6 +63,20 @@ const MakeTutorRequest: NextPageWithLayout = () => {
       description: "",
     },
     onSubmit: async (values) => {
+      if (
+        !values.name ||
+        !values.contactInfo.email ||
+        !values.region ||
+        !values.level ||
+        values.subjects.length === 0 ||
+        values.gender.length === 0 ||
+        values.type.length === 0 ||
+        !values.pricing.rateOption ||
+        !values.availability
+      ) {
+        toast.error("Missing fields");
+        return;
+      }
       try {
         const data = await createTutorRequest({
           levelCategory: levelToLevelCategory(values.level),
@@ -76,6 +91,14 @@ const MakeTutorRequest: NextPageWithLayout = () => {
       }
     },
   });
+
+  useEffect(() => {
+    if (router.query.prefill && JSON.parse(router.query.prefill as string)) {
+      const prefill = JSON.parse(router.query.prefill as string);
+      formik.setFieldValue("level", prefill.level);
+      formik.setFieldValue("subjects", prefill.subjects);
+    }
+  }, [router]);
 
   return (
     <div className="px-4 pt-4 sm:px-6">
@@ -133,6 +156,7 @@ const MakeTutorRequest: NextPageWithLayout = () => {
                       Subjects
                     </label>
                     <Creatable
+                      required
                       isMulti
                       name="subjects"
                       onChange={(value: any) => {
@@ -424,9 +448,16 @@ const MakeTutorRequest: NextPageWithLayout = () => {
                       Region
                     </label>
                     <Select
+                      required
                       isClearable
                       name="region"
                       options={regionOptions}
+                      onChange={(value: any) => {
+                        formik.setFieldValue(
+                          "region",
+                          value ? value.value : ""
+                        );
+                      }}
                       value={{
                         label: formik.values.region,
                         value: formik.values.region,
