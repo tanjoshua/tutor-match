@@ -72,7 +72,8 @@ const Login: NextPageWithLayout = () => {
                 tutoring.<span className="text-red-500">sg</span>
               </div>
               <h2 className="mt-6 text-center text-3xl font-bold tracking-tight text-gray-900">
-                Sign in to your account
+                Sign in to your account <br />
+                (tutor portal)
               </h2>
             </div>
             <div className="flex justify-center">
