@@ -10,8 +10,46 @@ import {
   PhoneIcon,
   ClockIcon,
 } from "@heroicons/react/20/solid";
+import Select from "@/components/shared/Select";
+import { levelOptions } from "@/utils/options/levels";
+import {
+  levelCategoryToSubjectOptions,
+  levelToLevelCategory,
+} from "@/utils/options/subjects";
+import { useFormik } from "formik";
+import { useRouter } from "next/router";
 
 const Home: NextPageWithLayout = () => {
+  const router = useRouter();
+  const formik = useFormik<{
+    level: { value: string; label: string } | null;
+    subjects: string[];
+  }>({
+    initialValues: {
+      level: null,
+      subjects: [],
+    },
+    onSubmit: (values) => {
+      if (values.level) {
+        // if value
+        const levelCategory = levelToLevelCategory(values.level!.value);
+        const subjects: any = {};
+        subjects[levelCategory] = values.subjects;
+        router.push({
+          pathname: "/browse",
+          query: {
+            filters: JSON.stringify({
+              levelCategories: [levelCategory],
+              subjects,
+            }),
+          },
+        });
+      } else {
+        router.push("/browse");
+      }
+    },
+  });
+
   return (
     <>
       <Head>
@@ -24,7 +62,7 @@ const Home: NextPageWithLayout = () => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <main>
-        <div className="absolute inset-x-0 top-[-10rem] -z-10 transform-gpu overflow-hidden blur-3xl sm:top-[-20rem]">
+        <div className="absolute inset-x-0 top-[-10rem] -z-10 transform-gpu  blur-3xl sm:top-[-20rem]">
           <svg
             className="relative left-[calc(50%-11rem)] -z-10 h-[21.1875rem] max-w-none -translate-x-1/2 rotate-[30deg] sm:left-[calc(50%-30rem)] sm:h-[42.375rem]"
             viewBox="0 0 1155 678"
@@ -50,27 +88,22 @@ const Home: NextPageWithLayout = () => {
             </defs>
           </svg>
         </div>
-        <div className="relative px-6 lg:px-8">
-          <div className="mx-auto max-w-2xl py-16 md:pt-32 ">
-            <div className="hidden sm:mb-8 sm:flex sm:justify-center">
-              <div className="relative rounded-full py-1 px-3 text-sm leading-6 text-gray-600 ring-1 ring-gray-400 hover:ring-gray-300">
-                If you're a tutor, join our platform!{" "}
-                <a href="/for-tutors" className="font-semibold text-indigo-600">
-                  <span className="absolute inset-0" aria-hidden="true" />
-                  Read more <span aria-hidden="true">&rarr;</span>
-                </a>
+        <div className="mx-auto max-w-7xl sm:px-6 lg:px-8">
+          <div className="relative isolate text-gray-900 px-6 pt-16 sm:px-16 md:pt-24 lg:flex lg:gap-x-20 lg:px-24 lg:pt-0">
+            <div className="mx-auto max-w-md text-center lg:mx-0 lg:flex-auto lg:py-32 lg:text-left">
+              <div className="text-4xl sm:text-6xl text-gray-800 font-sans font-semibold tracking-wide">
+                tutoring.<span className="text-red-500">sg</span>
               </div>
-            </div>
-            <div className="text-center">
-              <h1 className="text-4xl font-bold tracking-tight text-gray-900 sm:text-6xl">
-                Find the best private tutors in Singapore
-              </h1>
-              <p className="mt-6 text-lg leading-8 text-gray-600">
-                Find the best private tutors in Singapore for any subject of
-                your choice. 100% free with no hidden fees for both tutors and
-                students.
+              <h2 className="mt-6 text-3xl font-bold tracking-tight  sm:text-4xl">
+                Find the best private tutors
+                <br />
+                in Singapore.
+              </h2>
+              <p className="mt-6 text-lg leading-8 text-gray-900">
+                100% commission free for both students and tutors. Browse the
+                tutor marketplace or make a request.
               </p>
-              <div className="mt-10 flex items-center justify-center gap-x-6">
+              <div className="mt-6 flex items-center justify-center gap-x-6 lg:justify-start">
                 <a
                   href="/request/make"
                   className="rounded-md bg-indigo-600 px-3.5 py-1.5 text-base font-semibold leading-7 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
@@ -81,11 +114,106 @@ const Home: NextPageWithLayout = () => {
                   href="/browse"
                   className="text-base font-semibold leading-7 text-gray-900"
                 >
-                  Browse <span aria-hidden="true">→</span>
+                  Browse tutors <span aria-hidden="true">→</span>
                 </a>
+              </div>
+              <div className="mt-6 flex ">
+                <div className="relative rounded-full text-sm leading-6 text-gray-600">
+                  If you're a tutor, join our platform!{" "}
+                  <a
+                    href="/for-tutors"
+                    className="font-semibold text-indigo-600"
+                  >
+                    <span className="absolute inset-0" aria-hidden="true" />
+                    Read more <span aria-hidden="true">&rarr;</span>
+                  </a>
+                </div>
+              </div>
+            </div>
+            <div className="relative my-8 lg:my-16 lg:mt-8 flex justify-center items-center mx-auto">
+              <div className=" rounded-3xl px-8 lg:px-16 py-8 bg-gray-900 shadow-2xl ">
+                <h2 className="text-2xl font-bold tracking-tight text-white">
+                  What are you looking for?
+                </h2>
+                <form onSubmit={formik.handleSubmit}>
+                  <div className="mt-6 space-y-4">
+                    <div className="">
+                      <label className="block mb-2 font-medium text-white">
+                        Student's level
+                      </label>
+                      <Select
+                        isClearable
+                        options={levelOptions}
+                        name="level"
+                        onChange={(value: any) => {
+                          formik.setFieldValue("level", value);
+                        }}
+                        value={formik.values.level}
+                        placeholder="Leave empty to view all tutors"
+                      />
+                    </div>
+                    <div className="">
+                      <label className="block mb-2 font-medium text-white">
+                        Subject(s)
+                      </label>
+                      <Select
+                        isMulti
+                        isClearable
+                        options={levelCategoryToSubjectOptions(
+                          levelToLevelCategory(formik.values.level?.value!)
+                        )}
+                        name="subjects"
+                        onChange={(value: any) => {
+                          formik.setFieldValue(
+                            "subjects",
+                            value.map((x: any) => x.value)
+                          );
+                        }}
+                        value={formik.values.subjects.map((x) => ({
+                          value: x,
+                          label: x,
+                        }))}
+                        isDisabled={!formik.values.level}
+                        placeholder={
+                          !formik.values.level
+                            ? "Select a level first"
+                            : "Select multiple subjects"
+                        }
+                      />
+                    </div>
+                    <div className="pt-4 flex items-center justify-center ">
+                      <button
+                        type="submit"
+                        className="rounded-md bg-indigo-500 px-3.5 py-1.5 text-base font-semibold leading-7 text-white shadow-sm hover:bg-indigo-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+                      >
+                        Browse
+                      </button>
+                      <div className="text-white mx-4">or</div>
+                      <button
+                        type="button"
+                        className="rounded-md bg-indigo-500 px-3.5 py-1.5 text-base font-semibold leading-7 text-white shadow-sm hover:bg-indigo-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+                        onClick={() => {
+                          router.push({
+                            pathname: "/request/make",
+                            query: {
+                              prefill: JSON.stringify({
+                                level: formik.values.level?.value,
+                                subjects: formik.values.subjects,
+                              }),
+                            },
+                          });
+                        }}
+                      >
+                        Publish request
+                      </button>
+                    </div>
+                  </div>
+                </form>
               </div>
             </div>
           </div>
+        </div>
+        <div className="relative px-6 lg:px-8">
           <div className="py-16 space-y-10 border-t border-1">
             <div className="text-center text-3xl font-bold tracking-tight text-gray-900">
               If you're looking for a tutor, here's how it works
@@ -163,9 +291,9 @@ const Home: NextPageWithLayout = () => {
                     2. Wait for applications
                   </dt>
                   <dd className="mt-2 leading-7 ">
-                    Tutors on the platform will apply to your request. Details
-                    of these tutors will be made available to you via a unique
-                    link.
+                    Tutors on the platform will apply to your request. New
+                    applications will be available for review in real-time via a
+                    unique link.
                   </dd>
                 </div>
                 <div className="flex flex-col items-start">
@@ -176,8 +304,8 @@ const Home: NextPageWithLayout = () => {
                     3. View applications and decide
                   </dt>
                   <dd className="mt-2 leading-7 ">
-                    Look through the applications to your tutor request. Select
-                    your favorite tutor and contact them directly.
+                    Look through the applications as they come in. Select your
+                    favorite tutor and contact them directly.
                   </dd>
                 </div>
               </dl>
