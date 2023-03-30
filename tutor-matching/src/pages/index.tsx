@@ -117,7 +117,7 @@ const Home: NextPageWithLayout = () => {
                   Browse tutors <span aria-hidden="true">→</span>
                 </a>
               </div>
-              <div className="mt-6 flex ">
+              <div className="mt-6 flex justify-center lg:justify-start">
                 <div className="relative rounded-full text-sm leading-6 text-gray-600">
                   If you're a tutor, join our platform!{" "}
                   <a
@@ -147,6 +147,7 @@ const Home: NextPageWithLayout = () => {
                         name="level"
                         onChange={(value: any) => {
                           formik.setFieldValue("level", value);
+                          formik.setFieldValue("subjects", []);
                         }}
                         value={formik.values.level}
                         placeholder="Select level"
@@ -177,7 +178,7 @@ const Home: NextPageWithLayout = () => {
                         placeholder={
                           !formik.values.level
                             ? "Select a level first"
-                            : "Select multiple subjects"
+                            : "Multiple subjects allowed"
                         }
                       />
                     </div>
