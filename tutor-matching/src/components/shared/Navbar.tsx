@@ -1,7 +1,12 @@
 import React from "react";
 import { Fragment } from "react";
 import { Disclosure, Menu, Transition } from "@headlessui/react";
-import { Bars3Icon, BellIcon, XMarkIcon } from "@heroicons/react/24/outline";
+import {
+  ArrowRightOnRectangleIcon,
+  Bars3Icon,
+  BellIcon,
+  XMarkIcon,
+} from "@heroicons/react/24/outline";
 import Link from "next/link";
 import { useQuery } from "react-query";
 import { getMe } from "@/services/user";
@@ -154,7 +159,15 @@ const Navbar = () => {
                       className="text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm"
                       href="/login"
                     >
-                      Tutor log in <span aria-hidden="true">&rarr;</span>
+                      <div className="hidden md:block">
+                        Tutor log in <span aria-hidden="true">&rarr;</span>
+                      </div>
+                      <div className="md:hidden">
+                        <ArrowRightOnRectangleIcon
+                          className="h-6 w-6"
+                          aria-hidden="true"
+                        />
+                      </div>
                     </a>
                   ))}
               </div>

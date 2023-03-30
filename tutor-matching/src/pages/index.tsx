@@ -106,7 +106,7 @@ const Home: NextPageWithLayout = () => {
               <div className="mt-6 flex items-center justify-center gap-x-6 lg:justify-start">
                 <a
                   href="/request/make"
-                  className="rounded-md bg-indigo-600 px-3.5 py-1.5 text-base font-semibold leading-7 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+                  className="rounded-md bg-indigo-600 px-3.5 py-1.5 text-sm md:text-base font-semibold leading-7 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
                 >
                   Make a request
                 </a>
@@ -131,12 +131,12 @@ const Home: NextPageWithLayout = () => {
               </div>
             </div>
             <div className="relative my-8 lg:my-16 lg:mt-8 flex justify-center items-center mx-auto">
-              <div className=" rounded-3xl px-8 lg:px-16 py-8 bg-gray-900 shadow-2xl ">
-                <h2 className="text-2xl font-bold tracking-tight text-white">
+              <div className=" rounded-3xl px-8 lg:px-16 py-8 bg-gray-900 shadow-2xl">
+                <h2 className="text-lg md:text-2xl font-bold tracking-tight text-white">
                   What are you looking for?
                 </h2>
                 <form onSubmit={formik.handleSubmit}>
-                  <div className="mt-6 space-y-4">
+                  <div className="mt-6 space-y-4 text-sm md:text-base">
                     <div className="">
                       <label className="block mb-2 font-medium text-white">
                         Student's level
@@ -149,7 +149,7 @@ const Home: NextPageWithLayout = () => {
                           formik.setFieldValue("level", value);
                         }}
                         value={formik.values.level}
-                        placeholder="Leave empty to view all tutors"
+                        placeholder="Select level"
                       />
                     </div>
                     <div className="">
@@ -184,14 +184,14 @@ const Home: NextPageWithLayout = () => {
                     <div className="pt-4 flex items-center justify-center ">
                       <button
                         type="submit"
-                        className="rounded-md bg-indigo-500 px-3.5 py-1.5 text-base font-semibold leading-7 text-white shadow-sm hover:bg-indigo-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+                        className="rounded-md bg-indigo-500 px-2 py-0.5 md:px-3.5 md:py-1.5 font-semibold leading-7 text-white shadow-sm hover:bg-indigo-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
                       >
                         Browse
                       </button>
                       <div className="text-white mx-4">or</div>
                       <button
                         type="button"
-                        className="rounded-md bg-indigo-500 px-3.5 py-1.5 text-base font-semibold leading-7 text-white shadow-sm hover:bg-indigo-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+                        className="rounded-md bg-indigo-500 px-2 py-0.5 md:px-3.5 md:py-1.5 font-semibold leading-7 text-white shadow-sm hover:bg-indigo-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
                         onClick={() => {
                           router.push({
                             pathname: "/request/make",
