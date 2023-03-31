@@ -106,13 +106,13 @@ export const getTutorRequest = async ({ id }: { id: string }) => {
   return result.data;
 };
 
-// TODO: add more filters
 export const getTutorRequests = async ({
   region,
   gender,
   levels,
   subjects,
   type,
+  sortBy,
   page,
   limit,
 }: {
@@ -121,6 +121,7 @@ export const getTutorRequests = async ({
   levels?: string[];
   subjects?: any;
   type?: string[];
+  sortBy?: string;
   page?: number;
   limit?: number;
 }) => {
@@ -130,6 +131,7 @@ export const getTutorRequests = async ({
     levels,
     subjects,
     type,
+    sortBy,
     page,
     limit,
   });

@@ -1,4 +1,6 @@
 import { ObjectId } from "mongodb";
+import { dateToObjectId } from "../../services/database.service";
+import { oneWeekAgo } from "../../utils/date";
 import { Level, Region, TutorType, Gender } from "./Profile";
 
 export default class TutorRequest {
@@ -31,8 +33,9 @@ export default class TutorRequest {
 
   // other fields
   public clientAccessToken: string;
+  public closed: boolean = false;
 
-  // non stored fields
+  // user specific fields (NOT STORED)
   public applied?: boolean;
 
   public static assign(obj: TutorRequest) {
@@ -59,6 +62,8 @@ export default class TutorRequest {
       description: this.description,
 
       applied: this.applied,
+      closed:
+        this.closed || (this._id && this._id > dateToObjectId(oneWeekAgo())),
     };
   }
 }

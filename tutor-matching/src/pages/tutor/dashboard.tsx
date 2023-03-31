@@ -37,12 +37,12 @@ import {
   redirectIfNoTutorProfile,
 } from "@/utils/redirect";
 import { classNames } from "@/utils/helpers";
+import { RequestSortBy } from "@/utils/options/sort";
 
 const tabClasses =
   "inline-block px-4 pb-4 border-b-2 border-transparent rounded-t-lg hover:text-gray-600 hover:border-gray-300 ";
 const tabClassesSelected =
   "inline-block px-4 pb-4 text-indigo-600 border-b-2 border-indigo-600 rounded-t-lg";
-const sortOptions = [{ name: "Newest", href: "#", current: true }];
 
 const TutorProfile: NextPageWithLayout = () => {
   const router = useRouter();
@@ -55,23 +55,29 @@ const TutorProfile: NextPageWithLayout = () => {
     type: string[];
     levelCategories: string[];
     subjects: any;
+    sortBy: string;
   }>({
     region: [],
     gender: "",
     type: [],
     levelCategories: [],
     subjects: {},
+    sortBy: RequestSortBy.Newest,
   });
+  const sortOptions = Object.values(RequestSortBy).map((value) => ({
+    name: value,
+    current: filters.sortBy === value,
+  }));
   const [paginationQuery, setPaginationQuery] = useState({
     page: 1,
-    limit: 5,
+    limit: 10,
   });
   useEffect(() => {
     setPaginationQuery({ ...paginationQuery, page: 1 });
   }, [filters]);
   const [appliedPaginationQuery, setAppliedPaginationQuery] = useState({
     page: 1,
-    limit: 5,
+    limit: 10,
   });
   const [tabSelected, setTabSelected] = useState<"Requests" | "Applied">(
     "Requests"
@@ -178,13 +184,15 @@ const TutorProfile: NextPageWithLayout = () => {
                       <Menu.Item key={option.name}>
                         {({ active }) => (
                           <a
-                            href={option.href}
+                            onClick={() =>
+                              setFilters({ ...filters, sortBy: option.name })
+                            }
                             className={classNames(
                               option.current
                                 ? "font-medium text-gray-900"
                                 : "text-gray-500",
                               active ? "bg-gray-100" : "",
-                              "block px-4 py-2 text-sm"
+                              "block px-4 py-2 text-sm cursor-pointer"
                             )}
                           >
                             {option.name}
@@ -208,6 +216,7 @@ const TutorProfile: NextPageWithLayout = () => {
                   className="text-sm text-gray-500 mr-2 underline cursor-pointer hover:text-gray-400"
                   onClick={() => {
                     setFilters({
+                      ...filters,
                       region: [],
                       gender: "",
                       type: [],
@@ -231,7 +240,7 @@ const TutorProfile: NextPageWithLayout = () => {
                     });
                   }}
                 >
-                  Autofill
+                  Autofill with your tutor profile
                 </div>
               </div>
 
@@ -344,7 +353,11 @@ const TutorProfile: NextPageWithLayout = () => {
                   </>
                 )}
               </Disclosure>
-              <Disclosure as="div" className="border-b border-gray-200 py-4">
+              <Disclosure
+                as="div"
+                className="border-b border-gray-200 py-4"
+                defaultOpen
+              >
                 {({ open }) => (
                   <>
                     <h3 className="-my-3 flow-root">
@@ -385,7 +398,11 @@ const TutorProfile: NextPageWithLayout = () => {
                   </>
                 )}
               </Disclosure>
-              <Disclosure as="div" className="border-b border-gray-200 py-4">
+              <Disclosure
+                as="div"
+                className="border-b border-gray-200 py-4"
+                defaultOpen
+              >
                 {({ open }) => (
                   <>
                     <h3 className="-my-3 flow-root">
@@ -427,7 +444,11 @@ const TutorProfile: NextPageWithLayout = () => {
                   </>
                 )}
               </Disclosure>
-              <Disclosure as="div" className="border-b border-gray-200 py-4">
+              <Disclosure
+                as="div"
+                className="border-b border-gray-200 py-4"
+                defaultOpen
+              >
                 {({ open }) => (
                   <>
                     <h3 className="-my-3 flow-root">
@@ -522,7 +543,8 @@ const TutorProfile: NextPageWithLayout = () => {
                       </div>
                       {data.tutorRequests.length === 0 ? (
                         <div className="text-sm text-gray-500">
-                          No matching requests
+                          No matching requests. Adjust your filters or check
+                          back in later!
                         </div>
                       ) : (
                         <PaginateFooter
