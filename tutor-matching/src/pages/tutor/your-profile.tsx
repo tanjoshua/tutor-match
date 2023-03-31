@@ -11,6 +11,10 @@ import {
   MapPinIcon,
   UserIcon,
   ArrowUpTrayIcon,
+  MagnifyingGlassIcon,
+  PhoneIcon,
+  UserPlusIcon,
+  EyeIcon,
 } from "@heroicons/react/20/solid";
 import { useRouter } from "next/router";
 import Head from "next/head";
@@ -239,22 +243,51 @@ const YourProfile: NextPageWithLayout = () => {
     // profile does not exist
     return (
       <div className="relative px-6 lg:px-8">
-        <div className="mx-auto max-w-2xl py-20 ">
+        <div className="mx-auto max-w-4xl py-20 ">
           <div className="text-center">
-            <h1 className="text-4xl font-bold tracking-tight text-gray-900">
-              No profile found
+            <h1 className="text-center text-3xl font-bold tracking-tight text-gray-900">
+              Welcome to tutoring.sg, here's how it works for you
             </h1>
-            <p className="mt-6 text-lg leading-8 text-gray-600">
-              A tutor profile contains all the information potential
-              students/parents need to select you as their tutor. Create your
-              profile now.
-            </p>
+            <dl className="grid grid-cols-1 gap-x-8 gap-y-16 lg:grid-cols-3 text-start mt-12">
+              <div className="flex flex-col items-start">
+                <div className="">
+                  <UserPlusIcon className="h-6 w-6 " aria-hidden="true" />
+                </div>
+                <dt className="mt-4 font-semibold">1. Create tutor profile</dt>
+                <dd className="mt-2 leading-7">
+                  A tutor profile contains all the information potential
+                  students/parents need to know. You can also upload an image of
+                  yourself after the profile is created.
+                </dd>
+              </div>
+              <div className="flex flex-col items-start">
+                <div className="">
+                  <EyeIcon className="h-6 w-6 " aria-hidden="true" />
+                </div>
+                <dt className="mt-4 font-semibold ">2. Get discovered</dt>
+                <dd className="mt-2 leading-7 ">
+                  You can apply to tutor requests on the tutor dashboard.
+                  Alternatively, if your profile is public, potential clients
+                  will be able to see your profile on our marketplace.
+                </dd>
+              </div>
+              <div className="flex flex-col items-start">
+                <div className="">
+                  <PhoneIcon className="h-6 w-6 " aria-hidden="true" />
+                </div>
+                <dt className="mt-4 font-semibold ">3. Get students</dt>
+                <dd className="mt-2 leading-7 ">
+                  Clients will contact you directly using the contact
+                  information you put in your tutor profile.
+                </dd>
+              </div>
+            </dl>
             <div className="mt-10 flex items-center justify-center gap-x-6">
               <a
                 href="/tutor/create-profile"
                 className="rounded-md bg-indigo-600 px-3.5 py-1.5 text-base font-semibold leading-7 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
               >
-                Create profile
+                Create your profile now
               </a>
             </div>
           </div>
