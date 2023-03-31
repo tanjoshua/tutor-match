@@ -18,6 +18,7 @@ export default class User {
       id: this._id,
       name: this.name,
       email: this.email,
+      hasNormalLogin: !!this.password,
     };
   }
 }

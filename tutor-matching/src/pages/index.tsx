@@ -18,7 +18,6 @@ import {
 } from "@/utils/options/subjects";
 import { useFormik } from "formik";
 import { useRouter } from "next/router";
-import { redirectIfLoggedIn } from "@/utils/redirect";
 
 const Home: NextPageWithLayout = () => {
   const router = useRouter();

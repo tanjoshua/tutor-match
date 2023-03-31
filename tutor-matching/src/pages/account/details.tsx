@@ -55,12 +55,19 @@ const AccountDetails: NextPageWithLayout = () => {
               >
                 Password
               </label>
-              <a
-                href="/account/change-password"
-                className="mt-1 text-sm leading-6 text-indigo-600 cursor-pointer hover:underline"
-              >
-                Change password
-              </a>
+              {data?.user?.hasNormalLogin ? (
+                <a
+                  href="/account/change-password"
+                  className="mt-1 text-sm leading-6 text-indigo-600 cursor-pointer hover:underline"
+                >
+                  Change password
+                </a>
+              ) : (
+                <div className="mt-1 text-sm leading-6 text-indigo-600">
+                  You cannot change your password since you've created this
+                  account using a Google account
+                </div>
+              )}
             </div>
 
             <div className="border-t pt-4">
