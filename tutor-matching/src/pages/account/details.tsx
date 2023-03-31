@@ -6,6 +6,14 @@ import { redirectIfNotLoggedIn } from "@/utils/redirect";
 import { useQuery } from "react-query";
 import { getMe } from "@/services/user";
 import Spinner from "@/components/shared/Spinner";
+import {
+  CheckBadgeIcon,
+  ExclamationCircleIcon,
+} from "@heroicons/react/24/outline";
+import { Tooltip } from "react-tooltip";
+import Link from "next/link";
+import { requestEmailVerification } from "@/services/auth";
+import { toast } from "react-hot-toast";
 
 const AccountDetails: NextPageWithLayout = () => {
   redirectIfNotLoggedIn();
@@ -43,9 +51,42 @@ const AccountDetails: NextPageWithLayout = () => {
               >
                 Email
               </label>
-              <p className="mt-1 text-sm leading-6 text-gray-600">
-                {data?.user?.email}
-              </p>
+              <div className="mt-1 text-sm leading-6 text-gray-600 flex space-x-2 items-center">
+                <div>{data?.user?.email} </div>
+                <div>
+                  {data?.user?.emailVerified ? (
+                    <CheckBadgeIcon
+                      className="h-6 w-6"
+                      data-tooltip-id="email-verification"
+                      data-tooltip-content="Email verified"
+                    />
+                  ) : (
+                    <ExclamationCircleIcon
+                      className="h-6 w-6"
+                      data-tooltip-id="email-verification"
+                      data-tooltip-content="Email not yet verified"
+                    />
+                  )}
+                  <Tooltip id="email-verification" />
+                </div>
+              </div>
+              {!data?.user?.emailVerified && (
+                <div
+                  className="mt-1 text-sm leading-6 text-indigo-600 cursor-pointer hover:underline"
+                  onClick={async () => {
+                    toast.promise(
+                      requestEmailVerification({ userId: data.user.id }),
+                      {
+                        loading: "Loading",
+                        success: (data) => data.message,
+                        error: "Error occured",
+                      }
+                    );
+                  }}
+                >
+                  Verify email
+                </div>
+              )}
             </div>
 
             <div>

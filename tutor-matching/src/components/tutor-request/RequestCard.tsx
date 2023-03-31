@@ -49,7 +49,7 @@ export default ({
             </div>
           </div>
         </div>
-        <p className="mt-1 text-sm text-gray-500 mb-1">
+        <div className="mt-1 text-sm text-gray-500 mb-1">
           <div className="lg:flex lg:items-center lg:space-x-1">
             <div className="flex items-center text-sm text-gray-500">
               <MapPinIcon
@@ -89,7 +89,7 @@ export default ({
 
           <div className="line-clamp-1">{`Availability: ${tutorRequest.availability}`}</div>
           <div className="line-clamp-2">{tutorRequest.description}</div>
-        </p>
+        </div>
       </div>
       <div className="flex flex-1 items-end justify-between text-sm">
         <a

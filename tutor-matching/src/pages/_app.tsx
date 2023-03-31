@@ -1,4 +1,5 @@
 import "@/styles/globals.css";
+import "react-tooltip/dist/react-tooltip.css";
 import { ReactElement, ReactNode, useState } from "react";
 import type { NextPage } from "next";
 import type { AppProps } from "next/app";

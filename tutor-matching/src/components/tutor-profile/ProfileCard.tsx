@@ -47,7 +47,7 @@ export default ({
               </div>
             </div>
           </div>
-          <p className="mt-1 text-sm text-gray-500 line-clamp-4 mb-1">
+          <div className="mt-1 text-sm text-gray-500 line-clamp-4 mb-1">
             <div className="sm:flex sm:items-center sm:space-x-1">
               <div className="flex items-center text-sm text-gray-500">
                 <TagIcon
@@ -67,7 +67,7 @@ export default ({
               </div>
             </div>
             {tutorProfile.qualifications}
-          </p>
+          </div>
         </div>
         <div className="flex flex-1 items-end justify-between text-sm">
           <a
