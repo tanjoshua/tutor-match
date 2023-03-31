@@ -22,7 +22,6 @@ import { redirectIfLoggedIn } from "@/utils/redirect";
 
 const Home: NextPageWithLayout = () => {
   const router = useRouter();
-  redirectIfLoggedIn();
   const formik = useFormik<{
     level: { value: string; label: string } | null;
     subjects: string[];

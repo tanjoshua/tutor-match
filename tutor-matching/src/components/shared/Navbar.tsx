@@ -8,17 +8,19 @@ import {
   XMarkIcon,
 } from "@heroicons/react/24/outline";
 import Link from "next/link";
-import { useQuery } from "react-query";
+import { useQuery, useQueryClient } from "react-query";
 import { getMe } from "@/services/user";
 import { logout } from "@/services/auth";
 import { useRouter } from "next/router";
 import { classNames } from "@/utils/helpers";
 import { UserIcon } from "@heroicons/react/20/solid";
+import toast from "react-hot-toast";
 
 const Navbar = () => {
   const router = useRouter();
   const atLoginPage = router.pathname === "/login";
 
+  const queryClient = useQueryClient();
   const { isLoading, error, data, refetch } = useQuery("me", getMe);
   const isLoggedIn = !isLoading && !!data.user;
   const navigation = isLoading
@@ -73,7 +75,7 @@ const Navbar = () => {
               </div>
               <div className="flex flex-1 items-center justify-center sm:items-stretch sm:justify-start ">
                 <div className="flex flex-shrink-0 items-center">
-                  <Link href="/">
+                  <Link href={isLoggedIn ? "/tutor/your-profile" : "/"}>
                     <div className="text-xl text-white font-sans font-medium tracking-wide border border-white rounded-md px-2 py-1">
                       tutoring.<span className="text-red-500">sg</span>
                     </div>
@@ -139,8 +141,8 @@ const Navbar = () => {
                               <a
                                 onClick={async () => {
                                   await logout();
-                                  refetch();
-                                  router.push("/");
+                                  queryClient.refetchQueries("me");
+                                  toast.success("Logged out");
                                 }}
                                 className={classNames(
                                   active ? "bg-gray-100" : "",

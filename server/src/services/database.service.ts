@@ -1,5 +1,6 @@
 // External Dependencies
 import * as mongoDB from "mongodb";
+import { ObjectId } from "mongodb";
 import { PasswordReset } from "../base/models/PasswordReset";
 import User from "../base/models/User";
 import Invoice from "../invoicing/models/Invoice";
@@ -37,4 +38,11 @@ export async function connectToDatabase() {
   collections.tutorApplications = db.collection<TutorApplication>("tutorApps");
 
   console.log(`Successfully connected to database: ${db.databaseName}.`);
+}
+
+export function dateToObjectId(date: Date) {
+  const timestamp = date.getTime();
+  /* Create an ObjectId with that timestamp */
+  var constructedObjectId = ObjectId.createFromTime(timestamp / 1000);
+  return constructedObjectId;
 }

@@ -2,13 +2,20 @@ import { Request, Response } from "express";
 import uniqid from "uniqid";
 
 import HttpError from "../../errors/HttpError";
-import { collections } from "../../services/database.service";
+import { collections, dateToObjectId } from "../../services/database.service";
 import { ObjectId } from "mongodb";
 import TutorRequest from "../models/TutorRequest";
 import TutorApplication, { ApplicationState } from "../models/TutorApplication";
 import { sendEmail } from "../../services/email.service";
 import { generateNewTutorRequestEmail } from "../../utils/emailFactory";
-import { formatDuration } from "../../utils/date";
+import { formatDuration, oneWeekAgo } from "../../utils/date";
+
+export enum RequestSortBy {
+  Newest = "Newest",
+  Oldest = "Oldest",
+  MostApplicants = "Most Applicants",
+  LeastApplicants = "Least Applicants",
+}
 
 require("express-async-errors");
 export const getTutorRequests = async (req: Request, res: Response) => {
@@ -17,8 +24,11 @@ export const getTutorRequests = async (req: Request, res: Response) => {
   const page = req.body.page || 1;
   const limit = req.body.limit || 5;
 
-  // filter
-  const filters: any[] = [];
+  // initialize filter - ignore closed on expired requests (> 1 week)
+  const expiredId = dateToObjectId(oneWeekAgo());
+  const filters: any[] = [
+    { $or: [{ closed: false }, { _id: { $lt: expiredId } }] },
+  ];
 
   if (req.body.region?.length > 0)
     filters.push({ region: { $in: req.body.region } });
@@ -40,9 +50,21 @@ export const getTutorRequests = async (req: Request, res: Response) => {
   const filter: { $and?: any } = {};
   if (filters.length > 0) filter.$and = filters;
 
+  // handle sort
+  let sort: any = { _id: 1 };
+  if (req.body.sortBy) {
+    if (req.body.sortBy === RequestSortBy.Newest) {
+      sort = { _id: -1 };
+    } else if (req.body.sortBy === RequestSortBy.MostApplicants) {
+      sort = { "applicants.length": -1 };
+    } else if (req.body.sortBy === RequestSortBy.LeastApplicants) {
+      sort = { "applicants.length": 1 };
+    }
+  }
+
   const totalCount = await collections.tutorRequests!.countDocuments(filter);
   const documents = await collections
-    .tutorRequests!.aggregate([{ $match: filter }, { $sort: { _id: -1 } }])
+    .tutorRequests!.aggregate([{ $match: filter }, { $sort: sort }])
     .skip((+page - 1) * +limit)
     .limit(+limit)
     .toArray();
@@ -251,12 +273,15 @@ export const tutorHasApplied = async (req: Request, res: Response) => {
 export const getTutorApplications = async (req: Request, res: Response) => {
   const token = req.query.token;
 
-  const tutorRequest = await collections.tutorRequests!.findOne({
+  const tutorRequestDocument = await collections.tutorRequests!.findOne({
     clientAccessToken: token,
   });
-  if (!tutorRequest) {
+  if (!tutorRequestDocument) {
     throw new HttpError(404, "Not found");
   }
+  const tutorRequest = TutorRequest.assign(
+    tutorRequestDocument as TutorRequest
+  );
 
   const pendingApplications = await collections
     .tutorApplications!.aggregate([
@@ -402,4 +427,22 @@ export const getTutorApplication = async (req: Request, res: Response) => {
   const object = TutorApplication.assign(document as TutorApplication);
 
   res.json({ tutorApplication: object });
+};
+
+export const closeTutorRequest = async (req: Request, res: Response) => {
+  const { id } = req.body;
+
+  const document = await collections.tutorRequests?.findOne({
+    _id: new ObjectId(id as string),
+  });
+  if (!document) {
+    throw new HttpError(404, "Not found");
+  }
+
+  await collections.tutorRequests!.updateOne(
+    { _id: new ObjectId(id as string) },
+    { $set: { closed: true } }
+  );
+
+  res.json({});
 };

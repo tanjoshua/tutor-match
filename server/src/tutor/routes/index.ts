@@ -28,6 +28,7 @@ import {
   updateTutorApplicationState,
   getTutorApplication,
   getAppliedRequests,
+  closeTutorRequest,
 } from "../controllers/request";
 
 const router = Router();
@@ -44,6 +45,7 @@ router.delete("/request/:id", deleteTutorRequest);
 router.get("/requestClient/apps", getTutorApplications);
 router.get("/requestClient/application", getTutorApplication);
 router.post("/requestClient/updateAppState", updateTutorApplicationState);
+router.post("/requestClient/closeRequest", closeTutorRequest);
 
 // tutor side
 router.post("/applyRequest", auth, applyToTutorRequest);
