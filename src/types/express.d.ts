@@ -1,5 +1,5 @@
 import { Request } from "express";
-import User from "../src/base/models/User";
+import User from "../base/models/User";
 
 declare module "express" {
   interface Request {
