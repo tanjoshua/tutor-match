@@ -1,7 +1,7 @@
 import Head from "next/head";
 import { NextPageWithLayout } from "./_app";
 import { ReactElement } from "react";
-import Layout from "../components/Layout";
+import Layout from "../components/layouts/Layout";
 import { CalendarDaysIcon } from "@heroicons/react/24/outline";
 import {
   MagnifyingGlassIcon,
@@ -18,7 +18,6 @@ import {
 } from "@/utils/options/subjects";
 import { useFormik } from "formik";
 import { useRouter } from "next/router";
-import { redirectIfLoggedIn } from "@/utils/redirect";
 
 const Home: NextPageWithLayout = () => {
   const router = useRouter();

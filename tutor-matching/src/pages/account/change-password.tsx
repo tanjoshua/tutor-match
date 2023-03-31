@@ -1,6 +1,6 @@
 import { NextPageWithLayout } from "../_app";
 import { ReactElement, useState } from "react";
-import Layout from "../../components/Layout";
+import Layout from "../../components/layouts/Layout";
 import { useRouter } from "next/router";
 import { useFormik } from "formik";
 import Head from "next/head";

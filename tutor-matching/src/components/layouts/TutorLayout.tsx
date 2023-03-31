@@ -1,10 +1,10 @@
 import React from "react";
 import { Toaster } from "react-hot-toast";
-import Navbar from "./shared/Navbar";
+import Navbar from "../shared/Navbar";
 
 type Props = { children: any };
 
-const Layout = (props: Props) => {
+const TutorLayout = (props: Props) => {
   return (
     <>
       <Navbar />
@@ -14,4 +14,4 @@ const Layout = (props: Props) => {
   );
 };
 
-export default Layout;
+export default TutorLayout;

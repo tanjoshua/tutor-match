@@ -1,6 +1,6 @@
 import { NextPageWithLayout } from "./_app";
 import { ReactElement } from "react";
-import Layout from "../components/Layout";
+import Layout from "../components/layouts/Layout";
 
 const ForgotPassword: NextPageWithLayout = () => {
   return <></>;

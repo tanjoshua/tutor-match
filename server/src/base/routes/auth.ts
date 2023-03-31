@@ -10,12 +10,16 @@ import {
   changePassword,
   googleLogin,
   googleRegister,
+  requestEmailVerification,
+  verifyEmailViaToken,
+  verifyEmailViaGoogle,
 } from "../controllers/auth";
 import handleValidatorErrors from "../../middleware/handleValidatorErrors";
 import auth from "../../middleware/auth";
 
 const router = Router();
 
+// login and registering
 router.post(
   "/register",
   [
@@ -29,7 +33,6 @@ router.post(
   handleValidatorErrors,
   register
 );
-
 router.post(
   "/login",
   [
@@ -39,10 +42,13 @@ router.post(
   handleValidatorErrors,
   login
 );
-
 router.post("/googleLogin", googleLogin);
-
 router.post("/googleRegister", googleRegister);
+
+// EMAIL VERIFICATION
+router.post("/requestEmailVerification", requestEmailVerification);
+router.post("/verifyEmailViaToken", verifyEmailViaToken);
+router.post("/verifyEmailViaGoogle", verifyEmailViaGoogle);
 
 router.post("/logout", logout);
 

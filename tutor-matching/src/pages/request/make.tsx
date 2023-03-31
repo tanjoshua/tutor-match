@@ -1,6 +1,6 @@
 import { NextPageWithLayout } from "../_app";
 import { ReactElement, useEffect, useState } from "react";
-import Layout from "../../components/Layout";
+import Layout from "../../components/layouts/Layout";
 import Select from "@/components/shared/Select";
 import { useFormik } from "formik";
 import Creatable from "@/components/shared/Creatable";

@@ -1,6 +1,6 @@
 import { NextPageWithLayout } from "../_app";
 import { ReactElement, useState } from "react";
-import Layout from "../../components/Layout";
+import Layout from "../../components/layouts/Layout";
 import { useQuery } from "react-query";
 import {
   getTutorLevels,

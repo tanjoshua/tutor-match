@@ -19,13 +19,14 @@ import toast from "react-hot-toast";
 const Navbar = () => {
   const router = useRouter();
   const atLoginPage = router.pathname === "/login";
+  const atTutorPortal = router.pathname.startsWith("/tutor");
 
   const queryClient = useQueryClient();
   const { isLoading, error, data, refetch } = useQuery("me", getMe);
   const isLoggedIn = !isLoading && !!data.user;
   const navigation = isLoading
     ? []
-    : isLoggedIn
+    : atTutorPortal
     ? [
         {
           name: "Dashboard",
@@ -75,9 +76,10 @@ const Navbar = () => {
               </div>
               <div className="flex flex-1 items-center justify-center sm:items-stretch sm:justify-start ">
                 <div className="flex flex-shrink-0 items-center">
-                  <Link href={isLoggedIn ? "/tutor/your-profile" : "/"}>
+                  <Link href={atTutorPortal ? "/tutor/your-profile" : "/"}>
                     <div className="text-xl text-white font-sans font-medium tracking-wide border border-white rounded-md px-2 py-1">
                       tutoring.<span className="text-red-500">sg</span>
+                      {atTutorPortal && <span className="text-sm"> tutor</span>}
                     </div>
                   </Link>
                 </div>
@@ -102,6 +104,21 @@ const Navbar = () => {
                 </div>
               </div>
               <div className="absolute inset-y-0 right-0 flex items-center sm:static sm:inset-auto sm:ml-6 sm:pr-0">
+                {isLoggedIn &&
+                  (atTutorPortal ? (
+                    <Link href="/browse">
+                      <div className="hidden md:block text-gray-300">
+                        Client portal <span aria-hidden="true">&rarr;</span>
+                      </div>
+                    </Link>
+                  ) : (
+                    <Link href="/tutor/your-profile">
+                      <div className="hidden md:block text-gray-300">
+                        Tutor portal <span aria-hidden="true">&rarr;</span>
+                      </div>
+                    </Link>
+                  ))}
+
                 {/* Profile dropdown */}
                 {!isLoading &&
                   !atLoginPage &&
@@ -136,6 +153,36 @@ const Navbar = () => {
                               </a>
                             )}
                           </Menu.Item>
+                          {atTutorPortal && (
+                            <Menu.Item>
+                              {({ active }) => (
+                                <a
+                                  href="/browse"
+                                  className={classNames(
+                                    active ? "bg-gray-100" : "",
+                                    "block px-4 py-2 text-sm text-gray-700"
+                                  )}
+                                >
+                                  Go to client portal
+                                </a>
+                              )}
+                            </Menu.Item>
+                          )}
+                          {!atTutorPortal && (
+                            <Menu.Item>
+                              {({ active }) => (
+                                <a
+                                  href="/tutor/your-profile"
+                                  className={classNames(
+                                    active ? "bg-gray-100" : "",
+                                    "block px-4 py-2 text-sm text-gray-700"
+                                  )}
+                                >
+                                  Go to tutor portal
+                                </a>
+                              )}
+                            </Menu.Item>
+                          )}
                           <Menu.Item>
                             {({ active }) => (
                               <a

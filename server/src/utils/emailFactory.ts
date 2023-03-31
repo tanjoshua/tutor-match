@@ -75,6 +75,40 @@ export const generateContactRequestEmail = ({
   };
 };
 
+export const generateEmailVerificationEmail = ({
+  token,
+  name,
+  recipientEmail,
+}: {
+  token: string;
+  name: string;
+  recipientEmail: string;
+}) => {
+  const link = `${WEB_URL}/account/verify-email/${token}`;
+  const htmlBody = `
+    <p>
+        Hi ${name}, thank you for signing up to tutoring.sg
+        <br>
+        <br>
+        Please verify your email by visiting the following link
+        <br>
+        <a href="${link}" target="_blank">${link}</a>
+        <br>
+        <br>
+        Thank you for using tutoring.sg
+    </p>
+  `;
+  return {
+    subject: `Confirm you email address`,
+    html: htmlBody,
+    to: recipientEmail,
+    from: {
+      address: EMAIL,
+      name: "tutoring.sg",
+    },
+  };
+};
+
 export const generatePasswordResetEmail = (
   recipientEmail: string,
   token: string

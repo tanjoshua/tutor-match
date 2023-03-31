@@ -7,8 +7,14 @@ import HttpError from "../../errors/HttpError";
 import { COOKIE_NAME } from "../../utils/config";
 import { PasswordReset } from "../models/PasswordReset";
 import { sendEmail } from "../../services/email.service";
-import { generatePasswordResetEmail } from "../../utils/emailFactory";
+import {
+  generateEmailVerificationEmail,
+  generatePasswordResetEmail,
+} from "../../utils/emailFactory";
 import jwt_decode from "jwt-decode";
+import { ObjectId } from "mongodb";
+import uniqid from "uniqid";
+import EmailVerification from "../models/EmailVerification";
 
 require("express-async-errors");
 
@@ -69,6 +75,14 @@ export const googleLogin = async (req: Request, res: Response) => {
     throw new HttpError(404, "User not found");
   }
 
+  // verify email if not verified
+  if (!user.emailVerified) {
+    await collections.users?.updateOne(
+      { email },
+      { $set: { emailVerified: true } }
+    );
+  }
+
   // verified
   req.session.userId = user._id;
   res.json({ userId: user._id });
@@ -91,6 +105,7 @@ export const googleRegister = async (req: Request, res: Response) => {
   const user = new User();
   user.name = name;
   user.email = email;
+  user.emailVerified = true;
   const result = await collections.users?.insertOne(user);
 
   if (result && result.insertedId) {
@@ -99,6 +114,94 @@ export const googleRegister = async (req: Request, res: Response) => {
   } else {
     throw new HttpError(500, "Could not create account");
   }
+};
+
+export const requestEmailVerification = async (req: Request, res: Response) => {
+  const { id } = req.body;
+  const user = await collections.users?.findOne({ _id: new ObjectId(id) });
+  if (!user) {
+    throw new HttpError(404, "User not found");
+  }
+  if (user.emailVerified) {
+    res.status(200).json({ message: "Email already verified" });
+    return;
+  }
+
+  const emailVerification = await collections.emailVerifications?.findOne({
+    user: new ObjectId(id),
+  });
+  let token;
+  if (emailVerification) {
+    token = emailVerification.token;
+  } else {
+    // create new object
+    token = uniqid();
+    const newEmailVerification = new EmailVerification();
+    newEmailVerification.user = new ObjectId(id);
+    newEmailVerification.token = token;
+    await collections.emailVerifications!.insertOne(newEmailVerification);
+  }
+
+  // send email verification email out
+  sendEmail(
+    generateEmailVerificationEmail({
+      token,
+      name: user.name,
+      recipientEmail: user.email,
+    })
+  );
+
+  res.status(200).json({ message: "Check your email!" });
+};
+
+export const verifyEmailViaToken = async (req: Request, res: Response) => {
+  const { token } = req.body;
+  const emailVerification = await collections.emailVerifications?.findOne({
+    token,
+  });
+
+  if (emailVerification) {
+    // verify
+    const result = await collections.users!.updateOne(
+      {
+        _id: emailVerification.user,
+      },
+      {
+        $set: {
+          emailVerified: true,
+        },
+      }
+    );
+
+    if (result.matchedCount === 0) {
+      throw new HttpError(404, "User not found");
+    }
+
+    // remove
+    await collections.emailVerifications!.deleteOne({ token });
+  } else {
+    throw new HttpError(404, "Could not verify");
+  }
+
+  res.status(200).json({ message: "Email verified" });
+};
+
+export const verifyEmailViaGoogle = async (req: Request, res: Response) => {
+  const { credential, id } = req.body;
+
+  const userObject = jwt_decode(credential) as any;
+  const email = userObject.email;
+
+  // verify user
+  const result = await collections.users!.updateOne(
+    { _id: new ObjectId(id), email },
+    { $set: { emailVerified: true } }
+  );
+  if (result.matchedCount === 0) {
+    throw new HttpError(404, "Could not verify");
+  }
+
+  res.status(200).json({ message: "Email verified" });
 };
 
 export const logout = async (req: Request, res: Response) => {
