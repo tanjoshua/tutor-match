@@ -7,7 +7,10 @@ import { ObjectId } from "mongodb";
 import TutorRequest from "../models/TutorRequest";
 import TutorApplication, { ApplicationState } from "../models/TutorApplication";
 import { sendEmail } from "../../services/email.service";
-import { generateNewTutorRequestEmail } from "../../utils/emailFactory";
+import {
+  applicationsReceivedReminderEmail,
+  generateNewTutorRequestEmail,
+} from "../../utils/emailFactory";
 import { formatDuration, oneWeekAgo } from "../../utils/date";
 
 export enum RequestSortBy {
@@ -230,6 +233,27 @@ export const applyToTutorRequest = async (req: Request, res: Response) => {
   tutorApp.tutor = owner._id!;
   tutorApp.tutorRequest = new ObjectId(id);
   const result = await collections.tutorApplications!.insertOne(tutorApp);
+
+  if (document.applicants.length >= 4 && !document.notified5apps) {
+    await collections.tutorRequests!.updateOne(
+      {
+        _id: new ObjectId(id),
+      },
+      {
+        $set: {
+          notified5apps: true,
+        },
+      }
+    );
+    // notify by email
+    sendEmail(
+      applicationsReceivedReminderEmail(
+        document.name,
+        document.contactInfo.email,
+        document.clientAccessToken
+      )
+    );
+  }
 
   // insert application into list
   await collections.tutorRequests!.updateOne(

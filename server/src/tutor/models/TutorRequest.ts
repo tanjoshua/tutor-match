@@ -35,6 +35,9 @@ export default class TutorRequest {
   public clientAccessToken: string;
   public closed: boolean = false;
 
+  // notifications
+  public notified5apps = false;
+
   // user specific fields (NOT STORED)
   public applied?: boolean;
 
