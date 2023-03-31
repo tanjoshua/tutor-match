@@ -70,7 +70,7 @@ const main = async () => {
   app.use("/api/tutor", tutorRoutes);
 
   app.get("/", (_req, res) => {
-    res.send("ok");
+    res.send("deployment test success");
   });
 
   // 404 route not found
