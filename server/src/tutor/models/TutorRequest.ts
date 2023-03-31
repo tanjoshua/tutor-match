@@ -63,7 +63,7 @@ export default class TutorRequest {
 
       applied: this.applied,
       closed:
-        this.closed || (this._id && this._id > dateToObjectId(oneWeekAgo())),
+        this.closed || (this._id && this._id < dateToObjectId(oneWeekAgo())),
     };
   }
 }

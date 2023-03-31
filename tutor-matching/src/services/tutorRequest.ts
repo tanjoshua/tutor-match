@@ -214,3 +214,10 @@ export const getTutorApplication = async ({ id }: { id: string }) => {
 
   return result.data;
 };
+
+export const closeTutorRequest = async ({ id }: { id: string }) => {
+  const result = await instance.post(`/tutor/requestClient/closeRequest`, {
+    id: id,
+  });
+  return result.data;
+};

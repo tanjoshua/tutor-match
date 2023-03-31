@@ -273,12 +273,15 @@ export const tutorHasApplied = async (req: Request, res: Response) => {
 export const getTutorApplications = async (req: Request, res: Response) => {
   const token = req.query.token;
 
-  const tutorRequest = await collections.tutorRequests!.findOne({
+  const tutorRequestDocument = await collections.tutorRequests!.findOne({
     clientAccessToken: token,
   });
-  if (!tutorRequest) {
+  if (!tutorRequestDocument) {
     throw new HttpError(404, "Not found");
   }
+  const tutorRequest = TutorRequest.assign(
+    tutorRequestDocument as TutorRequest
+  );
 
   const pendingApplications = await collections
     .tutorApplications!.aggregate([
@@ -424,4 +427,22 @@ export const getTutorApplication = async (req: Request, res: Response) => {
   const object = TutorApplication.assign(document as TutorApplication);
 
   res.json({ tutorApplication: object });
+};
+
+export const closeTutorRequest = async (req: Request, res: Response) => {
+  const { id } = req.body;
+
+  const document = await collections.tutorRequests?.findOne({
+    _id: new ObjectId(id as string),
+  });
+  if (!document) {
+    throw new HttpError(404, "Not found");
+  }
+
+  await collections.tutorRequests!.updateOne(
+    { _id: new ObjectId(id as string) },
+    { $set: { closed: true } }
+  );
+
+  res.json({});
 };

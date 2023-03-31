@@ -2,32 +2,21 @@ import App, { NextPageWithLayout } from "../../_app";
 import { ReactElement, useState } from "react";
 import Layout from "../../../components/Layout";
 import { useQuery, useQueryClient } from "react-query";
-import {
-  LockClosedIcon,
-  MapPinIcon,
-  PencilIcon,
-  UserGroupIcon,
-  UserIcon,
-  ClipboardDocumentIcon,
-  XMarkIcon,
-  ArrowPathIcon,
-} from "@heroicons/react/20/solid";
+import { LockClosedIcon, ArrowPathIcon } from "@heroicons/react/20/solid";
 import { useRouter } from "next/router";
 import Head from "next/head";
 import {
-  applyToTutorRequest,
-  getHasApplied,
+  closeTutorRequest,
   getTutorApplications,
-  getTutorRequest,
   updateTutorApplicationState,
-  withdrawApplication,
 } from "@/services/tutorRequest";
 import { ApplicationState, RateOptions } from "@/utils/enums";
 import Spinner from "@/components/shared/Spinner";
 import AppCard from "@/components/tutor-request/AppCard";
-import { ClipboardDocumentCheckIcon } from "@heroicons/react/24/outline";
 import TutorDetailsModal from "@/components/tutor-request/TutorDetailsModal";
 import ContactModal from "@/components/tutor-profile/ContactModal";
+import CloseRequestModal from "@/components/tutor-request/CloseRequestModal";
+import toast from "react-hot-toast";
 
 const tabClasses =
   "inline-block p-4 border-b-2 border-transparent rounded-t-lg hover:text-gray-600 hover:border-gray-300 ";
@@ -53,6 +42,7 @@ const TutorProfile: NextPageWithLayout = () => {
   const [tabSelected, setTabSelected] = useState(ApplicationState.Pending);
   const [tutorDetailsModalOpen, setTutorDetailsModalOpen] = useState(false);
   const [appId, setAppId] = useState("");
+  const [closeRequestModalOpen, setCloseRequestModalOpen] = useState(false);
   const showTutorDetails = (id: string) => {
     setAppId(id);
     setTutorDetailsModalOpen(true);
@@ -111,12 +101,28 @@ const TutorProfile: NextPageWithLayout = () => {
     const hiddenApplications: any[] = data.hiddenApplications;
     const shortlistedApplications: any[] = data.shortlistedApplications;
 
+    const closeRequest = async () => {
+      toast.promise(
+        closeTutorRequest({ id: tutorRequest.id }).then(() => refetch()),
+        {
+          loading: "Closing",
+          success: "Request closed",
+          error: "Error closing",
+        }
+      );
+    };
+
     // profile exists
     return (
       <div>
         <Head>
           <title>{`Tutor Applications`}</title>
         </Head>
+        <CloseRequestModal
+          open={closeRequestModalOpen}
+          setOpen={setCloseRequestModalOpen}
+          closeRequest={closeRequest}
+        />
         <ContactModal
           open={contactModalOpen}
           setOpen={setContactModalIsOpen}
@@ -141,7 +147,11 @@ const TutorProfile: NextPageWithLayout = () => {
             <h1 className="text-2xl font-bold leading-7 text-gray-900 sm:truncate sm:text-3xl sm:tracking-tight">
               {`Hello ${tutorRequest.name}, here are the tutors that have applied`}
             </h1>
-            <div className="mt-1 flex flex-col sm:mt-0 sm:flex-row sm:flex-wrap sm:space-x-6">
+            <h2 className="mt-2 text-lg font-bold leading-7 text-gray-900 sm:truncate sm:text-xl sm:tracking-tight">
+              Tutor requests will automatically close after a week.
+            </h2>
+
+            <div className="mt-2 flex flex-col sm:flex-row sm:flex-wrap sm:space-x-6">
               <p className="text-sm text-gray-500">
                 New tutors who apply to your tutor request will show up here.
                 This list will be constantly updated so check back in regularly!
@@ -174,12 +184,16 @@ const TutorProfile: NextPageWithLayout = () => {
               <button
                 type="button"
                 className="inline-flex items-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+                onClick={() => {
+                  setCloseRequestModalOpen(true);
+                }}
+                disabled={tutorRequest.closed}
               >
-                <PencilIcon
+                <LockClosedIcon
                   className="-ml-1 mr-2 h-5 w-5 text-gray-700"
                   aria-hidden="true"
                 />
-                Edit request
+                {tutorRequest.closed ? "Request closed" : "Close request"}
               </button>
             </span>
           </div>
@@ -232,6 +246,11 @@ const TutorProfile: NextPageWithLayout = () => {
                 {isLoading && <Spinner />}
                 {!isLoading && tabSelected === ApplicationState.Pending && (
                   <ul role="list" className="divide-y divide-gray-200">
+                    {pendingApplications.length === 0 && (
+                      <div className="text-sm text-gray-500">
+                        No pending applications yet. Check back at a later date!
+                      </div>
+                    )}
                     {pendingApplications.map((app) => (
                       <AppCard
                         key={app._id}
@@ -247,6 +266,11 @@ const TutorProfile: NextPageWithLayout = () => {
                 )}
                 {!isRefetching && tabSelected === ApplicationState.Hidden && (
                   <ul role="list" className="divide-y divide-gray-200">
+                    {hiddenApplications.length === 0 && (
+                      <div className="text-sm text-gray-500">
+                        No hidden applications.
+                      </div>
+                    )}
                     {hiddenApplications.map((app) => (
                       <AppCard
                         key={app._id}
@@ -263,6 +287,11 @@ const TutorProfile: NextPageWithLayout = () => {
                 {!isRefetching &&
                   tabSelected === ApplicationState.Shortlisted && (
                     <ul role="list" className="divide-y divide-gray-200">
+                      {shortlistedApplications.length === 0 && (
+                        <div className="text-sm text-gray-500">
+                          No shortlisted applicants.
+                        </div>
+                      )}
                       {shortlistedApplications.map((app) => (
                         <AppCard
                           key={app._id}
@@ -289,6 +318,11 @@ const TutorProfile: NextPageWithLayout = () => {
               {isLoading && <Spinner />}
               {!isLoading && (
                 <ul role="list" className="divide-y divide-gray-200">
+                  {shortlistedApplications.length === 0 && (
+                    <div className="text-sm text-gray-500">
+                      No shortlisted applicants.
+                    </div>
+                  )}
                   {shortlistedApplications.map((app) => (
                     <AppCard
                       key={app._id}
