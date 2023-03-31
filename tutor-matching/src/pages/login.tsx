@@ -26,6 +26,7 @@ const Login: NextPageWithLayout = () => {
       try {
         await login(values);
         queryClient.refetchQueries("me");
+        toast.success("Logged in");
       } catch (error) {
         if (axios.isAxiosError(error)) {
           if (error.response?.status === 401) {
@@ -46,6 +47,7 @@ const Login: NextPageWithLayout = () => {
       try {
         await googleLogin({ credential });
         queryClient.refetchQueries("me");
+        toast.success("Logged in");
       } catch {
         toast.error("Couldn't log in");
       }
