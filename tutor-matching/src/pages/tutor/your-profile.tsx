@@ -22,6 +22,7 @@ import ShareModal from "@/components/tutor-profile/ShareModal";
 import { LevelCategories } from "@/utils/options/levels";
 import { redirectIfNotLoggedIn } from "@/utils/redirect";
 import UploadProfilePicModal from "@/components/tutor-profile/UploadProfilePicModal";
+import Link from "next/link";
 
 const YourProfile: NextPageWithLayout = () => {
   redirectIfNotLoggedIn();
@@ -283,12 +284,12 @@ const YourProfile: NextPageWithLayout = () => {
               </div>
             </dl>
             <div className="mt-10 flex items-center justify-center gap-x-6">
-              <a
+              <Link
                 href="/tutor/create-profile"
                 className="rounded-md bg-indigo-600 px-3.5 py-1.5 text-base font-semibold leading-7 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
               >
                 Create your profile now
-              </a>
+              </Link>
             </div>
           </div>
         </div>

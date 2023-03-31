@@ -9,6 +9,7 @@ import {
 } from "@heroicons/react/24/outline";
 import Head from "next/head";
 import { FaceSmileIcon } from "@heroicons/react/20/solid";
+import Link from "next/link";
 
 const features = [
   {
@@ -66,12 +67,12 @@ const ForTutors: NextPageWithLayout = () => {
               should keep all of the money you earn.
             </p>
             <div className="mt-10">
-              <a
+              <Link
                 href="/register"
                 className="text-lg font-semibold leading-7 text-white p-2 bg-indigo-700 hover:bg-indigo-600 rounded-lg"
               >
                 Join today <span aria-hidden="true">→</span>
-              </a>
+              </Link>
             </div>
           </div>
           <div className="mx-auto mt-16 max-w-2xl lg:max-w-4xl">

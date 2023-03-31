@@ -30,6 +30,36 @@ export const generateNewTutorRequestEmail = (
   };
 };
 
+export const applicationsReceivedReminderEmail = (
+  name: string,
+  recipientEmail: string,
+  clientAccessToken: string
+) => {
+  const link = `${WEB_URL}/request/client-view/${clientAccessToken}`;
+  const htmlBody = `
+    <p>
+        Hi ${name}, you've received several applications to your tutor request!
+        <br>
+        <br>
+        Review the applications <a href="${link}" target="_blank">here</a>.
+        <br>
+        Reminder: you can go to this link at any time to see the tutor applications you have received.
+        <br>
+        <br>
+        Thank you.
+    </p>
+  `;
+  return {
+    subject: "Tutor profiles are waiting for you",
+    html: htmlBody,
+    to: recipientEmail,
+    from: {
+      address: EMAIL,
+      name: "tutoring.sg",
+    },
+  };
+};
+
 export const generateContactRequestEmail = ({
   tutorName,
   recipientEmail,

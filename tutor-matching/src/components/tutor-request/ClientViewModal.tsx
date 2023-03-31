@@ -5,6 +5,7 @@ import {
   LinkIcon,
   DocumentDuplicateIcon,
 } from "@heroicons/react/24/outline";
+import Link from "next/link";
 
 export default function ClientViewModal({
   link,
@@ -71,12 +72,12 @@ export default function ClientViewModal({
                     className="h-5 w-5 text-gray-700"
                     aria-hidden="true"
                   />
-                  <a
+                  <Link
                     className="text-sm underline text-indigo-600 hover:text-indigo-500"
                     href={link}
                   >
                     {link}
-                  </a>
+                  </Link>
                   <button
                     className="rounded-md transititext-primary"
                     data-te-toggle="tooltip"

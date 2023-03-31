@@ -7,7 +7,10 @@ import { ObjectId } from "mongodb";
 import TutorRequest from "../models/TutorRequest";
 import TutorApplication, { ApplicationState } from "../models/TutorApplication";
 import { sendEmail } from "../../services/email.service";
-import { generateNewTutorRequestEmail } from "../../utils/emailFactory";
+import {
+  applicationsReceivedReminderEmail,
+  generateNewTutorRequestEmail,
+} from "../../utils/emailFactory";
 import { formatDuration, oneWeekAgo } from "../../utils/date";
 
 export enum RequestSortBy {
@@ -27,7 +30,7 @@ export const getTutorRequests = async (req: Request, res: Response) => {
   // initialize filter - ignore closed on expired requests (> 1 week)
   const expiredId = dateToObjectId(oneWeekAgo());
   const filters: any[] = [
-    { $or: [{ closed: false }, { _id: { $lt: expiredId } }] },
+    { $or: [{ closed: false }, { _id: { $gt: expiredId } }] },
   ];
 
   if (req.body.region?.length > 0)
@@ -56,15 +59,25 @@ export const getTutorRequests = async (req: Request, res: Response) => {
     if (req.body.sortBy === RequestSortBy.Newest) {
       sort = { _id: -1 };
     } else if (req.body.sortBy === RequestSortBy.MostApplicants) {
-      sort = { "applicants.length": -1 };
+      sort = { applicantCount: -1 };
     } else if (req.body.sortBy === RequestSortBy.LeastApplicants) {
-      sort = { "applicants.length": 1 };
+      sort = { applicantCount: 1 };
     }
   }
 
   const totalCount = await collections.tutorRequests!.countDocuments(filter);
   const documents = await collections
-    .tutorRequests!.aggregate([{ $match: filter }, { $sort: sort }])
+    .tutorRequests!.aggregate([
+      { $match: filter },
+      {
+        $addFields: {
+          applicantCount: {
+            $size: "$applicants",
+          },
+        },
+      },
+      { $sort: sort },
+    ])
     .skip((+page - 1) * +limit)
     .limit(+limit)
     .toArray();
@@ -220,6 +233,27 @@ export const applyToTutorRequest = async (req: Request, res: Response) => {
   tutorApp.tutor = owner._id!;
   tutorApp.tutorRequest = new ObjectId(id);
   const result = await collections.tutorApplications!.insertOne(tutorApp);
+
+  if (document.applicants.length >= 4 && !document.notified5apps) {
+    await collections.tutorRequests!.updateOne(
+      {
+        _id: new ObjectId(id),
+      },
+      {
+        $set: {
+          notified5apps: true,
+        },
+      }
+    );
+    // notify by email
+    sendEmail(
+      applicationsReceivedReminderEmail(
+        document.name,
+        document.contactInfo.email,
+        document.clientAccessToken
+      )
+    );
+  }
 
   // insert application into list
   await collections.tutorRequests!.updateOne(

@@ -18,6 +18,7 @@ import {
 } from "@/utils/options/subjects";
 import { useFormik } from "formik";
 import { useRouter } from "next/router";
+import Link from "next/link";
 
 const Home: NextPageWithLayout = () => {
   const router = useRouter();
@@ -104,29 +105,29 @@ const Home: NextPageWithLayout = () => {
                 tutor marketplace or make a request.
               </p>
               <div className="mt-6 flex items-center justify-center gap-x-6 lg:justify-start">
-                <a
+                <Link
                   href="/request/make"
                   className="rounded-md bg-indigo-600 px-3.5 py-1.5 text-sm md:text-base font-semibold leading-7 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
                 >
                   Make a request
-                </a>
-                <a
+                </Link>
+                <Link
                   href="/browse"
                   className="text-base font-semibold leading-7 text-gray-900"
                 >
                   Browse tutors <span aria-hidden="true">→</span>
-                </a>
+                </Link>
               </div>
               <div className="mt-6 flex justify-center lg:justify-start">
                 <div className="relative rounded-full text-sm leading-6 text-gray-600">
                   If you're a tutor, join our platform!{" "}
-                  <a
+                  <Link
                     href="/for-tutors"
                     className="font-semibold text-indigo-600"
                   >
                     <span className="absolute inset-0" aria-hidden="true" />
                     Read more <span aria-hidden="true">&rarr;</span>
-                  </a>
+                  </Link>
                 </div>
               </div>
             </div>
@@ -228,12 +229,12 @@ const Home: NextPageWithLayout = () => {
                   <dt className="mt-4 font-semibold">1. Browse tutors</dt>
                   <dd className="mt-2 leading-7">
                     Visit the{" "}
-                    <a
+                    <Link
                       className="text-indigo-600 font-bold hover:underline hover:text-indigo-500 cursor-pointer"
                       href="/browse"
                     >
                       browse page
-                    </a>{" "}
+                    </Link>{" "}
                     to view the public profiles of tutors.
                   </dd>
                 </div>
@@ -275,12 +276,12 @@ const Home: NextPageWithLayout = () => {
                   </dt>
                   <dd className="mt-2 leading-7">
                     Visit the{" "}
-                    <a
+                    <Link
                       className="text-indigo-600 font-bold hover:underline hover:text-indigo-500 cursor-pointer"
                       href="/request/make"
                     >
                       request page
-                    </a>{" "}
+                    </Link>{" "}
                     to fill in a tutor request.
                   </dd>
                 </div>

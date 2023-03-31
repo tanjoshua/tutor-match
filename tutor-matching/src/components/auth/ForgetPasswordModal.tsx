@@ -4,6 +4,7 @@ import { ShareIcon, LinkIcon, EnvelopeIcon } from "@heroicons/react/24/outline";
 import { XMarkIcon } from "@heroicons/react/20/solid";
 import TeleLogo from "../../assets/contact/telelogo.svg";
 import Image from "next/image";
+import Link from "next/link";
 
 export default function ForgetPasswordModal({
   open,
@@ -80,20 +81,20 @@ export default function ForgetPasswordModal({
                     </div>
                   </div>
                   <div className="mt-2">
-                    <a
+                    <Link
                       href={`https://t.me/tutoringsg`}
                       target="_blank"
                       className="flex items-center text-blue-500 hover:opacity-80 font-medium p-2"
                     >
                       <div className="ml-2 ">Telegram @tutoringsg</div>
-                    </a>
-                    <a
+                    </Link>
+                    <Link
                       href={`mailto:admin@tutoring.sg`}
                       target="_blank"
                       className="flex items-center font-medium text-gray-700 hover:opacity-80 p-2"
                     >
                       <div className="ml-2">Email admin@tutoring.sg</div>
-                    </a>
+                    </Link>
                   </div>
                 </div>
               </Dialog.Panel>

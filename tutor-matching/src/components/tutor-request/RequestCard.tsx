@@ -92,14 +92,14 @@ export default ({
         </div>
       </div>
       <div className="flex flex-1 items-end justify-between text-sm">
-        <a
+        <div
           className="flex-1 text-indigo-600 hover:text-indigo-500 cursor-pointer"
           onClick={() => {
             showDetails(tutorRequest);
           }}
         >
           Read more
-        </a>
+        </div>
 
         <div className="flex">
           {tutorRequest.applied ? (

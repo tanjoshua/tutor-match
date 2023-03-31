@@ -16,6 +16,7 @@ import { XMarkIcon } from "@heroicons/react/20/solid";
 import { useFormik } from "formik";
 import toast from "react-hot-toast";
 import { contactTutorFromBrowse } from "@/services/contact";
+import Link from "next/link";
 
 export default function ContactModal({
   open,
@@ -127,7 +128,7 @@ export default function ContactModal({
                     </div>
                     <div className="mt-4 pt-4 space-y-4 flex flex-col items-center border-t">
                       {contactInfo.phoneNumber && (
-                        <a
+                        <Link
                           href={`https://wa.me/65${
                             contactInfo.phoneNumber
                           }?text=${encodeURIComponent(
@@ -137,20 +138,20 @@ export default function ContactModal({
                           className="hover:opacity-80"
                         >
                           <Image src={WhatsappImage} alt="whatsapp" />
-                        </a>
+                        </Link>
                       )}
                       {contactInfo.telegram && (
-                        <a
+                        <Link
                           href={`https://t.me/${contactInfo.telegram}`}
                           target="_blank"
                           className="flex items-center text-blue-500 hover:opacity-80 font-medium p-2"
                         >
                           <Image src={TeleLogo} height={32} alt="telegram" />
                           <div className="ml-2 ">Chat on Telegram</div>
-                        </a>
+                        </Link>
                       )}
                       {contactInfo.email && (
-                        <a
+                        <Link
                           href={`mailto:${
                             contactInfo.email
                           }?subject=${encodeURIComponent(
@@ -161,7 +162,7 @@ export default function ContactModal({
                         >
                           <EnvelopeIcon className="h-6" />
                           <div className="ml-2">Send Email</div>
-                        </a>
+                        </Link>
                       )}
                     </div>
                   </div>
