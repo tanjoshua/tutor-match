@@ -32,7 +32,10 @@ import { getUserTutorProfile } from "@/services/tutor";
 import { XMarkIcon } from "@heroicons/react/24/outline";
 import { regionOptions } from "@/utils/options/regions";
 import { Disclosure, Menu, Transition } from "@headlessui/react";
-import { redirectIfNotLoggedIn } from "@/utils/redirect";
+import {
+  redirectIfNotLoggedIn,
+  redirectIfNoTutorProfile,
+} from "@/utils/redirect";
 import { classNames } from "@/utils/helpers";
 
 const tabClasses =
@@ -42,8 +45,9 @@ const tabClassesSelected =
 const sortOptions = [{ name: "Newest", href: "#", current: true }];
 
 const TutorProfile: NextPageWithLayout = () => {
-  redirectIfNotLoggedIn();
   const router = useRouter();
+  redirectIfNotLoggedIn();
+  redirectIfNoTutorProfile();
   const { token } = router.query;
   const [filters, setFilters] = useState<{
     region: string[];
@@ -231,7 +235,11 @@ const TutorProfile: NextPageWithLayout = () => {
                 </div>
               </div>
 
-              <Disclosure as="div" className="border-b border-gray-200 py-4">
+              <Disclosure
+                as="div"
+                className="border-b border-gray-200 py-4"
+                defaultOpen
+              >
                 {({ open }) => (
                   <>
                     <h3 className="-my-3 flow-root">
@@ -269,7 +277,11 @@ const TutorProfile: NextPageWithLayout = () => {
                   </>
                 )}
               </Disclosure>
-              <Disclosure as="div" className="border-b border-gray-200 py-4">
+              <Disclosure
+                as="div"
+                className="border-b border-gray-200 py-4"
+                defaultOpen
+              >
                 {({ open }) => (
                   <>
                     <h3 className="-my-3 flow-root">

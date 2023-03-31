@@ -245,7 +245,11 @@ const BrowseTutors: NextPageWithLayout = () => {
                 Clear filters
               </div>
 
-              <Disclosure as="div" className="border-b border-gray-200 py-4">
+              <Disclosure
+                as="div"
+                className="border-b border-gray-200 py-4"
+                defaultOpen={true}
+              >
                 {({ open }) => (
                   <>
                     <h3 className="-my-3 flow-root">
@@ -291,7 +295,11 @@ const BrowseTutors: NextPageWithLayout = () => {
                   </>
                 )}
               </Disclosure>
-              <Disclosure as="div" className="border-b border-gray-200 py-4">
+              <Disclosure
+                as="div"
+                className="border-b border-gray-200 py-4"
+                defaultOpen
+              >
                 {({ open }) => (
                   <>
                     <h3 className="-my-3 flow-root">
