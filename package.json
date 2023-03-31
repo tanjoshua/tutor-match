@@ -5,9 +5,10 @@
   "main": "index.js",
   "scripts": {
     "tsc": "tsc",
+    "build": "tsc",
     "dev": "tsc-watch --onSuccess \"node dist/index\"",
     "lint": "eslint --ext .ts .",
-    "start": "tsc && node dist/index.js",
+    "start": "node dist/index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Josh",

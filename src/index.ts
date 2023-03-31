@@ -39,7 +39,7 @@ const main = async () => {
   // body parser for json
   app.use(express.json());
   // cors
-  app.use(cors({ origin: "http://localhost:3000", credentials: true }));
+  app.use(cors({ origin: true, credentials: true }));
 
   // session
   app.use(
@@ -68,6 +68,10 @@ const main = async () => {
   app.use("/api/base", baseRoutes);
   app.use("/api/invoicing", invoicingRoutes);
   app.use("/api/tutor", tutorRoutes);
+
+  app.get("/", (_req, res) => {
+    res.send("ok");
+  });
 
   // 404 route not found
   app.use((_req, res, _next) => {
