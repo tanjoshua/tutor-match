@@ -28,4 +28,4 @@ export const S3_SECRET_ACCESS_KEY = process.env.S3_SECRET_ACCESS_KEY!;
 export const S3_BUCKET_REGION = process.env.S3_BUCKET_REGION!;
 
 // domain
-export const WEB_URL = "http://localhost:3000";
+export const WEB_URL = process.env.WEB_URL!;
