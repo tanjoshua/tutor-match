@@ -7,7 +7,7 @@ import {
   useState,
   Fragment,
 } from "react";
-import Layout from "../../components/Layout";
+import Layout from "../../components/layouts/Layout";
 import { useRouter } from "next/router";
 import { useQuery } from "react-query";
 import { getTutorRequests } from "@/services/tutorRequest";

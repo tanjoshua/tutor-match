@@ -1,6 +1,6 @@
 import App, { NextPageWithLayout } from "../../_app";
 import { ReactElement, useState } from "react";
-import Layout from "../../../components/Layout";
+import Layout from "../../../components/layouts/Layout";
 import { useQuery, useQueryClient } from "react-query";
 import { LockClosedIcon, ArrowPathIcon } from "@heroicons/react/20/solid";
 import { useRouter } from "next/router";

@@ -1,7 +1,7 @@
 import Head from "next/head";
 import { NextPageWithLayout } from "./_app";
 import { ReactElement } from "react";
-import Layout from "../components/Layout";
+import Layout from "../components/layouts/Layout";
 import { useFormik } from "formik";
 import { googleRegister, register } from "@/services/auth";
 import { useRouter } from "next/router";

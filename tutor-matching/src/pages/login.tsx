@@ -2,7 +2,7 @@ import Head from "next/head";
 import { NextPageWithLayout } from "./_app";
 import { ReactElement, useState } from "react";
 import { LockClosedIcon } from "@heroicons/react/20/solid";
-import Layout from "../components/Layout";
+import Layout from "../components/layouts/Layout";
 import { useFormik } from "formik";
 import { googleLogin, login } from "@/services/auth";
 import axios from "axios";

@@ -1,7 +1,7 @@
 import Head from "next/head";
 import { NextPageWithLayout } from "./../_app";
 import { ReactElement } from "react";
-import Layout from "../../components/Layout";
+import Layout from "../../components/layouts/Layout";
 import { redirectIfNotLoggedIn } from "@/utils/redirect";
 import { useQuery } from "react-query";
 import { getMe } from "@/services/user";
