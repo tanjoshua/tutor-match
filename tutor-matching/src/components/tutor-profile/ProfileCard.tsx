@@ -12,6 +12,7 @@ import { ApplicationState } from "@/utils/enums";
 import { MapPinIcon, TagIcon, UserIcon } from "@heroicons/react/20/solid";
 import ContactModal from "./ContactModal";
 import { useState } from "react";
+import Link from "next/link";
 
 export default ({
   tutorProfile,
@@ -70,12 +71,12 @@ export default ({
           </div>
         </div>
         <div className="flex flex-1 items-end justify-between text-sm">
-          <a
+          <Link
             className="flex-1 text-indigo-600 hover:text-indigo-500 cursor-pointer"
             href={`/tutor-profile/${tutorProfile.id}`}
           >
             Read more
-          </a>
+          </Link>
 
           <div className="flex"></div>
         </div>

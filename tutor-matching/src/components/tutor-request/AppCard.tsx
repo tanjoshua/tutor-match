@@ -90,14 +90,14 @@ export default ({
           </p>
         </div>
         <div className="flex flex-1 items-end justify-between text-sm mt-2">
-          <a
+          <div
             className="flex-1 text-indigo-600 hover:text-indigo-500 cursor-pointer"
             onClick={() => {
               showDetails(id);
             }}
           >
             Read more
-          </a>
+          </div>
 
           <div className="flex space-x-4">
             <button

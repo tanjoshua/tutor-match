@@ -169,7 +169,7 @@ const BrowseTutors: NextPageWithLayout = () => {
                     {sortOptions.map((option) => (
                       <Menu.Item key={option.name}>
                         {({ active }) => (
-                          <a
+                          <div
                             onClick={() => {
                               router.push({
                                 pathname: "/browse",
@@ -191,7 +191,7 @@ const BrowseTutors: NextPageWithLayout = () => {
                             )}
                           >
                             {option.name}
-                          </a>
+                          </div>
                         )}
                       </Menu.Item>
                     ))}

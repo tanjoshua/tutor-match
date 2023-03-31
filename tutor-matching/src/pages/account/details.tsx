@@ -11,9 +11,9 @@ import {
   ExclamationCircleIcon,
 } from "@heroicons/react/24/outline";
 import { Tooltip } from "react-tooltip";
-import Link from "next/link";
 import { requestEmailVerification } from "@/services/auth";
 import { toast } from "react-hot-toast";
+import Link from "next/link";
 
 const AccountDetails: NextPageWithLayout = () => {
   redirectIfNotLoggedIn();
@@ -97,12 +97,12 @@ const AccountDetails: NextPageWithLayout = () => {
                 Password
               </label>
               {data?.user?.hasNormalLogin ? (
-                <a
+                <Link
                   href="/account/change-password"
                   className="mt-1 text-sm leading-6 text-indigo-600 cursor-pointer hover:underline"
                 >
                   Change password
-                </a>
+                </Link>
               ) : (
                 <div className="mt-1 text-sm leading-6 text-indigo-600">
                   You cannot change your password since you've created this

@@ -12,6 +12,7 @@ import { redirectIfLoggedIn } from "@/utils/redirect";
 import ForgetPasswordModal from "@/components/auth/ForgetPasswordModal";
 import { CredentialResponse, GoogleLogin } from "@react-oauth/google";
 import { toast } from "react-hot-toast";
+import Link from "next/link";
 
 const Login: NextPageWithLayout = () => {
   redirectIfLoggedIn();
@@ -132,12 +133,12 @@ const Login: NextPageWithLayout = () => {
 
               <div className="flex items-center justify-end">
                 <div className="text-sm">
-                  <a
+                  <div
                     className="font-medium text-indigo-600 hover:text-indigo-500 cursor-pointer"
                     onClick={() => setForgetPasswordModalIsOpen(true)}
                   >
                     Forgot your password?
-                  </a>
+                  </div>
                 </div>
               </div>
 
@@ -158,12 +159,12 @@ const Login: NextPageWithLayout = () => {
 
               <div className="text-center text-sm">
                 No account?{" "}
-                <a
+                <Link
                   href="/register"
                   className="font-medium text-indigo-600 hover:text-indigo-500"
                 >
                   Create one
-                </a>
+                </Link>
               </div>
             </form>
           </div>

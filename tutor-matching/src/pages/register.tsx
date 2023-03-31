@@ -10,6 +10,7 @@ import { redirectIfLoggedIn } from "@/utils/redirect";
 import toast from "react-hot-toast";
 import { CredentialResponse, GoogleLogin } from "@react-oauth/google";
 import { useQueryClient } from "react-query";
+import Link from "next/link";
 
 const Register: NextPageWithLayout = () => {
   redirectIfLoggedIn();
@@ -147,12 +148,12 @@ const Register: NextPageWithLayout = () => {
 
             <div className="text-center text-sm">
               Already have an account?{" "}
-              <a
+              <Link
                 href="/login"
                 className="font-medium text-indigo-600 hover:text-indigo-500"
               >
                 Login
-              </a>
+              </Link>
             </div>
           </form>
         </div>

@@ -183,7 +183,7 @@ const TutorProfile: NextPageWithLayout = () => {
                     {sortOptions.map((option) => (
                       <Menu.Item key={option.name}>
                         {({ active }) => (
-                          <a
+                          <div
                             onClick={() =>
                               setFilters({ ...filters, sortBy: option.name })
                             }
@@ -196,7 +196,7 @@ const TutorProfile: NextPageWithLayout = () => {
                             )}
                           >
                             {option.name}
-                          </a>
+                          </div>
                         )}
                       </Menu.Item>
                     ))}
