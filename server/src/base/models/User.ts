@@ -5,6 +5,7 @@ export default class User {
   public name: string;
   public email: string;
   public password?: string;
+  public emailVerified: boolean = false;
   public nextInvoiceNumber: number = 0;
 
   public static assign(obj: User): User {
@@ -18,6 +19,7 @@ export default class User {
       id: this._id,
       name: this.name,
       email: this.email,
+      emailVerified: this.emailVerified,
       hasNormalLogin: !!this.password,
     };
   }

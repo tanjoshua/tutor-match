@@ -70,3 +70,35 @@ export const changePassword = ({
     newPassword,
   });
 };
+
+export const requestEmailVerification = async ({
+  userId,
+}: {
+  userId: string;
+}) => {
+  const result = await instance.post("/base/auth/requestEmailVerification", {
+    id: userId,
+  });
+  return result.data;
+};
+
+export const verifyEmailViaToken = async ({ token }: { token: string }) => {
+  const result = await instance.post("/base/auth/verifyEmailViaToken", {
+    token,
+  });
+  return result.data;
+};
+
+export const verifyEmailViaGoogle = async ({
+  credential,
+  id,
+}: {
+  credential: string;
+  id: string;
+}) => {
+  const result = await instance.post("/base/auth/verifyEmailViaGoogle", {
+    credential,
+    id,
+  });
+  return result.data;
+};

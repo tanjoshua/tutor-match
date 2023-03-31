@@ -8,11 +8,13 @@ import TutorProfile from "../tutor/models/Profile";
 import TutorApplication from "../tutor/models/TutorApplication";
 import TutorRequest from "../tutor/models/TutorRequest";
 import { DB_CONN_STRING, DB_NAME } from "../utils/config";
+import EmailVerification from "../base/models/EmailVerification";
 
 // Global Variables
 export const collections: {
   invoices?: mongoDB.Collection<Invoice>;
   users?: mongoDB.Collection<User>;
+  emailVerifications?: mongoDB.Collection<EmailVerification>;
   passwordReset?: mongoDB.Collection<PasswordReset>;
   // tutors
   tutorProfiles?: mongoDB.Collection<TutorProfile>;
@@ -30,6 +32,8 @@ export async function connectToDatabase() {
 
   collections.invoices = db.collection<Invoice>("invoices");
   collections.users = db.collection<User>("user");
+  collections.emailVerifications =
+    db.collection<EmailVerification>("emailVerifications");
   collections.passwordReset = db.collection<PasswordReset>("passwordReset");
 
   // tutors
