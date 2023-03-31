@@ -6,10 +6,10 @@ import "reflect-metadata";
 
 import {
   PORT,
-  MDB_KEY,
   __prod__,
   SESSION_SECRET,
   COOKIE_NAME,
+  DB_CONN_STRING,
 } from "./utils/config";
 
 // ERRORS
@@ -25,7 +25,7 @@ import { connectToDatabase } from "./services/database.service";
 const app = express();
 const MongoDBStore = connectMongo(session);
 const store = new MongoDBStore({
-  uri: MDB_KEY,
+  uri: DB_CONN_STRING,
   collection: "sessions",
 });
 
