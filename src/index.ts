@@ -43,6 +43,9 @@ const main = async () => {
   app.set("trust proxy", true);
 
   // session
+  console.log(
+    `Application running in ${__prod__ ? "production" : "development"}`
+  );
   app.use(
     session({
       name: COOKIE_NAME,
