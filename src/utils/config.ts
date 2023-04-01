@@ -4,6 +4,7 @@ dotenv.config();
 // instead of taking environment variables directly across the application, we created a proper constant for every environment variable here
 // when adding to the .env file, make sure to add the variable here
 
+export const CORS_ORIGIN = process.env.CORS_ORIGIN;
 export const JWT_KEY = process.env.JWT_KEY!;
 export const SESSION_SECRET = process.env.SESSION_SECRET!;
 export const PORT = process.env.PORT;

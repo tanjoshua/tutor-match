@@ -10,6 +10,7 @@ import {
   SESSION_SECRET,
   COOKIE_NAME,
   DB_CONN_STRING,
+  CORS_ORIGIN,
 } from "./utils/config";
 
 // ERRORS
@@ -36,9 +37,7 @@ const main = async () => {
   // body parser for json
   app.use(express.json());
   // cors
-  app.use(
-    cors({ origin: "https://tutoringsg-web.vercel.app", credentials: true })
-  );
+  app.use(cors({ origin: CORS_ORIGIN, credentials: true }));
 
   // trust proxy
   app.set("trust proxy", true);
