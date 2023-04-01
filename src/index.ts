@@ -37,7 +37,7 @@ const main = async () => {
   app.use(express.json());
   // cors
   app.use(
-    cors({ origin: "https://tutoringsg-web.vercel.app/", credentials: true })
+    cors({ origin: "https://tutoringsg-web.vercel.app", credentials: true })
   );
 
   // trust proxy
