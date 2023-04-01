@@ -46,10 +46,10 @@ const main = async () => {
     session({
       name: COOKIE_NAME,
       secret: SESSION_SECRET,
+      proxy: __prod__,
       cookie: {
         // maxAge: 1000 * 60 * 60 * 24 * 365 * 10, // 10 years
         maxAge: 1000 * 60 * 60 * 24 * 182, // 0.5 year
-        httpOnly: true,
         secure: __prod__,
         sameSite: "lax",
       },
