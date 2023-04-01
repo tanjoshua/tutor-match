@@ -36,7 +36,7 @@ const main = async () => {
   // body parser for json
   app.use(express.json());
   // cors
-  app.use(cors({ origin: true, credentials: true }));
+  app.use(cors({ origin: "*", credentials: true }));
 
   // trust proxy
   app.set("trust proxy", true);
