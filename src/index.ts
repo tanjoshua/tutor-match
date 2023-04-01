@@ -52,7 +52,7 @@ const main = async () => {
         // maxAge: 1000 * 60 * 60 * 24 * 365 * 10, // 10 years
         maxAge: 1000 * 60 * 60 * 24 * 182, // 0.5 year
         secure: __prod__,
-        sameSite: "lax",
+        sameSite: __prod__ ? "none" : "lax",
       },
       store: store,
       resave: false,
