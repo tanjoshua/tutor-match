@@ -33,13 +33,13 @@ const main = async () => {
   // connect native mongodb driver
   await connectToDatabase();
 
-  // serve frontend
-  app.use(express.static("build/client"));
-
   // body parser for json
   app.use(express.json());
   // cors
   app.use(cors({ origin: true, credentials: true }));
+
+  // trust proxy
+  app.set("trust proxy", true);
 
   // session
   app.use(
