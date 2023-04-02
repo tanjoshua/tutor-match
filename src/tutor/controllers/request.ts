@@ -35,7 +35,14 @@ export const getTutorRequests = async (req: Request, res: Response) => {
 
   if (req.body.region?.length > 0)
     filters.push({ region: { $in: req.body.region } });
-  if (req.body.gender) filters.push({ gender: req.body.gender });
+  if (req.body.gender) {
+    if (req.body.gender === "Male") {
+      // we do it this way to also include null values
+      filters.push({ gender: { $ne: "Female" } });
+    } else {
+      filters.push({ gender: { $ne: "Male" } });
+    }
+  }
   if (req.body.type?.length > 0) filters.push({ type: { $in: req.body.type } });
   if (req.body.levelCategories?.length > 0) {
     const levelFilters: any[] = [];

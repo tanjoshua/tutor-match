@@ -37,8 +37,8 @@ export const getPublicProfiles = async (req: Request, res: Response) => {
   }
   if (req.body.regions?.length > 0)
     filters.push({ regions: { $in: req.body.regions } });
-  if (req.body.gender?.length > 0)
-    filters.push({ gender: { $in: req.body.gender } });
+  if (req.body.gender?.length === 1)
+    filters.push({ gender: req.body.gender[0] });
   if (req.body.type?.length > 0) filters.push({ type: { $in: req.body.type } });
   if (req.body.levelCategories?.length > 0) {
     const levelFilters: any[] = [];
