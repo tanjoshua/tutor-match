@@ -4,7 +4,7 @@ import { ObjectId } from "mongodb";
 import { PasswordReset } from "../base/models/PasswordReset";
 import User from "../base/models/User";
 import Invoice from "../invoicing/models/Invoice";
-import TutorProfile from "../tutor/models/Profile";
+import TutorProfile from "../tutor/models/TutorProfile";
 import TutorApplication from "../tutor/models/TutorApplication";
 import TutorRequest from "../tutor/models/TutorRequest";
 import { DB_CONN_STRING, DB_NAME } from "../utils/config";
@@ -42,6 +42,35 @@ export async function connectToDatabase() {
   collections.tutorApplications = db.collection<TutorApplication>("tutorApps");
 
   console.log(`Successfully connected to database: ${db.databaseName}.`);
+
+  // create indexes - these functions are idempotent
+
+  // USER indexes
+  collections.users.createIndex({ email: 1 });
+
+  // profiles indexes
+  collections.tutorProfiles.createIndex({ owner: 1 });
+  collections.tutorProfiles.createIndex({ isPublic: 1, levels: 1 });
+  collections.tutorProfiles.createIndex({
+    isPublic: 1,
+    levels: 1,
+    subjects: 1,
+  });
+  collections.tutorProfiles.createIndex({ levels: 1 });
+  collections.tutorProfiles.createIndex({ subjects: 1 });
+  collections.tutorProfiles.createIndex({ levels: 1, subjects: 1 });
+  // TODO: compound filter
+
+  // request index
+  // TODO: compound filter?
+  collections.tutorRequests.createIndex({ clientAccessToken: 1 });
+  collections.tutorRequests.createIndex({ levelCategory: 1 });
+  collections.tutorRequests.createIndex({ subjects: 1 });
+  collections.tutorRequests.createIndex({ levelCategory: 1, subjects: 1 });
+
+  // tutor app index
+  collections.tutorApplications.createIndex({ tutor: 1 });
+  collections.tutorApplications.createIndex({ tutor: 1, tutorRequest: 1 });
 }
 
 export function dateToObjectId(date: Date) {

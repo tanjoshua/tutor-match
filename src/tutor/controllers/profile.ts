@@ -3,7 +3,7 @@ import { Request, Response } from "express";
 import HttpError from "../../errors/HttpError";
 import { collections } from "../../services/database.service";
 import { ObjectId } from "mongodb";
-import TutorProfile, { Level } from "../models/Profile";
+import TutorProfile, { Level } from "../models/TutorProfile";
 import { removeProfilePic } from "../../services/s3.service";
 
 enum ProfileSortBy {
@@ -68,6 +68,7 @@ export const getPublicProfiles = async (req: Request, res: Response) => {
   // consolidate filters
   const filter: { $and?: any } = {};
   if (filters.length > 0) filter.$and = filters;
+  console.log(JSON.stringify(filter));
 
   const totalCount = await collections.tutorProfiles!.countDocuments(filter);
   const profileDocuments = await collections

@@ -1,5 +1,5 @@
 import { ObjectId } from "mongodb";
-import TutorProfile from "./Profile";
+import TutorProfile from "./TutorProfile";
 
 export enum ApplicationState {
   Pending = "Pending",
