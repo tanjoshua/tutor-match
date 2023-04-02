@@ -4,7 +4,7 @@ import HttpError from "../../errors/HttpError";
 import { collections } from "../../services/database.service";
 import { sendEmail } from "../../services/email.service";
 import { generateContactRequestEmail } from "../../utils/emailFactory";
-import TutorProfile from "../models/Profile";
+import TutorProfile from "../models/TutorProfile";
 
 require("express-async-errors");
 export const contactTutorFromBrowse = async (req: Request, res: Response) => {

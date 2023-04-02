@@ -11,6 +11,7 @@ import {
   COOKIE_NAME,
   DB_CONN_STRING,
   WEB_URL,
+  DB_NAME,
 } from "./utils/config";
 
 // ERRORS
@@ -27,6 +28,7 @@ const app = express();
 const MongoDBStore = connectMongo(session);
 const store = new MongoDBStore({
   uri: DB_CONN_STRING,
+  databaseName: DB_NAME,
   collection: "sessions",
 });
 

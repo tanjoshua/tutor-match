@@ -3,7 +3,7 @@ import { Request, Response } from "express";
 import HttpError from "../../errors/HttpError";
 import { collections } from "../../services/database.service";
 import { ObjectId } from "mongodb";
-import TutorProfile, { Level } from "../models/Profile";
+import TutorProfile, { Level } from "../models/TutorProfile";
 import { removeProfilePic } from "../../services/s3.service";
 
 enum ProfileSortBy {
@@ -43,11 +43,11 @@ export const getPublicProfiles = async (req: Request, res: Response) => {
   if (req.body.levelCategories?.length > 0) {
     const levelFilters: any[] = [];
     for (const levelCategory of req.body.levelCategories) {
-      const filter: { levelCategory?: any; subjects?: any } = {
-        levelCategory: levelCategory,
+      const filter: { levels?: any; allSubjects?: any } = {
+        levels: levelCategory,
       };
       if (req.body.subjects && req.body.subjects[levelCategory]?.length > 0)
-        filter.subjects = { $in: req.body.subjects[levelCategory] };
+        filter.allSubjects = { $in: req.body.subjects[levelCategory] };
       levelFilters.push(filter);
     }
     filters.push({ $or: levelFilters });
@@ -70,7 +70,7 @@ export const getPublicProfiles = async (req: Request, res: Response) => {
   if (filters.length > 0) filter.$and = filters;
 
   const totalCount = await collections.tutorProfiles!.countDocuments(filter);
-  const profileDocuments = await collections
+  let profileDocuments = await collections
     .tutorProfiles!.aggregate([
       { $match: filter },
       {
@@ -137,9 +137,8 @@ export const createProfile = async (req: Request, res: Response) => {
   const owner = req.user!;
 
   // create profile object
-  const profile = new TutorProfile();
+  const profile = TutorProfile.assign(req.body);
   profile.owner = owner._id!;
-  Object.assign(profile, req.body); // TODO: check
 
   const result = await collections.tutorProfiles?.insertOne(profile);
 
@@ -157,10 +156,11 @@ export const replaceProfile = async (req: Request, res: Response) => {
 
   // updated fields
   Object.assign(profile, req.body); // TODO: check
+  const newProfile = TutorProfile.assign(profile);
 
   const result = await collections.tutorProfiles!.replaceOne(
     { _id: new ObjectId(id) },
-    profile
+    newProfile
   );
   res.json(result);
 };

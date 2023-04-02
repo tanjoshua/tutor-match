@@ -1,7 +1,7 @@
 import { ObjectId } from "mongodb";
 import { dateToObjectId } from "../../services/database.service";
 import { oneWeekAgo } from "../../utils/date";
-import { Level, Region, TutorType, Gender } from "./Profile";
+import { Level, Region, TutorType, Gender } from "./TutorProfile";
 
 export default class TutorRequest {
   public _id?: ObjectId;
