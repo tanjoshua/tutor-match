@@ -49,6 +49,7 @@ export async function connectToDatabase() {
   collections.users.createIndex({ email: 1 });
 
   // profiles indexes
+  await collections.tutorProfiles.dropIndexes(); // TODO: REMOVE WHEN INDEXES FINALIZED
   collections.tutorProfiles.createIndex({ owner: 1 });
   collections.tutorProfiles.createIndex({
     isPublic: 1,
@@ -62,19 +63,20 @@ export async function connectToDatabase() {
     type: 1,
     gender: 1,
   });
-  // TODO: test and add more if necessary
 
   // request index
-  // TODO: compound filter?
+  await collections.tutorRequests.dropIndexes();
   collections.tutorRequests.createIndex({ clientAccessToken: 1 });
   collections.tutorRequests.createIndex({
     region: 1,
     levelCategory: 1,
     subject: 1,
+    gender: 1,
     "pricing.rate": 1,
   });
 
   // tutor app index
+  await collections.tutorApplications.dropIndexes(); // TODO: REMOVE WHEN INDEXES FINALIZED
   collections.tutorApplications.createIndex({ tutor: 1 });
   collections.tutorApplications.createIndex({ tutor: 1, tutorRequest: 1 });
   collections.tutorApplications.createIndex({ tutorRequest: 1, state: 1 });

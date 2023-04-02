@@ -16,7 +16,7 @@ export default class TutorRequest {
   public region: Region; // generate on write
 
   // request fields
-  public gender: Gender[]; // preferred gender
+  public gender: Gender; // preferred gender, empty if no preference
   public level: Level;
   public levelCategory: string;
   public subjects: string[];
