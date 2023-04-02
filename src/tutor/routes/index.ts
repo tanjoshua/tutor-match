@@ -69,7 +69,7 @@ router.get("/me", auth, getUserTutorProfile);
 router.get("/levels", getTutorLevels);
 router.post("/", auth, createProfile);
 router.put("/", auth, replaceProfile);
-router.get("/:id", getProfile);
+router.get("/:urlId", getProfile);
 router.delete("/:id", auth, deleteProfile);
 
 export default router;

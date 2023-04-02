@@ -30,7 +30,7 @@ export const getTutorRequests = async (req: Request, res: Response) => {
   // initialize filter - ignore closed on expired requests (> 1 week)
   const expiredId = dateToObjectId(oneWeekAgo());
   const filters: any[] = [
-    { $or: [{ closed: false }, { _id: { $gt: expiredId } }] },
+    { $and: [{ closed: false }, { _id: { $gt: expiredId } }] },
   ];
 
   if (req.body.region?.length > 0)

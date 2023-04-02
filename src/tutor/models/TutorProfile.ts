@@ -65,6 +65,7 @@ export default class TutorProfile {
   public _id?: ObjectId;
   public isPublic: boolean; // whether the profile shows up on the marketplace
   public owner: ObjectId;
+  public urlId: string; // unique id for unique profile url
 
   // picture
   public profilePic?: {
@@ -125,6 +126,7 @@ export default class TutorProfile {
 
     return {
       id: this._id,
+      urlId: this.urlId,
       ownerDetails: this.ownerDetails,
 
       profilePic: this.profilePic,

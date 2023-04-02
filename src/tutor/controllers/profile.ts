@@ -105,10 +105,11 @@ export const getPublicProfiles = async (req: Request, res: Response) => {
 };
 
 export const getProfile = async (req: Request, res: Response) => {
-  const { id } = req.params;
+  const { urlId } = req.params;
+
   const profileDocument = await collections.tutorProfiles
     ?.aggregate([
-      { $match: { _id: new ObjectId(id) } },
+      { $match: { urlId: urlId as string } },
       {
         $lookup: {
           from: "user",
@@ -140,6 +141,14 @@ export const createProfile = async (req: Request, res: Response) => {
   const profile = TutorProfile.assign(req.body);
   profile.owner = owner._id!;
 
+  // check if unique url id is available
+  const clashingProfile = await collections.tutorProfiles!.findOne({
+    urlId: req.body.urlId,
+  });
+  if (clashingProfile) {
+    throw new HttpError(409, "URL already in use");
+  }
+
   const result = await collections.tutorProfiles?.insertOne(profile);
 
   res.status(201).json(result);
@@ -152,6 +161,15 @@ export const replaceProfile = async (req: Request, res: Response) => {
   });
   if (!profile) {
     throw new HttpError(404, "Profile not found");
+  }
+
+  // check if unique url id is available
+  const clashingProfile = await collections.tutorProfiles!.findOne({
+    urlId: req.body.urlId,
+    _id: { $ne: new ObjectId(id) },
+  });
+  if (clashingProfile) {
+    throw new HttpError(409, "URL already in use");
   }
 
   // updated fields
