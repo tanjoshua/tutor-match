@@ -50,27 +50,34 @@ export async function connectToDatabase() {
 
   // profiles indexes
   collections.tutorProfiles.createIndex({ owner: 1 });
-  collections.tutorProfiles.createIndex({ isPublic: 1, levels: 1 });
+  collections.tutorProfiles.createIndex({
+    isPublic: 1,
+    allSubjects: 1,
+    type: 1,
+    gender: 1,
+  });
   collections.tutorProfiles.createIndex({
     isPublic: 1,
     levels: 1,
-    subjects: 1,
+    type: 1,
+    gender: 1,
   });
-  collections.tutorProfiles.createIndex({ levels: 1 });
-  collections.tutorProfiles.createIndex({ subjects: 1 });
-  collections.tutorProfiles.createIndex({ levels: 1, subjects: 1 });
-  // TODO: compound filter
+  // TODO: test and add more if necessary
 
   // request index
   // TODO: compound filter?
   collections.tutorRequests.createIndex({ clientAccessToken: 1 });
-  collections.tutorRequests.createIndex({ levelCategory: 1 });
-  collections.tutorRequests.createIndex({ subjects: 1 });
-  collections.tutorRequests.createIndex({ levelCategory: 1, subjects: 1 });
+  collections.tutorRequests.createIndex({
+    region: 1,
+    levelCategory: 1,
+    subject: 1,
+    "pricing.rate": 1,
+  });
 
   // tutor app index
   collections.tutorApplications.createIndex({ tutor: 1 });
   collections.tutorApplications.createIndex({ tutor: 1, tutorRequest: 1 });
+  collections.tutorApplications.createIndex({ tutorRequest: 1, state: 1 });
 }
 
 export function dateToObjectId(date: Date) {

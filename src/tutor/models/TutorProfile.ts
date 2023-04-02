@@ -94,12 +94,24 @@ export default class TutorProfile {
     telegram?: string;
   };
 
+  // optimization fields - fields to speed up filtering
+  public allSubjects: string[];
+
   // populated fields
   public ownerDetails: User;
 
   public static assign(obj: TutorProfile) {
     const profile = new TutorProfile();
     Object.assign(profile, obj);
+
+    if (!profile.allSubjects) {
+      // flatten subjects field into array
+      let allSubjects: string[] = [];
+      for (const subject of Object.values(profile.subjects)) {
+        allSubjects = allSubjects.concat(subject);
+      }
+      profile.allSubjects = allSubjects;
+    }
 
     if (obj.ownerDetails) {
       const ownerDetails = User.assign(obj.ownerDetails);
