@@ -56,6 +56,7 @@ export async function connectToDatabase() {
     allSubjects: 1,
     type: 1,
     gender: 1,
+    "pricing.rate": 1,
   });
   collections.tutorProfiles.createIndex({
     isPublic: 1,
@@ -68,10 +69,11 @@ export async function connectToDatabase() {
   await collections.tutorRequests.dropIndexes();
   collections.tutorRequests.createIndex({ clientAccessToken: 1 });
   collections.tutorRequests.createIndex({
-    region: 1,
+    closed: 1,
     levelCategory: 1,
     subject: 1,
     gender: 1,
+    type: 1,
     "pricing.rate": 1,
   });
 

@@ -29,9 +29,7 @@ export const getTutorRequests = async (req: Request, res: Response) => {
 
   // initialize filter - ignore closed on expired requests (> 1 week)
   const expiredId = dateToObjectId(oneWeekAgo());
-  const filters: any[] = [
-    { $and: [{ closed: false }, { _id: { $gt: expiredId } }] },
-  ];
+  const filters: any[] = [{ closed: false }, { _id: { $gt: expiredId } }];
 
   if (req.body.region?.length > 0)
     filters.push({ region: { $in: req.body.region } });
@@ -47,11 +45,11 @@ export const getTutorRequests = async (req: Request, res: Response) => {
   if (req.body.levelCategories?.length > 0) {
     const levelFilters: any[] = [];
     for (const levelCategory of req.body.levelCategories) {
-      const filter: { levelCategory?: any; subjects?: any } = {
+      const filter: { levelCategory?: any; subject?: any } = {
         levelCategory: levelCategory,
       };
       if (req.body.subjects && req.body.subjects[levelCategory]?.length > 0)
-        filter.subjects = { $in: req.body.subjects[levelCategory] };
+        filter.subject = { $in: req.body.subjects[levelCategory] };
       levelFilters.push(filter);
     }
     filters.push({ $or: levelFilters });
