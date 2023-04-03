@@ -12,8 +12,8 @@ export default class TutorRequest {
     phoneNumber: number; // for future use, currently not in use
     email: string;
   };
-  public postalCode: string;
-  public region: Region; // generate on write
+  public address: string;
+  public region: Region;
 
   // request fields
   public gender: Gender; // preferred gender, empty if no preference
@@ -52,7 +52,7 @@ export default class TutorRequest {
       id: this._id,
       name: this.name,
       contactInfo: this.contactInfo,
-      postalCode: this.postalCode,
+      address: this.address,
       region: this.region,
 
       gender: this.gender,
