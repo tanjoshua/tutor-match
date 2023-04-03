@@ -87,7 +87,6 @@ const main = async () => {
   // error handler
   app.use(
     (err: HttpError, _req: Request, res: Response, _next: NextFunction) => {
-      console.log(err);
       const status = err.status || 500;
       const body: any = { message: err.message };
 
