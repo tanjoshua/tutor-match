@@ -19,7 +19,7 @@ export default class TutorRequest {
   public gender: Gender; // preferred gender, empty if no preference
   public level: Level;
   public levelCategory: string;
-  public subjects: string[];
+  public subject: string;
   public type: TutorType[]; // eg. full time, part time, etc
   public pricing: {
     rate: string;
@@ -58,7 +58,7 @@ export default class TutorRequest {
       gender: this.gender,
       level: this.level,
       levelCategory: this.levelCategory,
-      subjects: this.subjects,
+      subject: this.subject,
       type: this.type,
       pricing: this.pricing,
       availability: this.availability,
