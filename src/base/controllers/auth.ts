@@ -68,24 +68,39 @@ export const googleLogin = async (req: Request, res: Response) => {
 
   const userObject = jwt_decode(credential) as any;
   const email = userObject.email;
+  const name = userObject.name;
 
+  let message = "Logged in";
   // verify user
   const user = await collections.users?.findOne({ email });
+  let userId: ObjectId;
   if (!user) {
-    throw new HttpError(404, "User not found");
-  }
-
-  // verify email if not verified
-  if (!user.emailVerified) {
-    await collections.users?.updateOne(
-      { email },
-      { $set: { emailVerified: true } }
-    );
+    // if user not found, create account for user
+    const user = new User();
+    user.name = name;
+    user.email = email;
+    user.emailVerified = true;
+    const result = await collections.users?.insertOne(user);
+    if (result && result.insertedId) {
+      userId = result.insertedId;
+    } else {
+      throw new HttpError(500, "Could not create account");
+    }
+    message = "Account created";
+  } else {
+    userId = user._id;
+    if (!user.emailVerified) {
+      // verify email if not verified
+      await collections.users?.updateOne(
+        { email },
+        { $set: { emailVerified: true } }
+      );
+    }
   }
 
   // verified
-  req.session.userId = user._id;
-  res.json({ userId: user._id });
+  req.session.userId = userId!;
+  res.json({ userId, message });
 };
 
 export const googleRegister = async (req: Request, res: Response) => {
