@@ -153,8 +153,12 @@ export const becomeTutor = async (req: Request, res: Response) => {
     }
   );
 
-  if (result?.modifiedCount === 1) {
-    res.status(200).json({ message: "You're now a tutor!" });
+  if (result?.matchedCount === 1) {
+    if (result.modifiedCount === 0) {
+      res.status(200).json({ message: "You were already a tutor" });
+    } else {
+      res.status(200).json({ message: "You're now a tutor!" });
+    }
   } else {
     throw new HttpError(500, "Error occured");
   }
