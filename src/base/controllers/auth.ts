@@ -19,7 +19,7 @@ import EmailVerification from "../models/EmailVerification";
 require("express-async-errors");
 
 export const register = async (req: Request, res: Response) => {
-  const { name, email, password } = req.body;
+  const { name, email, password, tutor } = req.body;
 
   // check for duplicate
   const existingUser = await collections.users?.findOne({ email });
@@ -33,6 +33,7 @@ export const register = async (req: Request, res: Response) => {
   user.email = email;
   const hashedPassword = await bcrypt.hash(password, 12);
   user.password = hashedPassword;
+  user.isTutor = !!tutor;
   const result = await collections.users?.insertOne(user);
 
   if (result && result.insertedId) {
@@ -44,7 +45,7 @@ export const register = async (req: Request, res: Response) => {
 };
 
 export const login = async (req: Request, res: Response) => {
-  const { email, password } = req.body;
+  const { email, password, tutor } = req.body;
 
   // verify user
   const user = await collections.users?.findOne({ email });
@@ -58,13 +59,17 @@ export const login = async (req: Request, res: Response) => {
     throw new HttpError(401, "Invalid credentials");
   }
 
+  if (tutor && !user.isTutor) {
+    throw new HttpError(401, "Wrong account type");
+  }
+
   // verified
   req.session.userId = user._id;
   res.json({ userId: user._id });
 };
 
 export const googleLogin = async (req: Request, res: Response) => {
-  const { credential } = req.body;
+  const { credential, tutor } = req.body;
 
   const userObject = jwt_decode(credential) as any;
   const email = userObject.email;
@@ -80,6 +85,7 @@ export const googleLogin = async (req: Request, res: Response) => {
     user.name = name;
     user.email = email;
     user.emailVerified = true;
+    user.isTutor = tutor;
     const result = await collections.users?.insertOne(user);
     if (result && result.insertedId) {
       userId = result.insertedId;
@@ -88,6 +94,10 @@ export const googleLogin = async (req: Request, res: Response) => {
     }
     message = "Account created";
   } else {
+    if (tutor && !user.isTutor) {
+      throw new HttpError(401, "Wrong account type");
+    }
+
     userId = user._id;
     if (!user.emailVerified) {
       // verify email if not verified
@@ -104,7 +114,7 @@ export const googleLogin = async (req: Request, res: Response) => {
 };
 
 export const googleRegister = async (req: Request, res: Response) => {
-  const { credential } = req.body;
+  const { credential, tutor } = req.body;
 
   const userObject = jwt_decode(credential) as any;
   const email = userObject.email;
@@ -121,6 +131,7 @@ export const googleRegister = async (req: Request, res: Response) => {
   user.name = name;
   user.email = email;
   user.emailVerified = true;
+  user.isTutor = !!tutor;
   const result = await collections.users?.insertOne(user);
 
   if (result && result.insertedId) {
@@ -128,6 +139,28 @@ export const googleRegister = async (req: Request, res: Response) => {
     res.status(201).json({ userId: result.insertedId });
   } else {
     throw new HttpError(500, "Could not create account");
+  }
+};
+
+export const becomeTutor = async (req: Request, res: Response) => {
+  const user = req.user!;
+  const result = await collections.users?.updateOne(
+    { _id: user._id },
+    {
+      $set: {
+        isTutor: true,
+      },
+    }
+  );
+
+  if (result?.matchedCount === 1) {
+    if (result.modifiedCount === 0) {
+      res.status(200).json({ message: "You were already a tutor" });
+    } else {
+      res.status(200).json({ message: "You're now a tutor!" });
+    }
+  } else {
+    throw new HttpError(500, "Error occured");
   }
 };
 

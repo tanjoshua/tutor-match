@@ -5,6 +5,7 @@ import { collections } from "../../services/database.service";
 import { ObjectId } from "mongodb";
 import TutorProfile, { Level } from "../models/TutorProfile";
 import { removeProfilePic } from "../../services/s3.service";
+import { PROTECTED_ROUTES } from "../../utils/constants";
 
 enum ProfileSortBy {
   Oldest = "Oldest",
@@ -142,8 +143,13 @@ export const createProfile = async (req: Request, res: Response) => {
   profile.owner = owner._id!;
 
   // check if unique url id is available
+  const urlId = req.body.urlId.replace(/[^0-9a-zA-Z]+/gi, "").toLowerCase();
+  if (PROTECTED_ROUTES.has(urlId)) {
+    // check urlId does not clash
+    throw new HttpError(409, "Choose another URL");
+  }
   const clashingProfile = await collections.tutorProfiles!.findOne({
-    urlId: req.body.urlId,
+    urlId,
   });
   if (clashingProfile) {
     throw new HttpError(409, "URL already in use");
@@ -164,8 +170,13 @@ export const replaceProfile = async (req: Request, res: Response) => {
   }
 
   // check if unique url id is available
+  const urlId = req.body.urlId.replace(/[^0-9a-zA-Z]+/gi, "").toLowerCase();
+  if (PROTECTED_ROUTES.has(urlId)) {
+    // check urlId does not clash
+    throw new HttpError(409, "Choose another URL");
+  }
   const clashingProfile = await collections.tutorProfiles!.findOne({
-    urlId: req.body.urlId,
+    urlId,
     _id: { $ne: new ObjectId(id) },
   });
   if (clashingProfile) {

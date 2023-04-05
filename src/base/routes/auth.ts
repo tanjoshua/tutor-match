@@ -13,6 +13,7 @@ import {
   requestEmailVerification,
   verifyEmailViaToken,
   verifyEmailViaGoogle,
+  becomeTutor,
 } from "../controllers/auth";
 import handleValidatorErrors from "../../middleware/handleValidatorErrors";
 import auth from "../../middleware/auth";
@@ -44,6 +45,9 @@ router.post(
 );
 router.post("/googleLogin", googleLogin);
 router.post("/googleRegister", googleRegister);
+
+// ACCOUNT TYPES
+router.post("/becomeTutor", auth, becomeTutor);
 
 // EMAIL VERIFICATION
 router.post("/requestEmailVerification", requestEmailVerification);

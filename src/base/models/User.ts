@@ -5,6 +5,7 @@ export default class User {
   public name: string;
   public email: string;
   public password?: string;
+  public isTutor?: boolean;
   public emailVerified: boolean = false;
   public nextInvoiceNumber: number = 0;
 
@@ -21,6 +22,7 @@ export default class User {
       email: this.email,
       emailVerified: this.emailVerified,
       hasNormalLogin: !!this.password,
+      isTutor: this.isTutor,
     };
   }
 }
