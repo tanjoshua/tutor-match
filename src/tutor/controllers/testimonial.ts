@@ -12,9 +12,11 @@ export const getTestimonials = async (req: Request, res: Response) => {
   const limit = req.query.limit || 5;
 
   const filter = { tutorProfile: new ObjectId(profileId as string) };
-  const totalCount = await collections.tutorRequests!.countDocuments(filter);
+  const totalCount = await collections.tutorTestimonials!.countDocuments(
+    filter
+  );
   const documents = await collections
-    .tutorRequests!.aggregate([
+    .tutorTestimonials!.aggregate([
       { $match: filter },
       {
         $lookup: {
@@ -35,7 +37,15 @@ export const getTestimonials = async (req: Request, res: Response) => {
     .limit(+limit)
     .toArray();
 
-  res.json({ testimonials: documents, count: totalCount });
+  // convert documents into objects to allow for usage of helper functions
+  // shouldn't run into scalability issues due to pagination
+  const testimonials = [];
+  for (const doc of documents) {
+    const testimonial = TutorTestimonial.assign(doc as TutorTestimonial);
+    testimonials.push(testimonial);
+  }
+
+  res.json({ testimonials, count: totalCount });
 };
 
 export const postTestimonial = async (req: Request, res: Response) => {
@@ -53,11 +63,30 @@ export const postTestimonial = async (req: Request, res: Response) => {
   // create profile object
   const newObject = new TutorTestimonial();
   Object.assign(newObject, req.body);
+  newObject.tutorProfile = new ObjectId(req.body.tutorProfile);
   newObject.author = user._id!;
 
   await collections.tutorTestimonials?.insertOne(newObject);
 
   res.status(201).json({});
+};
+
+export const testimonialExists = async (req: Request, res: Response) => {
+  const user = req.user!;
+  const profileId = req.query.profileId;
+
+  const document = await collections.tutorTestimonials!.findOne({
+    tutorProfile: new ObjectId(profileId as string),
+    author: user._id!,
+  });
+
+  if (!document) {
+    res.json({ testimonial: null });
+  }
+
+  const testimonial = TutorTestimonial.assign(document as TutorTestimonial);
+
+  res.json({ testimonial });
 };
 
 export const deleteTestimonial = async (req: Request, res: Response) => {

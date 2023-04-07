@@ -34,6 +34,7 @@ import {
   deleteTestimonial,
   getTestimonials,
   postTestimonial,
+  testimonialExists,
 } from "../controllers/testimonial";
 
 const router = Router();
@@ -70,6 +71,7 @@ router.post(
 
 // testimonial
 router.get("/testimonials", getTestimonials);
+router.get("/testimonial/exists", auth, testimonialExists);
 router.post("/testimonial", auth, postTestimonial);
 router.delete("/testimonial/:id", auth, deleteTestimonial);
 

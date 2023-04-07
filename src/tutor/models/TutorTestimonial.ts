@@ -24,6 +24,7 @@ export default class TutorTestimonial {
       authorName: this.authorName,
       title: this.title,
       testimonial: this.testimonial,
+      createdAt: this._id?.getTimestamp(),
     };
   }
 }
