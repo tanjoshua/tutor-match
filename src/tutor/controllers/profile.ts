@@ -187,9 +187,26 @@ export const replaceProfile = async (req: Request, res: Response) => {
   Object.assign(profile, req.body); // TODO: check
   const newProfile = TutorProfile.assign(profile);
 
-  const result = await collections.tutorProfiles!.replaceOne(
+  const result = await collections.tutorProfiles!.updateOne(
     { _id: new ObjectId(id) },
-    newProfile
+    {
+      $set: {
+        isPublic: newProfile.isPublic,
+        urlId: newProfile.urlId,
+        title: newProfile.title,
+        gender: newProfile.gender,
+        regions: newProfile.regions,
+        tutorName: newProfile.tutorName,
+        levels: newProfile.levels,
+        subjects: newProfile.subjects,
+        type: newProfile.type,
+        qualifications: newProfile.qualifications,
+        description: newProfile.description,
+        pricing: newProfile.pricing,
+        contactInfo: newProfile.contactInfo,
+        allSubjects: newProfile.allSubjects,
+      },
+    }
   );
   res.json(result);
 };

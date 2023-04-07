@@ -30,6 +30,11 @@ import {
   getAppliedRequests,
   closeTutorRequest,
 } from "../controllers/request";
+import {
+  deleteTestimonial,
+  getTestimonials,
+  postTestimonial,
+} from "../controllers/testimonial";
 
 const router = Router();
 
@@ -62,6 +67,11 @@ router.post(
   profilePicUpload.single("profilePicture"),
   uploadProfilePicture
 );
+
+// testimonial
+router.get("/testimonials", getTestimonials);
+router.post("/testimonial", auth, postTestimonial);
+router.delete("/testimonial/:id", auth, deleteTestimonial);
 
 // tutor profile routes
 router.post("/getPublicProfiles", getPublicProfiles);

@@ -9,6 +9,7 @@ import TutorApplication from "../tutor/models/TutorApplication";
 import TutorRequest from "../tutor/models/TutorRequest";
 import { DB_CONN_STRING, DB_NAME } from "../utils/config";
 import EmailVerification from "../base/models/EmailVerification";
+import TutorTestimonial from "../tutor/models/TutorTestimonial";
 
 // Global Variables
 export const collections: {
@@ -20,6 +21,7 @@ export const collections: {
   tutorProfiles?: mongoDB.Collection<TutorProfile>;
   tutorRequests?: mongoDB.Collection<TutorRequest>;
   tutorApplications?: mongoDB.Collection<TutorApplication>;
+  tutorTestimonials?: mongoDB.Collection<TutorTestimonial>;
 } = {};
 
 // Initialize Connection
@@ -40,6 +42,8 @@ export async function connectToDatabase() {
   collections.tutorProfiles = db.collection<TutorProfile>("tutorProfiles");
   collections.tutorRequests = db.collection<TutorRequest>("tutorRequests");
   collections.tutorApplications = db.collection<TutorApplication>("tutorApps");
+  collections.tutorTestimonials =
+    db.collection<TutorTestimonial>("tutorTestimonials");
 
   console.log(`Successfully connected to database: ${db.databaseName}.`);
 
@@ -79,6 +83,11 @@ export async function connectToDatabase() {
   collections.tutorApplications.createIndex({ tutor: 1 });
   collections.tutorApplications.createIndex({ tutor: 1, tutorRequest: 1 });
   collections.tutorApplications.createIndex({ tutorRequest: 1, state: 1 });
+
+  // tutor testimonial indexes
+  collections.tutorTestimonials.createIndex({ tutorProfile: 1, author: 1 });
+  collections.tutorTestimonials.createIndex({ author: 1 });
+  collections.tutorTestimonials.createIndex({ tutorProfile: 1 });
 }
 
 export function dateToObjectId(date: Date) {
