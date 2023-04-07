@@ -35,7 +35,14 @@ export const contactTutorFromBrowse = async (req: Request, res: Response) => {
   const profile = TutorProfile.assign(profileDocument as TutorProfile);
   const tutorAccountEmail = profile.ownerDetails.email;
 
-  // TODO: log information?
+  // log information?
+  collections.contactLogs?.insertOne({
+    tutorProfile: profileId,
+    name,
+    email,
+    phoneNumber,
+    message,
+  });
 
   sendEmail(
     generateContactRequestEmail({

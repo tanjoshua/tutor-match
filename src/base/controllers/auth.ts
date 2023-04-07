@@ -180,6 +180,13 @@ export const requestEmailVerification = async (req: Request, res: Response) => {
   });
   let token;
   if (emailVerification) {
+    const lastSent = emailVerification.lastSent.getTime();
+    const currentTime = new Date().getTime();
+    if ((currentTime - lastSent) / 1000 / 60 < 15) {
+      res.json({ message: "Check your email!" });
+      return;
+    }
+
     token = emailVerification.token;
   } else {
     // create new object
@@ -190,6 +197,12 @@ export const requestEmailVerification = async (req: Request, res: Response) => {
     await collections.emailVerifications!.insertOne(newEmailVerification);
   }
 
+  collections.emailVerifications?.updateOne(
+    { token },
+    {
+      $set: { lastSent: new Date() },
+    }
+  );
   // send email verification email out
   sendEmail(
     generateEmailVerificationEmail({
@@ -198,7 +211,6 @@ export const requestEmailVerification = async (req: Request, res: Response) => {
       recipientEmail: user.email,
     })
   );
-
   res.status(200).json({ message: "Check your email!" });
 };
 

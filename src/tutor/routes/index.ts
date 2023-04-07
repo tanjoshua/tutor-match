@@ -30,6 +30,14 @@ import {
   getAppliedRequests,
   closeTutorRequest,
 } from "../controllers/request";
+import {
+  deleteTestimonial,
+  getTestimonials,
+  getUserTestimonials,
+  postTestimonial,
+  testimonialExists,
+} from "../controllers/testimonial";
+import emailVerificationRequired from "../../middleware/emailVerificationRequired";
 
 const router = Router();
 
@@ -62,6 +70,13 @@ router.post(
   profilePicUpload.single("profilePicture"),
   uploadProfilePicture
 );
+
+// testimonial
+router.get("/testimonials", getTestimonials);
+router.get("/userTestimonials", auth, getUserTestimonials);
+router.get("/testimonial/exists", auth, testimonialExists);
+router.post("/testimonial", auth, emailVerificationRequired, postTestimonial);
+router.delete("/testimonial/:id", auth, deleteTestimonial);
 
 // tutor profile routes
 router.post("/getPublicProfiles", getPublicProfiles);
