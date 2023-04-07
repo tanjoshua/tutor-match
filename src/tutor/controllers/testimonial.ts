@@ -11,7 +11,14 @@ export const getTestimonials = async (req: Request, res: Response) => {
   const page = req.query.page || 1;
   const limit = req.query.limit || 5;
 
-  const filter = { tutorProfile: new ObjectId(profileId as string) };
+  const filter: { tutorProfile?: any; author?: any } = {
+    tutorProfile: new ObjectId(profileId as string),
+  };
+  if (req.session.userId) {
+    // if logged in, leave out author
+    filter.author = { $ne: new ObjectId(req.session.userId) };
+  }
+
   const totalCount = await collections.tutorTestimonials!.countDocuments(
     filter
   );
@@ -51,9 +58,18 @@ export const getTestimonials = async (req: Request, res: Response) => {
 export const postTestimonial = async (req: Request, res: Response) => {
   const user = req.user!;
 
+  // cannot leave testimonial for yourself
+  const profile = await collections.tutorProfiles!.findOne({
+    _id: new ObjectId(req.body.tutorProfile),
+    owner: user._id,
+  });
+  if (profile) {
+    throw new HttpError(403, "Cannot leave testimonial for yourself");
+  }
+
   // no duplicate testimonial
   const testimonial = await collections.tutorTestimonials!.findOne({
-    tutorProfile: req.body.tutorProfile,
+    tutorProfile: new ObjectId(req.body.tutorProfile),
     author: user._id!,
   });
   if (testimonial) {
@@ -66,7 +82,12 @@ export const postTestimonial = async (req: Request, res: Response) => {
   newObject.tutorProfile = new ObjectId(req.body.tutorProfile);
   newObject.author = user._id!;
 
-  await collections.tutorTestimonials?.insertOne(newObject);
+  await collections.tutorTestimonials!.insertOne(newObject);
+  collections.tutorProfiles!.updateOne(
+    // no need for async
+    { _id: newObject.tutorProfile },
+    { $inc: { testimonialCount: 1 } }
+  );
 
   res.status(201).json({});
 };
@@ -82,6 +103,7 @@ export const testimonialExists = async (req: Request, res: Response) => {
 
   if (!document) {
     res.json({ testimonial: null });
+    return;
   }
 
   const testimonial = TutorTestimonial.assign(document as TutorTestimonial);
@@ -93,13 +115,21 @@ export const deleteTestimonial = async (req: Request, res: Response) => {
   const { id } = req.params;
   const user = req.user!;
 
-  const result = await collections.tutorTestimonials?.deleteOne({
+  const result = await collections.tutorTestimonials?.findOneAndDelete({
     _id: new ObjectId(id),
     author: user._id,
   });
 
-  if (result?.deletedCount === 0) {
+  if (!result?.ok || !result.value) {
     throw new HttpError(400, "Could not delete testimonial");
+  }
+
+  if (result.value.tutorProfile) {
+    collections.tutorProfiles!.updateOne(
+      // decrement, no need for async
+      { _id: result.value.tutorProfile },
+      { $inc: { testimonialCount: -1 } }
+    );
   }
 
   res.status(202).json({});

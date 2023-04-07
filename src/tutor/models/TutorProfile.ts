@@ -73,6 +73,9 @@ export default class TutorProfile {
     location: string;
   };
 
+  // meta fields
+  public testimonialCount: number = 0;
+
   // listing fields
   public title: string;
   public gender: Gender;
@@ -130,6 +133,7 @@ export default class TutorProfile {
       ownerDetails: this.ownerDetails,
 
       profilePic: this.profilePic,
+      testimonialCount: this.testimonialCount,
 
       title: this.title,
       regions: this.regions,

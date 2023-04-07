@@ -36,6 +36,7 @@ import {
   postTestimonial,
   testimonialExists,
 } from "../controllers/testimonial";
+import emailVerificationRequired from "../../middleware/emailVerificationRequired";
 
 const router = Router();
 
@@ -72,7 +73,7 @@ router.post(
 // testimonial
 router.get("/testimonials", getTestimonials);
 router.get("/testimonial/exists", auth, testimonialExists);
-router.post("/testimonial", auth, postTestimonial);
+router.post("/testimonial", auth, emailVerificationRequired, postTestimonial);
 router.delete("/testimonial/:id", auth, deleteTestimonial);
 
 // tutor profile routes
