@@ -10,6 +10,7 @@ import TutorRequest from "../tutor/models/TutorRequest";
 import { DB_CONN_STRING, DB_NAME } from "../utils/config";
 import EmailVerification from "../base/models/EmailVerification";
 import TutorTestimonial from "../tutor/models/TutorTestimonial";
+import ContactLog from "../tutor/models/ContactLog";
 
 // Global Variables
 export const collections: {
@@ -22,6 +23,7 @@ export const collections: {
   tutorRequests?: mongoDB.Collection<TutorRequest>;
   tutorApplications?: mongoDB.Collection<TutorApplication>;
   tutorTestimonials?: mongoDB.Collection<TutorTestimonial>;
+  contactLogs?: mongoDB.Collection<ContactLog>;
 } = {};
 
 // Initialize Connection
@@ -44,6 +46,7 @@ export async function connectToDatabase() {
   collections.tutorApplications = db.collection<TutorApplication>("tutorApps");
   collections.tutorTestimonials =
     db.collection<TutorTestimonial>("tutorTestimonials");
+  collections.contactLogs = db.collection<ContactLog>("contactLogs");
 
   console.log(`Successfully connected to database: ${db.databaseName}.`);
 
