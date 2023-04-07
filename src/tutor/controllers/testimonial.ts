@@ -55,6 +55,55 @@ export const getTestimonials = async (req: Request, res: Response) => {
   res.json({ testimonials, count: totalCount });
 };
 
+export const getUserTestimonials = async (req: Request, res: Response) => {
+  // retrieve options
+  const page = req.query.page || 1;
+  const limit = req.query.limit || 5;
+
+  const filter = { author: new ObjectId(req.user?._id) };
+  const totalCount = await collections.tutorTestimonials!.countDocuments(
+    filter
+  );
+  const documents = await collections
+    .tutorTestimonials!.aggregate([
+      { $match: filter },
+      {
+        $lookup: {
+          from: "tutorProfiles",
+          localField: "tutorProfile",
+          foreignField: "_id",
+          as: "tutorProfile",
+        },
+      },
+      {
+        $unwind: "$tutorProfile",
+      },
+      {
+        $project: {
+          _id: 1,
+          title: 1,
+          testimonial: 1,
+          "tutorProfile.urlId": 1,
+          "tutorProfile.tutorName": 1,
+        },
+      },
+      { $sort: { _id: -1 } },
+    ])
+    .skip((+page - 1) * +limit)
+    .limit(+limit)
+    .toArray();
+
+  // convert documents into objects to allow for usage of helper functions
+  // shouldn't run into scalability issues due to pagination
+  const testimonials = [];
+  for (const doc of documents) {
+    const testimonial = TutorTestimonial.assign(doc as TutorTestimonial);
+    testimonials.push(testimonial);
+  }
+
+  res.json({ testimonials, count: totalCount });
+};
+
 export const postTestimonial = async (req: Request, res: Response) => {
   const user = req.user!;
 

@@ -33,6 +33,7 @@ import {
 import {
   deleteTestimonial,
   getTestimonials,
+  getUserTestimonials,
   postTestimonial,
   testimonialExists,
 } from "../controllers/testimonial";
@@ -72,6 +73,7 @@ router.post(
 
 // testimonial
 router.get("/testimonials", getTestimonials);
+router.get("/userTestimonials", auth, getUserTestimonials);
 router.get("/testimonial/exists", auth, testimonialExists);
 router.post("/testimonial", auth, emailVerificationRequired, postTestimonial);
 router.delete("/testimonial/:id", auth, deleteTestimonial);
