@@ -12,6 +12,7 @@ export const PROTECTED_ROUTES = new Set<string>([
   "about",
   "contact",
   "auth",
+  "terms",
 
   // future planned expansions
   "center",

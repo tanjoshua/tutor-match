@@ -28,7 +28,7 @@ export const getPublicProfiles = async (req: Request, res: Response) => {
     const searchFilters: any = [
       { tutorName: { $regex: req.body.search, $options: "i" } },
       { title: { $regex: req.body.search, $options: "i" } },
-      { subjects: { $regex: req.body.search, $options: "i" } },
+      { allSubjects: { $regex: req.body.search, $options: "i" } },
       { qualifications: { $regex: req.body.search, $options: "i" } },
       { description: { $regex: req.body.search, $options: "i" } },
     ];
