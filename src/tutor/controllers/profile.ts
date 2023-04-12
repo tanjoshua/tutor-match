@@ -105,6 +105,40 @@ export const getPublicProfiles = async (req: Request, res: Response) => {
   res.json({ profiles, count: totalCount });
 };
 
+export const samplePublicProfiles = async (_req: Request, res: Response) => {
+  let profileDocuments = await collections
+    .tutorProfiles!.aggregate([
+      { $sample: { size: 10 } },
+      { $match: { isPublic: true, profilePic: { $exists: true } } },
+      {
+        $lookup: {
+          from: "user",
+          localField: "owner",
+          foreignField: "_id",
+          as: "ownerDetails",
+        },
+      },
+      {
+        $unwind: {
+          // flattens ownerDetails array into 1
+          path: "$ownerDetails",
+        },
+      },
+    ])
+    .limit(5)
+    .toArray();
+
+  // convert documents into objects to allow for usage of helper functions
+  // shouldn't run into scalability issues due to pagination
+  const profiles = [];
+  for (const doc of profileDocuments) {
+    const profile = TutorProfile.assign(doc as TutorProfile);
+    profiles.push(profile);
+  }
+
+  res.json({ profiles });
+};
+
 export const getProfile = async (req: Request, res: Response) => {
   const { urlId } = req.params;
 

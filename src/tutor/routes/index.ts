@@ -15,6 +15,7 @@ import {
   getTutorLevels,
   uploadProfilePicture,
   deleteProfilePicture,
+  samplePublicProfiles,
 } from "../controllers/profile";
 import {
   applyToTutorRequest,
@@ -81,6 +82,7 @@ router.post("/testimonial", auth, emailVerificationRequired, postTestimonial);
 router.delete("/testimonial/:id", auth, deleteTestimonial);
 
 // tutor profile routes
+router.get("/samplePublicProfiles", samplePublicProfiles);
 router.post("/getPublicProfiles", getPublicProfiles);
 router.get("/me", auth, getUserTutorProfile);
 router.get("/levels", getTutorLevels);
