@@ -108,8 +108,8 @@ export const getPublicProfiles = async (req: Request, res: Response) => {
 export const samplePublicProfiles = async (_req: Request, res: Response) => {
   let profileDocuments = await collections
     .tutorProfiles!.aggregate([
-      { $sample: { size: 10 } },
       { $match: { isPublic: true, profilePic: { $exists: true } } },
+      { $sample: { size: 5 } },
       {
         $lookup: {
           from: "user",
@@ -125,7 +125,6 @@ export const samplePublicProfiles = async (_req: Request, res: Response) => {
         },
       },
     ])
-    .limit(5)
     .toArray();
 
   // convert documents into objects to allow for usage of helper functions
