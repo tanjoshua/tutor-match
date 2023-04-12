@@ -14,6 +14,7 @@ import {
   getUserTutorProfile,
   getTutorLevels,
   uploadProfilePicture,
+  deleteProfilePicture,
 } from "../controllers/profile";
 import {
   applyToTutorRequest,
@@ -70,6 +71,7 @@ router.post(
   profilePicUpload.single("profilePicture"),
   uploadProfilePicture
 );
+router.post("/deleteProfilePicture", auth, deleteProfilePicture);
 
 // testimonial
 router.get("/testimonials", getTestimonials);

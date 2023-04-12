@@ -274,3 +274,30 @@ export const uploadProfilePicture = async (req: Request, res: Response) => {
 
   res.json({ key: file.key, location: file.location });
 };
+
+export const deleteProfilePicture = async (req: Request, res: Response) => {
+  const owner = req.user!;
+  const profileDocument = await collections.tutorProfiles!.findOne({
+    owner: new ObjectId(owner._id),
+  });
+
+  if (!profileDocument) {
+    throw new HttpError(404, "Profile not found");
+  }
+
+  const oldKey = profileDocument.profilePic?.key;
+  await collections.tutorProfiles?.updateOne(
+    { owner: new ObjectId(owner._id) },
+    {
+      $unset: {
+        profilePic: "",
+      },
+    }
+  );
+
+  // remove old profile pic if necessary
+  if (oldKey) {
+    removeProfilePic(oldKey);
+  }
+  res.json({ message: "Deleted" });
+};
