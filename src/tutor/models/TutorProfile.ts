@@ -74,7 +74,8 @@ export default class TutorProfile {
   };
 
   // meta fields
-  public testimonialCount: number = 0;
+  public ratingCount: number = 0;
+  public totalRating: number = 0;
 
   // listing fields
   public title: string;
@@ -133,7 +134,8 @@ export default class TutorProfile {
       ownerDetails: this.ownerDetails,
 
       profilePic: this.profilePic,
-      testimonialCount: this.testimonialCount,
+      ratingCount: this.ratingCount,
+      totalRating: this.totalRating,
 
       title: this.title,
       regions: this.regions,

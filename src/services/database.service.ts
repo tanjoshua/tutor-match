@@ -9,7 +9,7 @@ import TutorApplication from "../tutor/models/TutorApplication";
 import TutorRequest from "../tutor/models/TutorRequest";
 import { DB_CONN_STRING, DB_NAME } from "../utils/config";
 import EmailVerification from "../base/models/EmailVerification";
-import TutorTestimonial from "../tutor/models/TutorTestimonial";
+import TutorRating from "../tutor/models/TutorRating";
 import ContactLog from "../tutor/models/ContactLog";
 
 // Global Variables
@@ -22,7 +22,7 @@ export const collections: {
   tutorProfiles?: mongoDB.Collection<TutorProfile>;
   tutorRequests?: mongoDB.Collection<TutorRequest>;
   tutorApplications?: mongoDB.Collection<TutorApplication>;
-  tutorTestimonials?: mongoDB.Collection<TutorTestimonial>;
+  tutorRatings?: mongoDB.Collection<TutorRating>;
   contactLogs?: mongoDB.Collection<ContactLog>;
 } = {};
 
@@ -44,8 +44,7 @@ export async function connectToDatabase() {
   collections.tutorProfiles = db.collection<TutorProfile>("tutorProfiles");
   collections.tutorRequests = db.collection<TutorRequest>("tutorRequests");
   collections.tutorApplications = db.collection<TutorApplication>("tutorApps");
-  collections.tutorTestimonials =
-    db.collection<TutorTestimonial>("tutorTestimonials");
+  collections.tutorRatings = db.collection<TutorRating>("tutorRatings");
   collections.contactLogs = db.collection<ContactLog>("contactLogs");
 
   console.log(`Successfully connected to database: ${db.databaseName}.`);
@@ -57,6 +56,11 @@ export async function connectToDatabase() {
 
   // profiles indexes
   collections.tutorProfiles.createIndex({ owner: 1 });
+  // for random sampling
+  collections.tutorProfiles.createIndex({
+    isPublic: 1,
+    profilePic: 1,
+  });
   collections.tutorProfiles.createIndex({
     isPublic: 1,
     allSubjects: 1,
@@ -87,10 +91,10 @@ export async function connectToDatabase() {
   collections.tutorApplications.createIndex({ tutor: 1, tutorRequest: 1 });
   collections.tutorApplications.createIndex({ tutorRequest: 1, state: 1 });
 
-  // tutor testimonial indexes
-  collections.tutorTestimonials.createIndex({ tutorProfile: 1, author: 1 });
-  collections.tutorTestimonials.createIndex({ author: 1 });
-  collections.tutorTestimonials.createIndex({ tutorProfile: 1 });
+  // tutor rating indexes
+  collections.tutorRatings.createIndex({ tutorProfile: 1, author: 1 });
+  collections.tutorRatings.createIndex({ author: 1 });
+  collections.tutorRatings.createIndex({ tutorProfile: 1 });
 }
 
 export function dateToObjectId(date: Date) {
