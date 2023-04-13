@@ -1,11 +1,11 @@
 import { Request, Response } from "express";
 import { collections } from "../../services/database.service";
 import { ObjectId } from "mongodb";
-import TutorTestimonial from "../models/TutorTestimonial";
+import TutorRating from "../models/TutorRating";
 import HttpError from "../../errors/HttpError";
 
 require("express-async-errors");
-export const getTestimonials = async (req: Request, res: Response) => {
+export const getRatings = async (req: Request, res: Response) => {
   // retrieve options
   const profileId = req.query.profileId;
   const page = req.query.page || 1;
@@ -19,11 +19,9 @@ export const getTestimonials = async (req: Request, res: Response) => {
     filter.author = { $ne: new ObjectId(req.session.userId) };
   }
 
-  const totalCount = await collections.tutorTestimonials!.countDocuments(
-    filter
-  );
+  const totalCount = await collections.tutorRatings!.countDocuments(filter);
   const documents = await collections
-    .tutorTestimonials!.aggregate([
+    .tutorRatings!.aggregate([
       { $match: filter },
       {
         $lookup: {
@@ -46,26 +44,24 @@ export const getTestimonials = async (req: Request, res: Response) => {
 
   // convert documents into objects to allow for usage of helper functions
   // shouldn't run into scalability issues due to pagination
-  const testimonials = [];
+  const ratings = [];
   for (const doc of documents) {
-    const testimonial = TutorTestimonial.assign(doc as TutorTestimonial);
-    testimonials.push(testimonial);
+    const rating = TutorRating.assign(doc as TutorRating);
+    ratings.push(rating);
   }
 
-  res.json({ testimonials, count: totalCount });
+  res.json({ ratings, count: totalCount });
 };
 
-export const getUserTestimonials = async (req: Request, res: Response) => {
+export const getUserRatings = async (req: Request, res: Response) => {
   // retrieve options
   const page = req.query.page || 1;
   const limit = req.query.limit || 5;
 
   const filter = { author: new ObjectId(req.user?._id) };
-  const totalCount = await collections.tutorTestimonials!.countDocuments(
-    filter
-  );
+  const totalCount = await collections.tutorRatings!.countDocuments(filter);
   const documents = await collections
-    .tutorTestimonials!.aggregate([
+    .tutorRatings!.aggregate([
       { $match: filter },
       {
         $lookup: {
@@ -82,6 +78,7 @@ export const getUserTestimonials = async (req: Request, res: Response) => {
         $project: {
           _id: 1,
           title: 1,
+          rating: 1,
           testimonial: 1,
           "tutorProfile.urlId": 1,
           "tutorProfile.tutorName": 1,
@@ -95,76 +92,76 @@ export const getUserTestimonials = async (req: Request, res: Response) => {
 
   // convert documents into objects to allow for usage of helper functions
   // shouldn't run into scalability issues due to pagination
-  const testimonials = [];
+  const ratings = [];
   for (const doc of documents) {
-    const testimonial = TutorTestimonial.assign(doc as TutorTestimonial);
-    testimonials.push(testimonial);
+    const rating = TutorRating.assign(doc as TutorRating);
+    ratings.push(rating);
   }
 
-  res.json({ testimonials, count: totalCount });
+  res.json({ ratings, count: totalCount });
 };
 
-export const postTestimonial = async (req: Request, res: Response) => {
+export const postRating = async (req: Request, res: Response) => {
   const user = req.user!;
 
-  // cannot leave testimonial for yourself
+  // cannot leave rating for yourself
   const profile = await collections.tutorProfiles!.findOne({
     _id: new ObjectId(req.body.tutorProfile),
     owner: user._id,
   });
   if (profile) {
-    throw new HttpError(403, "Cannot leave testimonial for yourself");
+    throw new HttpError(403, "Cannot leave rating for yourself");
   }
 
-  // no duplicate testimonial
-  const testimonial = await collections.tutorTestimonials!.findOne({
+  // no duplicate rating
+  const rating = await collections.tutorRatings!.findOne({
     tutorProfile: new ObjectId(req.body.tutorProfile),
     author: user._id!,
   });
-  if (testimonial) {
+  if (rating) {
     throw new HttpError(403, "Testimonial already exists");
   }
 
-  // create profile object
-  const newObject = new TutorTestimonial();
+  // create rating object
+  const newObject = new TutorRating();
   Object.assign(newObject, req.body);
   newObject.tutorProfile = new ObjectId(req.body.tutorProfile);
   newObject.author = user._id!;
 
-  await collections.tutorTestimonials!.insertOne(newObject);
+  await collections.tutorRatings!.insertOne(newObject);
   collections.tutorProfiles!.updateOne(
     // no need for async
     { _id: newObject.tutorProfile },
-    { $inc: { testimonialCount: 1 } }
+    { $inc: { ratingCount: 1, totalRating: newObject.rating } }
   );
 
   res.status(201).json({});
 };
 
-export const testimonialExists = async (req: Request, res: Response) => {
+export const ratingExists = async (req: Request, res: Response) => {
   const user = req.user!;
   const profileId = req.query.profileId;
 
-  const document = await collections.tutorTestimonials!.findOne({
+  const document = await collections.tutorRatings!.findOne({
     tutorProfile: new ObjectId(profileId as string),
     author: user._id!,
   });
 
   if (!document) {
-    res.json({ testimonial: null });
+    res.json({ rating: null });
     return;
   }
 
-  const testimonial = TutorTestimonial.assign(document as TutorTestimonial);
+  const rating = TutorRating.assign(document as TutorRating);
 
-  res.json({ testimonial });
+  res.json({ rating });
 };
 
-export const deleteTestimonial = async (req: Request, res: Response) => {
+export const deleteRating = async (req: Request, res: Response) => {
   const { id } = req.params;
   const user = req.user!;
 
-  const result = await collections.tutorTestimonials?.findOneAndDelete({
+  const result = await collections.tutorRatings?.findOneAndDelete({
     _id: new ObjectId(id),
     author: user._id,
   });
@@ -177,7 +174,7 @@ export const deleteTestimonial = async (req: Request, res: Response) => {
     collections.tutorProfiles!.updateOne(
       // decrement, no need for async
       { _id: result.value.tutorProfile },
-      { $inc: { testimonialCount: -1 } }
+      { $inc: { ratingCount: -1, totalRating: -result.value.rating } }
     );
   }
 
