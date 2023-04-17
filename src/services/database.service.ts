@@ -67,12 +67,17 @@ export async function connectToDatabase() {
     type: 1,
     gender: 1,
     "pricing.rate": 1,
+    updatedAt: 1,
+    ratingCount: 1,
   });
   collections.tutorProfiles.createIndex({
     isPublic: 1,
     levels: 1,
     type: 1,
     gender: 1,
+    "pricing.rate": 1,
+    updatedAt: 1,
+    ratingCount: 1,
   });
 
   // request index

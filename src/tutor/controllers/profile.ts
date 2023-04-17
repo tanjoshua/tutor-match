@@ -8,10 +8,11 @@ import { removeProfilePic } from "../../services/s3.service";
 import { PROTECTED_ROUTES } from "../../utils/constants";
 
 enum ProfileSortBy {
+  RecentlyUpdated = "Recently Updated",
   Oldest = "Oldest",
-  Newest = "Newest",
-  LowestRate = "Lowest Rate",
-  HighestRate = "Highest Rate",
+  LowestPrice = "Lowest Price",
+  HighestPrice = "Highest Price",
+  MostRatings = "Most Ratings",
 }
 
 require("express-async-errors");
@@ -55,14 +56,16 @@ export const getPublicProfiles = async (req: Request, res: Response) => {
   }
 
   // handle sort
-  let sort: any = { _id: 1 };
+  let sort: any = { updatedAt: 1 };
   if (req.body.sortBy) {
-    if (req.body.sortBy === ProfileSortBy.Newest) {
-      sort = { _id: -1 };
-    } else if (req.body.sortBy === ProfileSortBy.HighestRate) {
+    if (req.body.sortBy === ProfileSortBy.RecentlyUpdated) {
+      sort = { updatedAt: -1 };
+    } else if (req.body.sortBy === ProfileSortBy.HighestPrice) {
       sort = { "pricing.rate": -1 };
-    } else if (req.body.sortBy === ProfileSortBy.LowestRate) {
+    } else if (req.body.sortBy === ProfileSortBy.LowestPrice) {
       sort = { "pricing.rate": 1 };
+    } else if (req.body.sortBy === ProfileSortBy.MostRatings) {
+      sort = { ratingCount: -1 };
     }
   }
 
