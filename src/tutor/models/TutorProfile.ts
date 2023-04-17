@@ -74,6 +74,7 @@ export default class TutorProfile {
   };
 
   // meta fields
+  public updatedAt: Date = new Date();
   public ratingCount: number = 0;
   public totalRating: number = 0;
 

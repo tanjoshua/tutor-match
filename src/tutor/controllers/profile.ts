@@ -238,6 +238,7 @@ export const replaceProfile = async (req: Request, res: Response) => {
         pricing: newProfile.pricing,
         contactInfo: newProfile.contactInfo,
         allSubjects: newProfile.allSubjects,
+        updatedAt: new Date(),
       },
     }
   );
