@@ -267,7 +267,9 @@ export const getUserTutorProfile = async (req: Request, res: Response) => {
     owner: new ObjectId(owner._id),
   });
 
-  res.json({ profile: result });
+  const profile = TutorProfile.assign(result as TutorProfile);
+
+  res.json({ profile });
 };
 
 export const getTutorLevels = async (_req: Request, res: Response) => {
