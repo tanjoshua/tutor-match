@@ -34,10 +34,13 @@ import {
 } from "../controllers/request";
 import {
   deleteRating,
+  fulfilRatingRequest,
   getRatings,
   getUserRatings,
   postRating,
   ratingExists,
+  requestRating,
+  verifyRatingRequest,
 } from "../controllers/rating";
 import emailVerificationRequired from "../../middleware/emailVerificationRequired";
 
@@ -80,6 +83,9 @@ router.get("/userRatings", auth, getUserRatings);
 router.get("/rating/exists", auth, ratingExists);
 router.post("/rating", auth, emailVerificationRequired, postRating);
 router.delete("/rating/:id", auth, deleteRating);
+router.post("/rating/request", auth, requestRating);
+router.post("/rating/verifyRequest", auth, verifyRatingRequest);
+router.post("/rating/fulfilRequest", auth, fulfilRatingRequest);
 
 // tutor profile routes
 router.get("/samplePublicProfiles", samplePublicProfiles);

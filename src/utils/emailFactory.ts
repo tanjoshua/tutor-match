@@ -159,3 +159,51 @@ export const generatePasswordResetEmail = (
     from: EMAIL,
   };
 };
+
+export const generateRatingRequestEmail = ({
+  token,
+  tutorName,
+  recipientEmail,
+  message,
+}: {
+  token: string;
+  tutorName: string;
+  recipientEmail: string;
+  message: string;
+}) => {
+  const link = `${WEB_URL}/leave-rating/${token}`;
+  const htmlBody = `
+    <p>
+        Hi,
+        <br>
+        <br>
+        ${tutorName} would like you to rate their tutoring services.
+        <br>
+        <br>
+        ${
+          message &&
+          `
+        "${message}"
+        <br>
+        <br>
+        `
+        }
+        
+        Please leave your rating at the following link
+        <br>
+        <a href="${link}" target="_blank">${link}</a>
+        <br>
+        <br>
+        Thank you for using tutoring.sg
+    </p>
+  `;
+  return {
+    subject: `Leave a rating for ${tutorName}`,
+    html: htmlBody,
+    to: recipientEmail,
+    from: {
+      address: EMAIL,
+      name: "tutoring.sg",
+    },
+  };
+};
