@@ -171,7 +171,7 @@ export const generateRatingRequestEmail = ({
   recipientEmail: string;
   message: string;
 }) => {
-  const link = `${WEB_URL}/leave-rating/${token}`;
+  const link = `${WEB_URL}/tutor/leave-rating/${token}`;
   const htmlBody = `
     <p>
         Hi,

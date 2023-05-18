@@ -267,7 +267,17 @@ export const verifyRatingRequest = async (req: Request, res: Response) => {
     throw new HttpError(404, "Rating request not found");
   }
 
-  res.json({});
+  const tutorProfile = await collections.tutorProfiles!.findOne({
+    _id: ratingRequest.tutorProfile,
+  });
+  if (!tutorProfile) {
+    throw new HttpError(404, "Tutor profile not found");
+  }
+
+  res.json({
+    tutorName: tutorProfile.tutorName,
+    message: ratingRequest.message,
+  });
 };
 
 export const fulfilRatingRequest = async (req: Request, res: Response) => {
@@ -301,7 +311,7 @@ export const fulfilRatingRequest = async (req: Request, res: Response) => {
 
   // get tutor profile
   const tutorProfile = await collections.tutorProfiles?.findOne({
-    _id: new ObjectId(req.body.tutorProfile),
+    _id: ratingRequest.tutorProfile,
   });
   if (!tutorProfile) {
     throw new HttpError(404, "Tutor profile not found");
@@ -309,7 +319,7 @@ export const fulfilRatingRequest = async (req: Request, res: Response) => {
 
   // create rating
   const newObject = new TutorRating();
-  newObject.tutorProfile = new ObjectId(req.body.tutorProfile);
+  newObject.tutorProfile = ratingRequest.tutorProfile;
   if (userAccount) {
     // if email already has account, register rating under their account
     newObject.author = userAccount._id;
