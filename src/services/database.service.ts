@@ -11,6 +11,7 @@ import { DB_CONN_STRING, DB_NAME } from "../utils/config";
 import EmailVerification from "../base/models/EmailVerification";
 import TutorRating from "../tutor/models/TutorRating";
 import ContactLog from "../tutor/models/ContactLog";
+import RatingRequest from "../tutor/models/RatingRequest";
 
 // Global Variables
 export const collections: {
@@ -23,6 +24,7 @@ export const collections: {
   tutorRequests?: mongoDB.Collection<TutorRequest>;
   tutorApplications?: mongoDB.Collection<TutorApplication>;
   tutorRatings?: mongoDB.Collection<TutorRating>;
+  ratingRequests?: mongoDB.Collection<RatingRequest>;
   contactLogs?: mongoDB.Collection<ContactLog>;
 } = {};
 
@@ -45,6 +47,7 @@ export async function connectToDatabase() {
   collections.tutorRequests = db.collection<TutorRequest>("tutorRequests");
   collections.tutorApplications = db.collection<TutorApplication>("tutorApps");
   collections.tutorRatings = db.collection<TutorRating>("tutorRatings");
+  collections.ratingRequests = db.collection<RatingRequest>("ratingRequests");
   collections.contactLogs = db.collection<ContactLog>("contactLogs");
 
   console.log(`Successfully connected to database: ${db.databaseName}.`);
@@ -100,6 +103,11 @@ export async function connectToDatabase() {
   collections.tutorRatings.createIndex({ tutorProfile: 1, author: 1 });
   collections.tutorRatings.createIndex({ author: 1 });
   collections.tutorRatings.createIndex({ tutorProfile: 1 });
+
+  // rating requests
+  collections.ratingRequests.createIndex({ tutorProfile: 1, email: 1 });
+  collections.ratingRequests.createIndex({ email: 1 });
+  collections.ratingRequests.createIndex({ tutorProfile: 1 });
 }
 
 export function dateToObjectId(date: Date) {
